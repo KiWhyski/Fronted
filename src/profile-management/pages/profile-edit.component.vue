@@ -291,7 +291,13 @@ export default {
 
 <style>
 .profile-edit--apple.profile-edit-container {
-  --apple-blue: #007aff;
+  /* Alineado con login: verde principal Stocksip */
+  --stocksip-green: #2e7d32;
+  --stocksip-green-hover: #1b5e20;
+  --stocksip-green-soft: #e8f5e9;
+  --stocksip-green-border: #a5d6a7;
+  --apple-focus-ring: rgba(46, 125, 50, 0.22);
+  --apple-focus-border: rgba(46, 125, 50, 0.35);
   --apple-text: #1d1d1f;
   --apple-secondary: rgba(60, 60, 67, 0.6);
   --apple-border: rgba(60, 60, 67, 0.12);
@@ -301,6 +307,11 @@ export default {
   --apple-bg: #ffffff;
   --apple-card: #ffffff;
   --apple-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --profile-title-color: #111111;
+  /* Cápsula: inputs y botones. Las tarjetas usan menos radio para no verse “pastilla” */
+  --apple-input-radius: 999px;
+  --apple-button-radius: var(--apple-input-radius);
+  --apple-container-radius: 12px;
   gap: 0.75rem;
   padding: 0;
   font-family: var(--apple-font);
@@ -320,7 +331,7 @@ export default {
 .profile-edit--apple .profile-section {
   background-color: var(--apple-card);
   padding: 1rem 1rem 1.125rem;
-  border-radius: 12px;
+  border-radius: var(--apple-container-radius);
   border: 1px solid rgba(0, 0, 0, 0.06);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   max-width: none;
@@ -329,12 +340,13 @@ export default {
 }
 
 .profile-edit--apple h2 {
-  color: var(--apple-text);
+  color: var(--profile-title-color);
   font-family: var(--apple-font);
-  font-size: 1.0625rem;
+  font-size: 1.125rem;
   font-weight: 600;
   margin: 0 0 1rem 0;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
 }
 
 .profile-edit--apple .form-group {
@@ -351,16 +363,16 @@ export default {
   letter-spacing: -0.01em;
 }
 
-/* Campos estilo Apple (iOS / macOS): fondo gris sistema, foco blanco + anillo azul */
+/* Campos estilo Apple (iOS / macOS): fondo gris sistema, foco blanco + anillo verde (marca) */
 .profile-edit--apple .form-input {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
   min-height: 44px;
-  padding-left: 14px;
-  padding-right: 14px;
+  padding-left: 16px;
+  padding-right: 16px;
   border: 1px solid transparent;
-  border-radius: 10px;
+  border-radius: var(--apple-input-radius);
   font-family: var(--apple-font);
   font-size: 17px;
   line-height: 1.3;
@@ -388,11 +400,11 @@ export default {
 }
 
 .profile-edit--apple .form-input:focus {
-  border-color: var(--apple-blue);
+  border-color: var(--stocksip-green);
   background-color: var(--apple-field-bg-focus);
   box-shadow:
-    0 0 0 3px rgba(0, 122, 255, 0.22),
-    inset 0 0 0 0.5px rgba(0, 122, 255, 0.35);
+    0 0 0 3px var(--apple-focus-ring),
+    inset 0 0 0 0.5px var(--apple-focus-border);
 }
 
 .profile-edit--apple .form-input:disabled {
@@ -429,7 +441,7 @@ export default {
   color: var(--apple-secondary);
   cursor: pointer;
   padding: 0;
-  border-radius: 8px;
+  border-radius: 50%;
   transition: background-color 0.15s ease, color 0.15s ease;
 }
 
@@ -472,8 +484,8 @@ export default {
 .profile-edit--apple .save-button,
 .profile-edit--apple .cancel-button {
   min-width: 5.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 10px;
+  padding: 0.55rem 1.25rem;
+  border-radius: var(--apple-button-radius);
   font-family: var(--apple-font);
   font-size: 1.0625rem;
   font-weight: 500;
@@ -482,23 +494,24 @@ export default {
 }
 
 .profile-edit--apple .save-button {
-  background-color: var(--apple-blue);
+  background-color: var(--stocksip-green);
   color: #fff;
   border: none;
 }
 
 .profile-edit--apple .save-button:hover {
-  filter: brightness(1.06);
+  background-color: var(--stocksip-green-hover);
 }
 
 .profile-edit--apple .cancel-button {
-  background-color: rgba(60, 60, 67, 0.08);
-  border: none;
-  color: var(--apple-text);
+  background-color: var(--stocksip-green-soft);
+  border: 1px solid var(--stocksip-green-border);
+  color: var(--stocksip-green-hover);
 }
 
 .profile-edit--apple .cancel-button:hover {
-  background-color: rgba(60, 60, 67, 0.12);
+  background-color: #c8e6c9;
+  border-color: var(--stocksip-green);
 }
 
 @media (min-width: 900px) {

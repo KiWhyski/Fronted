@@ -101,7 +101,34 @@
     "btn-current": "Plan actual",
     "btn-unavailable": "No disponible",
     "btn-choose": "Elegir plan",
-    "load-error": "No se pudieron cargar los planes."
+    "btn-subscribe": "Suscribirse",
+    "load-error": "No se pudieron cargar los planes.",
+    "cards": {
+      "esencial": {
+        "title": "Esencial",
+        "unitsLine": "10–15 departamentos",
+        "billingLine": "Facturado mensualmente en soles peruanos (PEN).",
+        "features": [
+          "Construido para edificios más pequeños y condominios boutique.",
+          "Áreas comunes, cobranzas y anuncios en un solo lugar.",
+          "Documentos y registros de visitas para su comunidad.",
+          "Consola web para administradores y juntas.",
+          "Soporte por correo electrónico en días hábiles."
+        ]
+      },
+      "estandar": {
+        "title": "Estándar",
+        "unitsLine": "16–40 departamentos",
+        "billingLine": "Facturado mensualmente en PEN. Cubre hasta 40 unidades.",
+        "features": [
+          "Diseñado para torres medianas y comunidades activas.",
+          "Mismas capacidades que Esencial con mayor capacidad.",
+          "Mayor visibilidad de cuotas y morosidad.",
+          "Difusión de actualizaciones a residentes y comités.",
+          "Soporte operativo prioritario."
+        ]
+      }
+    }
   },
   "warehouses": {
     "title": "Almacenes",

@@ -1,30 +1,60 @@
 <script>
-import {PlanService} from "@/payment-and-subscriptions/services/plan.service.js";
+import { PlanService } from "@/payment-and-subscriptions/services/plan.service.js";
 import PlanList from "@/payment-and-subscriptions/components/plan-list.component.vue";
-import {SubscriptionService} from "@/payment-and-subscriptions/services/subscription.service.js";
+import { SubscriptionService } from "@/payment-and-subscriptions/services/subscription.service.js";
 import httpInstance from "@/shared/services/http.instance.js";
 import SideNavbar from "@/public/components/side-navbar.vue";
 import ToolbarContent from "@/public/components/toolbar-content.component.vue";
+
+/** Dos planes fijos en UI (es-ES); se enlazan los planId del API por posición cuando existen. */
+const CATALOG_SLOTS = [
+  { catalogKey: "esencial", tier: 0, fallbackPlanId: "plan_esencial" },
+  { catalogKey: "estandar", tier: 1, fallbackPlanId: "plan_estandar" },
+];
 
 export default {
   name: "payment-choose",
   components: { PlanList, SideNavbar, ToolbarContent },
   data() {
     return {
-      plans: [],
+      apiPlans: [],
+      displayPlans: [],
       currentPlanId: null,
-      error: null
+      error: null,
     };
   },
+  computed: {
+    currentTier() {
+      const row = this.displayPlans.find((p) => p.planId === this.currentPlanId);
+      return row ? row.tier : -1;
+    },
+  },
   methods: {
+    buildDisplayPlans() {
+      this.displayPlans = CATALOG_SLOTS.map((slot, i) => {
+        const raw = this.apiPlans[i];
+        const api = raw && typeof raw === "object" ? { ...raw } : {};
+        return {
+          ...api,
+          catalogKey: slot.catalogKey,
+          tier: slot.tier,
+          planId: api.planId ?? slot.fallbackPlanId,
+        };
+      });
+    },
+
     async getAllPlans() {
       this.error = null;
       try {
         const planService = new PlanService();
-        this.plans = await planService.getAllPlans();
+        const data = await planService.getAllPlans();
+        this.apiPlans = Array.isArray(data) ? data : [];
+        this.buildDisplayPlans();
       } catch (error) {
         this.error = this.$t("plans-page.load-error");
         console.error(error);
+        this.apiPlans = [];
+        this.buildDisplayPlans();
       }
     },
 
@@ -70,11 +100,11 @@ export default {
       } catch (err) {
         console.error("Error subscribing/upgrading to plan:", err);
       }
-    }
+    },
   },
   created() {
     this.checkCurrentPlanAndLoad();
-  }
+  },
 };
 </script>
 
@@ -84,23 +114,24 @@ export default {
     <div class="plan-page-main">
       <toolbar-content :page-title="$t('toolbar.plans')" />
       <div class="plan-list-wrapper">
+        <p v-if="error" class="plan-page-error" role="alert">{{ error }}</p>
         <plan-list
-            :plans="plans"
-            :current-plan-id="currentPlanId"
-            @choose="subscribeToPlan"
+          :plans="displayPlans"
+          :current-plan-id="currentPlanId"
+          :current-tier="currentTier"
+          @choose="subscribeToPlan"
         />
       </div>
     </div>
   </div>
 </template>
 
-
 <style scoped>
 .plan-page-bg {
   display: flex;
   min-height: 100vh;
   width: 100%;
-  background: #ffffff;
+  background: #f5f5f7;
 }
 
 .plan-page-main {
@@ -112,11 +143,18 @@ export default {
 
 .plan-list-wrapper {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   flex: 1;
-  padding: 2rem;
+  padding: 2rem 1.25rem 2.5rem;
   box-sizing: border-box;
-  background-color: #ffffff;
+  background-color: #f5f5f7;
 }
 
+.plan-page-error {
+  margin: 0 auto 1rem;
+  max-width: 960px;
+  color: #b00020;
+  font-size: 0.9375rem;
+}
 </style>

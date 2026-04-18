@@ -1,19 +1,22 @@
 <script>
-
-import {Plan} from "@/payment-and-subscriptions/model/plan.entity.js";
 import PlanItem from "@/payment-and-subscriptions/components/plan-item.components.vue";
 
 export default {
-  name: 'PlanList',
+  name: "PlanList",
   components: { PlanItem },
   props: {
-    plans: {Type: Array[Plan], required: true},
+    plans: { type: Array, required: true },
     currentPlanId: {
       type: String,
-      required: false
+      required: false,
     },
-  }
-}
+    /** -1 = sin plan en catálogo; 0 = Esencial; 1 = Estándar */
+    currentTier: {
+      type: Number,
+      default: -1,
+    },
+  },
+};
 </script>
 
 <template>
@@ -23,6 +26,7 @@ export default {
         <plan-item
             :plan="plan"
             :current-plan-id="currentPlanId"
+            :current-tier="currentTier"
             @choose="$emit('choose', $event)"
         />
       </div>
@@ -44,23 +48,23 @@ export default {
   flex-wrap: wrap;
   justify-content: center;
   align-items: stretch;
-  gap: 1.5rem;
+  gap: 1.75rem;
   width: 100%;
-  max-width: 880px;
+  max-width: 960px;
   box-sizing: border-box;
 }
 
 .grid-item {
-  flex: 1 1 300px;
+  flex: 1 1 320px;
   min-width: 0;
-  max-width: 420px;
+  max-width: 460px;
   display: flex;
   justify-content: center;
 }
 
 .grid-item :deep(.plan-card) {
   width: 100%;
-  max-width: 360px;
+  max-width: 440px;
 }
 
 @media (max-width: 639px) {

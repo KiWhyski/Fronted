@@ -162,28 +162,81 @@ export default {
           <div class="dashboard-card resumen resumen-flex">
             <div class="resumen-info">
               <h2 class="resumen-title">{{ $t('dashboard.general-summary') }}</h2>
-              <ul>
-                <li><span class="resumen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#6E0081"><path d="M7 18c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v8c0 1.1-.9 2-2 2H7zm0-2h10V8H7v8z"/></svg></span> Ventas hoy:<span class="resumen-label">S/. <b>450.00</b></span></li>
-                <li><span class="resumen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#D98C4A"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg></span> Última factura:<span class="resumen-label">24/04/2025</span></li>
-                <li><span class="resumen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#D98C4A"><path d="M20.54 5.23l-1.39-1.39c-.36-.36-.86-.59-1.41-.59H6.26c-.55 0-1.05.23-1.41.59L3.46 5.23C3.17 5.52 3 5.91 3 6.32V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.32c0-.41-.17-.8-.46-1.09zM12 17c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/></svg></span> Productos en stock:<span class="resumen-label">142</span></li>
-                <li><span class="resumen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#D90429"><circle cx="12" cy="12" r="10"/></svg></span> {{ $t('dashboard.low-stock') }}<span class="resumen-label danger">7</span></li>
-                <li><span class="resumen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#D98C4A"><circle cx="12" cy="12" r="10"/></svg></span> {{ $t('dashboard.about-to-expire') }}<span class="resumen-label warning">5</span></li>
+              <ul class="resumen-kpi-list">
+                <li>
+                  <span class="resumen-kpi-left">
+                    <span class="resumen-icon resumen-icon--pi" aria-hidden="true"><i class="pi pi-dollar"></i></span>
+                    <span class="resumen-kpi-text">{{ $t('dashboard.sales-today') }}</span>
+                  </span>
+                  <span class="alerts-notify__line-value alerts-notify__line-value--ok">S/. 450.00</span>
+                </li>
+                <li>
+                  <span class="resumen-kpi-left">
+                    <span class="resumen-icon resumen-icon--pi" aria-hidden="true"><i class="pi pi-receipt"></i></span>
+                    <span class="resumen-kpi-text">{{ $t('dashboard.last-invoice') }}</span>
+                  </span>
+                  <span class="alerts-notify__line-value alerts-notify__line-value--ok">24/04/2025</span>
+                </li>
+                <li>
+                  <span class="resumen-kpi-left">
+                    <span class="resumen-icon resumen-icon--pi" aria-hidden="true"><i class="pi pi-box"></i></span>
+                    <span class="resumen-kpi-text">{{ $t('dashboard.products-in-stock') }}</span>
+                  </span>
+                  <span class="alerts-notify__line-value alerts-notify__line-value--ok">142</span>
+                </li>
+                <li>
+                  <span class="resumen-kpi-left">
+                    <span class="resumen-icon resumen-icon--pi resumen-icon--danger" aria-hidden="true"><i class="pi pi-exclamation-triangle"></i></span>
+                    <span class="resumen-kpi-text">{{ $t('dashboard.low-stock') }}</span>
+                  </span>
+                  <span class="alerts-notify__line-value danger">7</span>
+                </li>
+                <li>
+                  <span class="resumen-kpi-left">
+                    <span class="resumen-icon resumen-icon--pi resumen-icon--warning" aria-hidden="true"><i class="pi pi-calendar-clock"></i></span>
+                    <span class="resumen-kpi-text">{{ $t('dashboard.about-to-expire') }}</span>
+                  </span>
+                  <span class="alerts-notify__line-value warning">5</span>
+                </li>
               </ul>
             </div>
             <div class="resumen-img">
             </div>
           </div>
-          <div class="dashboard-card alerts">
-            <h2>{{ $t('dashboard.important-notifications') }}</h2>
-            <div class="alert-item">
-              <div>Whisky Escocés Premium</div>
-              <div>{{ $t('dashboard.current-stock') }} <span class="danger">5</span></div>
-              <div>{{ $t('dashboard.minimum-stock') }} <span>10</span></div>
+          <div class="dashboard-card alerts alerts--with-icons">
+            <h2 class="alerts-section-title">{{ $t('dashboard.important-notifications') }}</h2>
+
+            <div class="alerts-notify alerts-notify--danger">
+              <div class="alerts-notify__head">
+                <span class="alerts-notify__badge" aria-hidden="true"><i class="pi pi-exclamation-triangle"></i></span>
+                <span class="alerts-notify__product">Whisky Escocés Premium</span>
+              </div>
+              <ul class="alerts-notify__lines">
+                <li>
+                  <span class="alerts-notify__line-left">
+                    <span class="alerts-notify__line-icon" aria-hidden="true"><i class="pi pi-box"></i></span>
+                    <span class="alerts-notify__line-label">{{ $t('dashboard.current-stock') }}</span>
+                  </span>
+                  <span class="alerts-notify__line-value danger">5</span>
+                </li>
+                <li>
+                  <span class="alerts-notify__line-left">
+                    <span class="alerts-notify__line-icon" aria-hidden="true"><i class="pi pi-chart-line"></i></span>
+                    <span class="alerts-notify__line-label">{{ $t('dashboard.minimum-stock') }}</span>
+                  </span>
+                  <span class="alerts-notify__line-value alerts-notify__line-value--ok">10</span>
+                </li>
+              </ul>
             </div>
-            <hr />
-            <div class="alerta-item">
-              <div>Malbec White Wine</div>
-              <div class="warning">{{ $t('dashboard.expires-in-days', { days: 8 }) }}</div>
+
+            <hr class="alerts-sep" />
+
+            <div class="alerts-notify alerts-notify--warning">
+              <div class="alerts-notify__head">
+                <span class="alerts-notify__badge alerts-notify__badge--warn" aria-hidden="true"><i class="pi pi-calendar-clock"></i></span>
+                <span class="alerts-notify__product">Malbec White Wine</span>
+              </div>
+              <p class="alerts-notify__expire warning">{{ $t('dashboard.expires-in-days', { days: 8 }) }}</p>
             </div>
           </div>
         </div>
@@ -193,15 +246,15 @@ export default {
               <h2 class="access-title access-title--sidebar">{{ $t('dashboard.quick-access') }}</h2>
               <div class="access-row access-row--sidebar">
                 <router-link to="/catalog" class="access-btn access-btn--sidebar">
-                  <span class="access-icon"><i class="pi pi-box"></i></span>
+                  <span class="access-icon"><i class="pi pi-book" aria-hidden="true"></i></span>
                   <span class="access-link">{{ $t('dashboard.access-catalogs') }}</span>
                 </router-link>
                 <router-link to="/orders" class="access-btn access-btn--sidebar">
-                  <span class="access-icon"><i class="pi pi-shopping-cart"></i></span>
+                  <span class="access-icon"><i class="pi pi-shopping-cart" aria-hidden="true"></i></span>
                   <span class="access-link">{{ $t('dashboard.access-orders') }}</span>
                 </router-link>
                 <router-link to="/warehouses" class="access-btn access-btn--sidebar">
-                  <span class="access-icon"><i class="pi pi-building"></i></span>
+                  <span class="access-icon"><i class="pi pi-warehouse" aria-hidden="true"></i></span>
                   <span class="access-link">{{ $t('dashboard.access-inventory') }}</span>
                 </router-link>
               </div>
@@ -324,7 +377,7 @@ export default {
   min-width: 220px;
 }
 .dashboard-row .resumen-title,
-.dashboard-row .alerts h2 {
+.dashboard-row .alerts-section-title {
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
@@ -340,15 +393,152 @@ export default {
   font-size: 0.8125rem;
   gap: 0.35rem;
 }
-.dashboard-row .resumen-icon svg {
-  width: 16px;
-  height: 16px;
+
+.dashboard-row .resumen-info {
+  min-width: 0;
+  width: 100%;
 }
+
+.dashboard-row .alerts.alerts--with-icons {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dashboard-row .resumen-kpi-list {
+  width: 100%;
+}
+
+/* Misma fila que .alerts-notify__lines (flex + valor a la derecha) */
+.dashboard-row .resumen .resumen-info .resumen-kpi-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+  font-size: 0.8125rem;
+  box-sizing: border-box;
+}
+
+.dashboard-row .resumen-kpi-left {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  flex: 1;
+}
+.dashboard-row .resumen-icon.resumen-icon--pi {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  flex-shrink: 0;
+}
+.dashboard-row .resumen-icon.resumen-icon--pi i {
+  font-size: 0.95rem;
+  line-height: 1;
+  color: #2e7d32;
+}
+.dashboard-row .resumen-icon.resumen-icon--pi.resumen-icon--danger i {
+  color: #dc2626;
+}
+.dashboard-row .resumen-icon.resumen-icon--pi.resumen-icon--warning i {
+  color: #d97706;
+}
+.dashboard-row .resumen-kpi-text {
+  min-width: 0;
+  color: #323130;
+}
+
 .dashboard-row .alerts {
   font-size: 0.8125rem;
 }
 .dashboard-row .alert-item {
   margin-bottom: 0.5rem;
+}
+
+.dashboard-row .alerts-notify__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+}
+
+.dashboard-row .alerts-notify__badge {
+  display: inline-flex;
+  flex-shrink: 0;
+  margin-top: 0.05rem;
+}
+
+.dashboard-row .alerts-notify__badge i {
+  font-size: 1rem;
+  color: #dc2626;
+}
+
+.dashboard-row .alerts-notify__badge--warn i {
+  color: #d97706;
+}
+
+.dashboard-row .alerts-notify__product {
+  font-weight: 600;
+  color: #323130;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+
+.dashboard-row .alerts-notify__lines {
+  list-style: none;
+  padding: 0;
+  margin: 0.45rem 0 0 0;
+  width: 100%;
+}
+
+.dashboard-row .alerts-notify__lines li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+  font-size: 0.8125rem;
+  box-sizing: border-box;
+}
+
+.dashboard-row .alerts-notify__line-left {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.dashboard-row .alerts-notify__line-label {
+  color: #323130;
+}
+
+.dashboard-row .alerts-notify__line-icon i {
+  font-size: 0.85rem;
+  color: #2e7d32;
+}
+
+.dashboard-row .alerts-notify__line-value {
+  flex-shrink: 0;
+  text-align: right;
+  font-weight: 700;
+}
+
+.dashboard-row .alerts-notify__line-value--ok {
+  color: #174d32;
+}
+
+.dashboard-row .alerts-notify__expire {
+  margin: 0.4rem 0 0 0;
+  padding-left: 1.75rem;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+
+.dashboard-row .alerts-sep {
+  margin: 0.55rem 0;
 }
 .dashboard-row .resumen-flex {
   gap: 1rem;
@@ -398,6 +588,7 @@ export default {
 .access-btn--sidebar .access-icon {
   font-size: 1.15rem;
   flex-shrink: 0;
+  color: #2e7d32;
 }
 .access-btn--sidebar .access-link {
   font-size: 0.8125rem;
@@ -405,6 +596,26 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #174d32;
+  font-weight: 600;
+}
+
+.dashboard-card.access--sidebar .access-btn--sidebar {
+  color: #174d32;
+  border-color: rgba(46, 125, 50, 0.25);
+  background: #ffffff;
+}
+.dashboard-card.access--sidebar .access-btn--sidebar:hover {
+  background: #e8f5e9;
+  border-color: rgba(27, 94, 32, 0.35);
+  color: #1b5e20;
+  box-shadow: 0 2px 8px rgba(20, 83, 45, 0.12);
+}
+.dashboard-card.access--sidebar .access-btn--sidebar:hover .access-icon {
+  color: #1b5e20;
+}
+.dashboard-card.access--sidebar .access-btn--sidebar:hover .access-link {
+  color: #1b5e20;
 }
 
 .resumen h2, .alertas h2, .accesos h2 {
@@ -463,6 +674,7 @@ hr {
   margin-bottom: 0.65rem;
   line-height: 1.25;
   color: #111111;
+  letter-spacing: -0.02em;
 }
 .access-row {
   display: flex;
@@ -757,6 +969,9 @@ hr {
 .resumen-info li {
   margin-bottom: 0.7rem;
   font-size: 1.13rem;
+}
+/* Flex solo para listas genéricas; .resumen-kpi-list usa grid más arriba */
+.resumen-info ul:not(.resumen-kpi-list) li {
   display: flex;
   align-items: center;
   gap: 0.5rem;

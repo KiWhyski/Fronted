@@ -118,9 +118,15 @@ export default {
   --apple-card: #ffffff;
   --apple-label: rgba(60, 60, 67, 0.6);
   --apple-text: #1d1d1f;
-  --apple-blue: #007aff;
+  /* Títulos: negro + stack del sistema (alineado con secciones del formulario) */
+  --profile-title-color: #111111;
+  /* Misma verde que login (sign-in) */
+  --stocksip-green: #2e7d32;
+  --stocksip-green-hover: #1b5e20;
   --apple-separator: rgba(60, 60, 67, 0.12);
   --apple-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* Misma cápsula que inputs / perfil edit */
+  --apple-input-radius: 999px;
   width: 100%;
   min-height: 100vh;
   font-family: var(--apple-font);
@@ -133,7 +139,8 @@ export default {
 
 .profile-page--apple.dashboard-view--white :deep(.toolbar-title) {
   background-color: transparent !important;
-  color: var(--apple-text) !important;
+  color: var(--profile-title-color) !important;
+  font-family: var(--apple-font) !important;
   font-size: 1.375rem !important;
   font-weight: 600 !important;
   letter-spacing: -0.02em !important;
@@ -196,9 +203,10 @@ export default {
 }
 
 .apple-section-label {
+  font-family: var(--apple-font);
   font-size: 0.8125rem;
-  font-weight: 400;
-  color: var(--apple-label);
+  font-weight: 600;
+  color: var(--profile-title-color);
   text-transform: uppercase;
   letter-spacing: 0.02em;
   margin: 1.25rem 0 0.375rem 0.25rem;
@@ -206,7 +214,7 @@ export default {
 
 .apple-elevated {
   background: var(--apple-card);
-  border-radius: 12px;
+  border-radius: var(--apple-input-radius);
   border: 1px solid rgba(0, 0, 0, 0.06);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
@@ -250,7 +258,8 @@ export default {
 
 .user-name {
   margin: 0 0 0.25rem 0;
-  color: var(--apple-text);
+  font-family: var(--apple-font);
+  color: var(--profile-title-color);
   font-size: 1.25rem;
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -268,8 +277,8 @@ export default {
   font-family: inherit;
   font-size: 0.9375rem;
   font-weight: 500;
-  padding: 0.5rem 0.95rem;
-  border-radius: 10px;
+  padding: 0.55rem 1.25rem;
+  border-radius: var(--apple-input-radius);
   border: none;
   cursor: pointer;
   transition: opacity 0.15s ease, transform 0.1s ease;
@@ -281,12 +290,13 @@ export default {
 }
 
 .apple-btn--primary {
-  background: var(--apple-blue);
+  background: var(--stocksip-green);
   color: #fff;
 }
 
 .upload:hover {
-  filter: brightness(1.05);
+  background: var(--stocksip-green-hover);
+  filter: none;
 }
 
 .role-pill {
@@ -295,15 +305,17 @@ export default {
   justify-content: center;
   align-self: stretch;
   padding: 0.65rem 1.15rem;
-  border-radius: 999px;
+  border-radius: var(--apple-input-radius);
+  font-family: var(--apple-font);
   font-size: 1rem;
-  font-weight: 500;
-  color: var(--apple-text);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--profile-title-color);
   box-sizing: border-box;
 }
 
 .role-pill__text {
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 .visually-hidden {

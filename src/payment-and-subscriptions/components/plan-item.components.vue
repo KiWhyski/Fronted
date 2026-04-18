@@ -1,48 +1,74 @@
 <script>
-import { Plan } from "@/payment-and-subscriptions/model/plan.entity.js";
-
-const PLAN_RANK = {
-  plan_free: 1,
-  plan_premium_monthly: 2,
-};
-
 export default {
   name: "PlanItem",
   props: {
-    plan: { type: Plan, required: true },
+    plan: {
+      type: Object,
+      required: true,
+    },
     currentPlanId: { type: String, required: false },
+    currentTier: { type: Number, default: -1 },
   },
   computed: {
-    isPremium() {
-      return this.plan.planType === "PremiumMonthly";
+    catalogKey() {
+      return this.plan.catalogKey || "esencial";
     },
-    isCurrentPlan() {
-      return this.plan.planId === this.currentPlanId;
+    cardMessages() {
+      return this.$tm(`plans-page.cards.${this.catalogKey}`) || {};
     },
-    isDowngradeOrSame() {
-      const currentRank = PLAN_RANK[this.currentPlanId] || 0;
-      const thisRank = PLAN_RANK[this.plan.planId] || 0;
-      return thisRank <= currentRank;
-    },
+    /** Precio desde el API (como antes); texto i18n para “Gratis” / “al mes”. */
     formattedPrice() {
-      if (!Number.isFinite(Number(this.plan.price)) || Number(this.plan.price) === 0) {
+      const p = this.plan.price;
+      if (!Number.isFinite(Number(p)) || Number(p) === 0) {
         return this.$t("plans-page.price-free");
       }
-      return Number(this.plan.price).toLocaleString("es-PE", {
+      return Number(p).toLocaleString("es-PE", {
         style: "currency",
         currency: "PEN",
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       });
     },
-    planTypeKey() {
-      if (this.plan.planType === "Free") return "plans-page.type-free";
-      return "plans-page.type-premium";
+    priceLine() {
+      if (this.formattedPrice === this.$t("plans-page.price-free")) {
+        return this.formattedPrice;
+      }
+      return `${this.formattedPrice} ${this.$t("plans-page.per-month")}`;
+    },
+    displayTitle() {
+      const d = this.plan.description;
+      if (d != null && String(d).trim() !== "") {
+        return String(d).trim();
+      }
+      return this.cardMessages.title || "";
+    },
+    featureList() {
+      const m = this.cardMessages;
+      if (m && Array.isArray(m.features)) {
+        return m.features;
+      }
+      return [];
+    },
+    isCurrentPlan() {
+      return this.plan.planId === this.currentPlanId;
+    },
+    /** No permitir bajar de plan (ej. de Estándar a Esencial). */
+    isDowngradeBlocked() {
+      if (this.currentTier < 0) return false;
+      return this.plan.tier < this.currentTier;
+    },
+    buttonDisabled() {
+      return this.isCurrentPlan || this.isDowngradeBlocked;
+    },
+    buttonLabel() {
+      if (this.isCurrentPlan) return this.$t("plans-page.btn-current");
+      if (this.isDowngradeBlocked) return this.$t("plans-page.btn-unavailable");
+      return this.$t("plans-page.btn-subscribe");
     },
   },
   methods: {
     choosePlan() {
-      if (!this.isCurrentPlan && !this.isDowngradeOrSame) {
+      if (!this.buttonDisabled) {
         this.$emit("choose", this.plan.planId);
       }
     },
@@ -51,188 +77,177 @@ export default {
 </script>
 
 <template>
-  <pv-card
-    class="plan-card"
-    :class="{ premium: isPremium, selected: isCurrentPlan }"
-  >
-    <template #header>
-      <div class="plan-header">
-        <div v-if="isPremium" class="plan-badge plan-badge--accent">
-          {{ $t("plans-page.badge-recommended") }}
-        </div>
-        <h2 class="plan-title">{{ plan.description }}</h2>
-      </div>
-    </template>
+  <article class="plan-card">
+    <header class="plan-card__head">
+      <h2 class="plan-card__title">{{ displayTitle }}</h2>
+      <p class="plan-card__price">{{ priceLine }}</p>
+      <p class="plan-card__units">{{ cardMessages.unitsLine }}</p>
+      <p class="plan-card__billing">{{ cardMessages.billingLine }}</p>
+    </header>
 
-    <template #content>
-      <div class="price-section">
-        <span class="price-amount">{{ formattedPrice }}</span>
-        <span v-if="isPremium" class="price-period">
-          {{ $t("plans-page.per-month") }}
-        </span>
-      </div>
+    <hr class="plan-card__rule" />
 
-      <ul class="features-list">
-        <li>
-          <i class="pi pi-home icon" aria-hidden="true"></i>
-          {{ $t("plans-page.feature-warehouses", { n: plan.maxWarehouses }) }}
-        </li>
-        <li>
-          <i class="pi pi-box icon" aria-hidden="true"></i>
-          {{ $t("plans-page.feature-products", { n: plan.maxProducts }) }}
-        </li>
-        <li>
-          <i class="pi pi-shield icon" aria-hidden="true"></i>
-          {{ $t("plans-page.feature-type", { type: $t(planTypeKey) }) }}
-        </li>
-      </ul>
-    </template>
+    <ul class="plan-card__features">
+      <li v-for="(line, idx) in featureList" :key="idx">
+        <i class="pi pi-check plan-card__check" aria-hidden="true"></i>
+        <span>{{ line }}</span>
+      </li>
+    </ul>
 
-    <template #footer>
-      <div class="action-buttons">
-        <pv-button
-          :disabled="isCurrentPlan || isDowngradeOrSame"
-          class="plan-choose-btn p-button-rounded p-button-lg"
-          @click="choosePlan"
-        >
-          {{
-            isCurrentPlan
-              ? $t("plans-page.btn-current")
-              : isDowngradeOrSame
-                ? $t("plans-page.btn-unavailable")
-                : $t("plans-page.btn-choose")
-          }}
-        </pv-button>
-      </div>
-    </template>
-  </pv-card>
+    <footer class="plan-card__foot">
+      <button
+        type="button"
+        class="plan-card__btn"
+        :disabled="buttonDisabled"
+        @click="choosePlan"
+      >
+        {{ buttonLabel }}
+      </button>
+    </footer>
+  </article>
 </template>
 
 <style scoped>
-/* Misma familia de verdes que login (login.component.vue) */
 .plan-card {
-  --plan-green-deep: #0d3b26;
-  --plan-green-accent: #2e7d32;
-  --plan-green-accent-hover: #1b5e20;
-  --plan-green-border: #a5d6a7;
+  /* Verdes Stocksip (login / perfil) */
+  --plan-green: #2e7d32;
+  --plan-green-hover: #1b5e20;
   --plan-green-soft: #e8f5e9;
-  --plan-text: #1b3326;
-  --plan-muted: #3d5c48;
+  --plan-border: rgba(46, 125, 50, 0.18);
+  --plan-text: #111111;
 
-  background-color: #ffffff;
+  background: #ffffff;
   width: 100%;
-  max-width: 360px;
-  min-height: 480px;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(13, 59, 38, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 2rem 2.25rem 1.75rem;
+  border-radius: 22px;
+  border: 1px solid var(--plan-border);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 8px 24px rgba(0, 0, 0, 0.06);
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  align-items: stretch;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
 }
 
-.plan-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(13, 59, 38, 0.12);
+.plan-card__head {
+  text-align: left;
 }
 
-.plan-header {
-  padding: 1rem;
-  text-align: center;
-  position: relative;
+.plan-card__title {
+  margin: 0 0 0.75rem;
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--plan-green);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
-.plan-title {
-  font-size: 1.3rem;
+.plan-card__price {
+  margin: 0 0 0.35rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--plan-green);
+  line-height: 1.35;
+}
+
+.plan-card__units {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--plan-text);
-  margin: 0.5rem 0 0;
+  line-height: 1.4;
 }
 
-.plan-badge {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  padding: 4px 10px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  border-radius: 12px;
+.plan-card__billing {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: var(--plan-text);
+  line-height: 1.45;
 }
 
-.plan-badge--accent {
-  background-color: var(--plan-green-soft);
-  color: var(--plan-green-deep);
-  border: 1px solid var(--plan-green-border);
+.plan-card__rule {
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  margin: 1.25rem 0 1.15rem;
 }
 
-.price-section {
-  text-align: center;
-  margin: 1rem 0;
-}
-
-.price-amount {
-  font-size: 2rem;
-  font-weight: bold;
-  color: var(--plan-green-accent);
-}
-
-.price-period {
-  font-size: 0.85rem;
-  color: var(--plan-muted);
-  display: block;
-  margin-top: 0.25rem;
-}
-
-.features-list {
+.plan-card__features {
   list-style: none;
-  padding: 0 1rem;
-  margin: 1rem 0;
+  padding: 0;
+  margin: 0;
+  flex: 1;
 }
 
-.features-list li {
+.plan-card__features li {
   display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.65rem;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: var(--plan-text);
+  line-height: 1.45;
+}
+
+.plan-card__features li:last-child {
+  margin-bottom: 0;
+}
+
+.plan-card__check {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  font-size: 0.85rem;
+  color: var(--plan-green);
+}
+
+.plan-card__foot {
+  margin-top: 1.5rem;
+  padding-top: 0.25rem;
+}
+
+.plan-card__btn {
+  display: inline-flex;
   align-items: center;
-  margin-bottom: 0.75rem;
-  font-size: 0.95rem;
-  color: #444;
-}
-
-.features-list .icon {
-  color: var(--plan-green-accent);
-  margin-right: 0.5rem;
-}
-
-.action-buttons {
-  margin-top: auto;
-  padding: 1.5rem;
-  display: flex;
   justify-content: center;
-  border-top: 1px solid #eee;
+  min-width: 9rem;
+  padding: 0.55rem 1.5rem;
+  border: none;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #ffffff;
+  background: var(--plan-green);
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    opacity 0.2s ease,
+    transform 0.1s ease;
 }
 
-.action-buttons :deep(.p-button) {
-  width: 100%;
-  max-width: 220px;
-  background: var(--plan-green-accent) !important;
-  border-color: var(--plan-green-accent) !important;
-  color: #fff !important;
+.plan-card__btn:hover:not(:disabled) {
+  background: var(--plan-green-hover);
 }
 
-.action-buttons :deep(.p-button:not(:disabled):hover) {
-  background: var(--plan-green-accent-hover) !important;
-  border-color: var(--plan-green-accent-hover) !important;
+.plan-card__btn:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
-.action-buttons :deep(.p-button:disabled) {
-  opacity: 0.55;
-  filter: grayscale(0.15);
-}
-
-.premium {
-  border: 2px solid var(--plan-green-border);
-}
-
-.selected {
-  border: 2px solid var(--plan-green-accent);
-  box-shadow: 0 0 0 1px rgba(46, 125, 50, 0.2);
+.plan-card__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>
