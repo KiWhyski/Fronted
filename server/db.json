@@ -1,0 +1,607 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "farid@example.com",
+      "password": "123456",
+      "profileId": 1
+    },
+    {
+      "id": 2,
+      "username": "sebastian@example.com",
+      "password": "123456",
+      "profileId": 2
+    },
+    {
+      "username": "camila@example.com",
+      "password": "12345678",
+      "id": 3,
+      "profileId": 3
+    },
+    {
+      "username": "nuevo456@example.com",
+      "password": "123456",
+      "id": 4,
+      "profileId": 4
+    },
+    {
+      "username": "hola@example.com",
+      "password": "1234",
+      "id": 5,
+      "profileId": 5
+    },
+    {
+      "username": "nuevo123@gmail.com",
+      "password": "12345678",
+      "id": 6,
+      "profileId": 6
+    }
+  ],
+  "profiles": [
+    {
+      "profileId": 1,
+      "name": "Farid",
+      "email": "farid@example.com",
+      "businessName": "Business",
+      "businessAddress": "Av. Alameda",
+      "phone": "123456789",
+      "id": 1,
+      "role": "Liquor Store Owner"
+    },
+    {
+      "id": 2,
+      "profileId": 2,
+      "name": "Sebastian",
+      "role": "Supplier"
+    },
+    {
+      "id": 3,
+      "profileId": 3,
+      "name": "Camila",
+      "email": "camila@example.com",
+      "role": "Supplier"
+    },
+    {
+      "id": 4,
+      "profileId": 4,
+      "userId": 4,
+      "name": "Nuevo",
+      "email": "nuevo456@example.com",
+      "role": "store_owner"
+    },
+    {
+      "id": 5,
+      "profileId": 5,
+      "userId": 5,
+      "name": "Hola",
+      "email": "hola@example.com",
+      "role": "Liquor Store Owner"
+    },
+    {
+      "profileId": 6,
+      "name": "nuevo3",
+      "email": "nuevo123@gmail.com",
+      "businessName": "business3",
+      "businessAddress": "Avenida Riobamba intersección Calle Tarma 15066",
+      "phone": "973964283",
+      "currentPassword": "",
+      "newPassword": "",
+      "confirmPassword": "",
+      "id": 6,
+      "userId": 6,
+      "role": "Liquor Store Owner"
+    }
+  ],
+  "warehouses": [
+    {
+      "name": "Warehouse 1",
+      "location": "Av. Sol 123",
+      "city": "Lima",
+      "state": "Lima",
+      "postalCode": "15001",
+      "capacity": 1200,
+      "imageUrl": "https://res.cloudinary.com/deuy1pr9e/image/upload/v1747157277/stocksipImages/iuj3ac91phua3kcrittk.jpg",
+      "id": "1"
+    },
+    {
+      "name": "Warehouse 2",
+      "location": "Av. Micaela Bastidas 123",
+      "city": "Lima",
+      "state": "Lima",
+      "postalCode": "15678",
+      "capacity": 850,
+      "imageUrl": "https://res.cloudinary.com/deuy1pr9e/image/upload/v1747157759/stocksipImages/z1h378mlpzlyjdug7vxx.jpg",
+      "id": "2"
+    },
+    {
+      "name": "Warehouse 3",
+      "location": "Av. Sol 456",
+      "city": "Lima",
+      "state": "Lima",
+      "postalCode": "15001",
+      "capacity": 1200,
+      "imageUrl": "https://res.cloudinary.com/deuy1pr9e/image/upload/v1747157361/stocksipImages/ggm2wesomwwm29icu5og.jpg",
+      "id": "3"
+    },
+    {
+      "id": "4",
+      "name": "Warehouse 4",
+      "imageUrl": "https://res.cloudinary.com/deuy1pr9e/image/upload/v1747157759/stocksipImages/z1h378mlpzlyjdug7vxx.jpg",
+      "location": "Av. Sol 456",
+      "city": "Lima",
+      "state": "Lima",
+      "postalCode": "15001",
+      "capacity": 1900
+    },
+    {
+      "name": "Warehouse 5",
+      "location": "Av. Sol 456",
+      "city": "Lima",
+      "state": "Lima",
+      "postalCode": "15001",
+      "capacity": 2200,
+      "imageUrl": "https://res.cloudinary.com/deuy1pr9e/image/upload/v1747157430/stocksipImages/lw8vne0hty8w2s1fyevp.jpg",
+      "id": "5"
+    },
+    {
+      "id": "6",
+      "name": "Warehouse 6",
+      "imageUrl": "https://res.cloudinary.com/deuy1pr9e/image/upload/v1747157543/stocksipImages/ptpzzssype89xe5ryguh.jpg",
+      "location": "Av. Sol 456",
+      "city": "Lima",
+      "state": "Lima",
+      "postalCode": "15001",
+      "capacity": 1900
+    },
+    {
+      "name": "Warehouse 9",
+      "location": "Av. Lavalle",
+      "city": "Lima",
+      "state": "Cusco",
+      "postalCode": "12345",
+      "capacity": 1000,
+      "imageUrl": "",
+      "id": "2dccc257-de03-4a71-98fb-1941ca9a8259"
+    },
+    {
+      "name": "Warehouse 10",
+      "location": "Av. Sol",
+      "city": "Lima",
+      "state": "Cusco",
+      "postalCode": "12345",
+      "capacity": 4500,
+      "imageUrl": "https://res.cloudinary.com/deuy1pr9e/image/upload/v1747386386/oi0hfrvydpjwb0lneink.jpg",
+      "id": "b8ce773b-44b0-4d59-a1ae-bc068da1948e"
+    },
+    {
+      "name": "Warehouse 11",
+      "location": "Av. Sol",
+      "city": "Lima",
+      "state": "Cusco",
+      "postalCode": "12288",
+      "capacity": 4000,
+      "imageUrl": "https://res.cloudinary.com/deuy1pr9e/image/upload/v1747385900/b8n5klzfxqie53nsbb8d.png",
+      "id": "985a730f-bc96-4566-8d45-e0281bc2a4aa"
+    },
+    {
+      "name": "Warehouse 12",
+      "location": "Av. San Marcos",
+      "city": "San Isidro",
+      "state": "Lima",
+      "postalCode": "54231",
+      "capacity": 1600,
+      "imageUrl": "https://res.cloudinary.com/deuy1pr9e/image/upload/v1747387969/ivwmjue9lhiqztvxa2qq.jpg",
+      "id": "4dc033f6-55fc-471e-872c-5e4eebcec3c3"
+    }
+  ],
+  "reports": [
+    {
+      "id": 1,
+      "products": "Vino",
+      "type": "destilado",
+      "price": 20,
+      "amount": 2,
+      "date": "2025/05/13",
+      "lost": 40
+    },
+    {
+      "id": 2,
+      "products": "Vino Tinto Malbec",
+      "type": "Destilado",
+      "price": 290,
+      "amount": 10,
+      "date": "2025/05/13",
+      "lost": 2900
+    },
+    {
+      "id": 3,
+      "products": "Vino Blanco",
+      "type": "Destilado",
+      "price": 92,
+      "amount": 12,
+      "date": "2025/05/13",
+      "lost": 1104
+    },
+    {
+      "id": 4,
+      "products": "Ron Cartavio",
+      "type": "Ron",
+      "price": 921,
+      "amount": 9,
+      "date": "2025/05/13",
+      "lost": 8289
+    },
+    {
+      "id": 5,
+      "products": "Al",
+      "type": "dos",
+      "price": 13,
+      "amount": 1,
+      "date": "2025/05/13",
+      "lost": 13
+    },
+    {
+      "id": 6,
+      "products": "a",
+      "type": "a",
+      "price": 1,
+      "amount": 1,
+      "date": "2025/05/13",
+      "lost": 1
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "Ron Blanco",
+      "brandName": "Cartavio",
+      "liquorType": "Destilado",
+      "unitPriceAmount": 56,
+      "minimumStock": 32,
+      "updatedUnitPriceAmount": 56,
+      "updatedMinimumStock": 32
+    },
+    {
+      "id": 2,
+      "name": "Vodka",
+      "brandName": "Absolut",
+      "liquorType": "Vodka",
+      "unitPriceAmount": 45,
+      "minimumStock": 20,
+      "updatedUnitPriceAmount": 45,
+      "updatedMinimumStock": 20
+    },
+    {
+      "id": 3,
+      "name": "Vino Tinto Malbec",
+      "brandName": "Bodega del Sur",
+      "liquorType": "Vino",
+      "unitPriceAmount": 289,
+      "minimumStock": 15,
+      "updatedUnitPriceAmount": 289,
+      "updatedMinimumStock": 15
+    },
+    {
+      "id": 4,
+      "name": "Pisco Queirolo",
+      "brandName": "Queirolo",
+      "liquorType": "Pisco",
+      "unitPriceAmount": 67,
+      "minimumStock": 10,
+      "updatedUnitPriceAmount": 67,
+      "updatedMinimumStock": 10
+    },
+    {
+      "id": 5,
+      "name": "Whisky Jameson",
+      "brandName": "Jameson",
+      "liquorType": "Whisky",
+      "unitPriceAmount": 135,
+      "minimumStock": 25,
+      "updatedUnitPriceAmount": 135,
+      "updatedMinimumStock": 25,
+      "min": 12
+    },
+    {
+      "name": "Product 1",
+      "brandName": "Brand 1",
+      "liquorType": "Type 1",
+      "unitPriceAmount": 450,
+      "minimumStock": 34,
+      "imageUrl": "https://res.cloudinary.com/dshxmkd1v/image/upload/v1750453644/ujair1z0nz3czriix2xg.png",
+      "providerId": 3,
+      "id": 8,
+      "min": 21
+    },
+    {
+      "id": 9,
+      "name": "Vino Tinto Del Valle",
+      "brandName": "Tabernero",
+      "liquorType": "Destilado",
+      "imageUrl": "https://res.cloudinary.com/dshxmkd1v/image/upload/v1750454188/pca4x8ab8wqqtfopr7k6.png",
+      "unitPriceAmount": 44.5,
+      "minimumStock": 3,
+      "providerId": 1,
+      "updatedUnitPriceAmount": 44.5,
+      "updatedMinimumStock": 3,
+      "updatedImageUrl": "https://res.cloudinary.com/dshxmkd1v/image/upload/v1750454188/pca4x8ab8wqqtfopr7k6.png"
+    },
+    {
+      "id": 10,
+      "name": "Hola",
+      "brandName": "Ya funciona esta hvda xd",
+      "liquorType": "Liquor",
+      "imageUrl": "https://res.cloudinary.com/dshxmkd1v/image/upload/v1750454758/eyksx9zurvhqjttk2cyl.png",
+      "unitPriceAmount": 58,
+      "minimumStock": 3,
+      "providerId": 3,
+      "updatedUnitPriceAmount": 58,
+      "updatedMinimumStock": 3,
+      "updatedImageUrl": "https://res.cloudinary.com/dshxmkd1v/image/upload/v1750454758/eyksx9zurvhqjttk2cyl.png"
+    }
+  ],
+  "settings": [
+    {
+      "expirationAlertMargin": 21,
+      "id": 1
+    }
+  ],
+  "conservation": [
+    {
+      "name": "Ron Cartavio",
+      "type": "Ron",
+      "imageUrl": "https://res.cloudinary.com/deuy1pr9e/image/upload/v1747157277/stocksipImages/iuj3ac91phua3kcrittk.jpg",
+      "description": "Temperatura recomendada: 18 - 22°C. Almacenar en lugar fresco y seco, lejos de la luz directa. Duración después de abierto: 6 meses. Comentarios: Mantener la botella en posición vertical.",
+      "id": 1
+    },
+    {
+      "id": 2,
+      "name": "Whisky Jameson",
+      "type": "Whisky",
+      "description": "Temperatura recomendada: 15-20°C. Almacenar en lugar oscuro y fresco. Duración después de abierto: 1 año. Comentarios: Evitar cambios bruscos de temperatura.",
+      "imageUrl": "https://res.cloudinary.com/deuy1pr9e/image/upload/v1747157277/stocksipImages/iuj3ac91phua3kcrittk.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Vodka Absolut",
+      "type": "Vodka",
+      "description": "Temperatura recomendada: 0-4°C. Almacenar en refrigerador. Duración después de abierto: 2 años. Comentarios: Ideal para mantener en el congelador.",
+      "imageUrl": "https://res.cloudinary.com/dmhlgoedk/image/upload/v1750139825/__jane_doe_zenless_zone_zero_drawn_by_otu_o2h2_oh4__sample-c9d598e9b2984f009c5b7bf7e23dc72d_yqynqe.jpg"
+    },
+    {
+      "id": 4,
+      "name": "Vino Tinto Malbec",
+      "type": "Vino",
+      "description": "Temperatura recomendada: 16-18°C. Almacenar en lugar oscuro y fresco. Duración después de abierto: 3-5 días. Comentarios: Mantener la botella en posición horizontal.",
+      "imageUrl": "https://res.cloudinary.com/deuy1pr9e/image/upload/v1747157277/stocksipImages/iuj3ac91phua3kcrittk.jpg"
+    },
+    {
+      "id": 5,
+      "name": "Pisco Queirolo",
+      "type": "Pisco",
+      "description": "Temperatura recomendada: 15-20°C. Almacenar en lugar fresco y seco. Duración después de abierto: 1 año. Comentarios: Evitar exposición a la luz solar.",
+      "imageUrl": "https://res.cloudinary.com/deuy1pr9e/image/upload/v1747157277/stocksipImages/iuj3ac91phua3kcrittk.jpg"
+    },
+    {
+      "name": "Vino Chueco",
+      "type": "Vino",
+      "description": "Hola como estas",
+      "imageUrl": "https://res.cloudinary.com/dmhlgoedk/image/upload/v1750143228/rl3ttalvhxwyopsoyspx.jpg",
+      "id": "6"
+    },
+    {
+      "name": "Vino",
+      "type": "Vino",
+      "imageUrl": "https://res.cloudinary.com/dmhlgoedk/image/upload/v1750143593/iaapjkfxugbrobxjpuyu.jpg",
+      "description": "Temperatura recomendada: 15-18 C. Almacenar en lugar frio. Duración después de abierto: 6 meses. Comentarios: Matener temperado.",
+      "id": "7"
+    },
+    {
+      "name": "Leche",
+      "type": "Lactosa",
+      "imageUrl": "https://res.cloudinary.com/dmhlgoedk/image/upload/v1750143806/og8bwurxprzp7oxkrlbz.jpg",
+      "description": "Temperatura recomendada: 15 - 16°C. Almacenar en Lugar fresco. Duración después de abierto: 12 meses. Comentarios: Pose.",
+      "id": "8"
+    }
+  ],
+  "resupplyPlans": [
+    {
+      "licoreria": "Linda",
+      "productos": [
+        "1",
+        "2",
+        "3",
+        "5"
+      ],
+      "cantidad": 18,
+      "fechaInicio": "2025-06-26",
+      "fechaVencimiento": "2025-06-30",
+      "frecuencia": "Semanal",
+      "estado": "Activo",
+      "id": "1"
+    },
+    {
+      "licoreria": "Linda",
+      "productos": [
+        "1",
+        "2"
+      ],
+      "cantidad": 12,
+      "fechaInicio": "2025-06-20",
+      "fechaVencimiento": "2025-06-27",
+      "frecuencia": "Quincenal",
+      "estado": "Activo",
+      "id": "2"
+    },
+    {
+      "id": "3",
+      "licoreria": "trgrgyervgeyeyghhhhhhhhhh",
+      "productos": [
+        "2",
+        "1",
+        "4"
+      ],
+      "cantidad": 22,
+      "fechaInicio": "2025-03-04",
+      "fechaVencimiento": "2024-12-12",
+      "frecuencia": "Semanal",
+      "estado": "Activo"
+    }
+  ],
+  "catalogs": [
+    {
+      "id": 1,
+      "name": "Catalogo 5",
+      "profileId": 3,
+      "dateCreated": "2025-06-20T19:45:30.915Z",
+      "isPublished": false
+    },
+    {
+      "id": 2,
+      "name": "Catalogo 2",
+      "profileId": 3,
+      "dateCreated": "2025-05-13T00:00:00Z",
+      "isPublished": true
+    }
+  ],
+  "catalogItems": [
+    {
+      "id": "a1",
+      "catalogId": "1",
+      "dateAdded": "2025-05-13T00:00:00Z",
+      "name": "Vino Tinto Malbec",
+      "productType": "Destilado",
+      "brand": "Bodega del Sur",
+      "content": 123,
+      "unitPrice": 289
+    },
+    {
+      "id": "a3",
+      "catalogId": "1",
+      "dateAdded": "2025-05-13T00:00:00Z",
+      "name": "Ron Cartavio",
+      "productType": "Ron",
+      "brand": "Ron Cartavio",
+      "content": 123,
+      "unitPrice": 45
+    },
+    {
+      "id": "a4",
+      "catalogId": "1",
+      "dateAdded": "2025-05-13T00:00:00Z",
+      "name": "Absolut Vodka",
+      "productType": "Vodka",
+      "brand": "Los Angeles",
+      "content": 123,
+      "unitPrice": 56
+    },
+    {
+      "id": "a5",
+      "catalogId": "1",
+      "dateAdded": "2025-05-13T00:00:00Z",
+      "name": "Vino Blanco",
+      "productType": "Destilado",
+      "brand": "Rio Grande",
+      "content": 123,
+      "unitPrice": 67
+    },
+    {
+      "id": "a6",
+      "catalogId": "2",
+      "dateAdded": "2025-05-13T00:00:00Z",
+      "name": "Vino Tinto Malbec",
+      "productType": "Destilado",
+      "brand": "bodega del Sur",
+      "content": 123,
+      "unitPrice": 35
+    },
+    {
+      "id": "a8",
+      "catalogId": 1,
+      "dateAdded": "2025-05-13T00:00:00Z",
+      "name": "Vodka",
+      "productType": "Alcohol",
+      "brand": "Absolut",
+      "content": 123,
+      "unitPrice": 135
+    },
+    {
+      "id": "a9979a50-ccd4-4f60-91eb-3932ff9bc28d",
+      "catalogId": 1,
+      "dateAdded": "2025-06-20T00:45:51.340Z",
+      "name": "Vino Tinto Semiseco",
+      "productType": "Vino",
+      "brand": "Ron Cartavio",
+      "content": 450,
+      "unitPrice": 67
+    },
+    {
+      "id": "c0680aec-b1ad-4bf1-9e93-1bdd46763bf0",
+      "catalogId": 1,
+      "dateAdded": "2025-06-20T19:45:30.951Z",
+      "name": "Ron Blanco",
+      "productType": "Destilado",
+      "brand": "Tabernero",
+      "content": 560,
+      "unitPrice": 34
+    }
+  ],
+  "purchase-orders": [
+    {
+      "id": "6647671c-6f07-4f0d-9e06-fdc83cb3445b",
+      "date": {
+        "_date": "2025-06-20T19:53:04.428Z"
+      },
+      "status": "Sent",
+      "buyer": {
+        "profileId": 1,
+        "name": "Farid",
+        "email": "farid@example.com",
+        "businessName": "Business",
+        "businessAddress": "Av. Alameda",
+        "phone": "123456789",
+        "id": 1,
+        "role": "Liquor Store Owner"
+      },
+      "supplier": {
+        "id": 3,
+        "profileId": 3,
+        "name": "Camila",
+        "email": "camila@example.com",
+        "role": "Supplier"
+      },
+      "items": [
+        {
+          "id": "a6",
+          "catalogId": "2",
+          "dateAdded": "2025-05-13T00:00:00Z",
+          "name": "Vino Tinto Malbec",
+          "productType": "Destilado",
+          "brand": "bodega del Sur",
+          "content": 123,
+          "unitPrice": 35
+        }
+      ],
+      "totalAmount": 35,
+      "totalItems": 1
+    }
+  ],
+  "accounts": [
+    {
+      "id": "a1",
+      "userOwnerId": 1,
+      "role": "Liquor Store Owner",
+      "businessName": "Business 1",
+      "name": "Farid",
+      "email": "farid@example.com"
+    },
+    {
+      "id": "a3",
+      "userOwnerId": 3,
+      "role": "Supplier",
+      "businessName": "Business 2",
+      "name": "Camila",
+      "email": "camila@example.com"
+    }
+  ]
+}

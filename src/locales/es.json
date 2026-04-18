@@ -1,0 +1,194 @@
+{
+  "sign-in": {
+    "title": "Iniciar Sesión",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "rememberMe": "Recordarme",
+    "signIn": "Iniciar Sesión",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "or": "o",
+    "hello": "Hola, usuario",
+    "createAccount": "Crea tu cuenta personal para acceder a todas las funciones de la plataforma",
+    "register": "Registrarse",
+    "invalid-credentials": "Credenciales inválidas. Por favor, verifica tu correo electrónico y contraseña."
+  },
+  "sign-up": {
+    "invalid-email-title": "Correo inválido",
+    "invalid-email": "Por favor, introduce una dirección de correo electrónico válida.",
+    "validate-password-title": "Las contraseñas no coinciden",
+    "validate-password": "Las contraseñas no coinciden.",
+    "account-created": "¡Cuenta creada con éxito!"
+  },
+  "toolbar": {
+    "expand-contract": "Expandir/Contraer",
+    "dashboard": "Dashboard",
+    "inventory": "Inventario",
+    "alerts": "Alertas",
+    "reports": "Reportes",
+    "order": "Compras",
+    "storage": "Almacenamiento",
+    "settings": "Configuración",
+    "plans": "Planes",
+    "profile": "Perfil",
+    "sign-out": "Cerrar Sesión"
+  },
+  "warehouses": {
+    "title": "Almacenes",
+    "address": "Dirección",
+    "capacity": "Capacidad",
+    "create": "Nuevo almacén",
+    "editWarehouseTitle": "Editar Almacén",
+    "createWarehouseTitle": "Nuevo Almacén",
+    "create_success": "¡Almacén creado con éxito!",
+    "update_success": "¡Almacén actualizado con éxito!",
+    "delete_success": "¡Almacén eliminado con éxito!",
+    "delete_confirm": "¿Estás seguro de que deseas eliminar este almacén? Esta acción no se puede deshacer.",
+    "emptyTitle": "No se han creado almacenes",
+    "emptyDescription": "Puedes crear un nuevo almacén haciendo clic en el botón de abajo.",
+    "form": {
+      "name": "Nombre del Almacén",
+      "street": "Calle",
+      "city": "Ciudad",
+      "district": "Distrito",
+      "postal-code": "Código Postal",
+      "country": "País",
+      "max-temperature": "Temperatura Máxima",
+      "min-temperature": "Temperatura Mínima",
+      "capacity": "Capacidad",
+      "warehouse-image": "Imagen del Almacén"
+    },
+    "error-message": "Ya has creado un almacén con el mismo nombre o dirección.",
+    "limitMessage": "Estás utilizando {current} de {max} almacenes permitidos."
+  },
+  "components": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "accept": "Aceptar",
+    "confirm": "Confirmar",
+    "search": "Buscar...",
+    "add": "Añadir",
+    "show": "Ver",
+    "update": "Actualizar",
+    "export": "Exportar",
+    "upload-image": "Elegir imagen",
+    "upload-file": "Subir archivo",
+    "actual-image": "Imagen actual",
+    "no-chosen-file": "No se ha seleccionado ningún archivo",
+    "complete-data": "Completa todos los campos del formulario",
+    "edit-data": "Puedes editar los datos en el formulario",
+    "preview": "Vista previa",
+    "confirm-delete": "Confirmación de eliminación"
+  },
+  "toast": {
+    "success": "Éxito",
+    "error": "Error",
+    "delete-success": "¡Eliminación exitosa!"
+  },
+  "errors": {
+    "name-required": "El campo nombre es obligatorio.",
+    "street-required": "El campo calle es obligatorio.",
+    "city-required": "El campo ciudad es obligatorio.",
+    "district-required": "El campo distrito es obligatorio.",
+    "postal-code-required": "El campo código postal es obligatorio.",
+    "country-required": "El campo país es obligatorio.",
+    "capacity-required": "El campo capacidad es obligatorio.",
+    "max-temperature-required": "El campo temperatura máxima es 50.",
+    "min-temperature-required": "El campo temperatura mínima es -50."
+  },
+  "dashboard": {
+    "general-summary": "Resumen General",
+    "important-notifications": "Notificaciones Importantes",
+    "quick-access": "Accesos Rápido"
+  },
+  "alerts": {
+    "title": "Alertas",
+    "urgent-restocking": "Reposición Urgente",
+    "no-content": "¡Todo en orden! No hay productos con stock bajo.",
+    "no-content-description": "Puedes configurar los niveles mínimos de stock usando el ícono de configuración.",
+    "next-to-expire": "Próximos a vencer",
+    "no-expired": "¡Buenas noticias! No hay productos próximos a vencer.",
+    "no-expired-description": "Puedes ajustar los días de anticipación para las alertas de vencimiento.",
+    "minimum-stock": {
+      "title": "Configurar Stock Mínimo",
+      "loading": "Cargando productos...",
+      "form": {
+        "product": "Producto",
+        "actual-stock": "Stock Actual",
+        "minimum-stock": "Stock Mínimo",
+        "actions": "Acciones"
+      }
+    }
+  },
+  "reports": {
+    "title": "Reportes"
+  },
+  "orders": {
+    "title": "Pedidos",
+    "new-order": "Nuevo Pedido"
+  },
+  "products": {
+    "title": "Productos",
+    "emptyTitle": "No se han creado productos",
+    "emptyDescription": "Puedes crear un nuevo producto haciendo click en el botón de abajo.",
+    "card": {
+      "price": "Precio",
+        "minimum-stock": "Stock Mínimo"
+    },
+    "name": "Nombre",
+    "brand": "Marca",
+    "liquor-type": "Tipo de Licor",
+    "price": "Precio",
+    "minimum-stock": "Stock Mínimo",
+    "new-title": "Nuevo Producto",
+    "edit-title": "Editar Producto",
+    "confirm-delete": "¿Estás seguro de que deseas eliminar este producto?",
+    "new-product": "Nuevo Producto",
+    "empty-title": "No hay productos",
+    "empty-description": "Puedes crear un nuevo producto haciendo clic en el botón de abajo.",
+    "products-image": "Imagen del Producto",
+    "success-deleted": "¡Producto eliminado con éxito!",
+    "success-created": "¡Producto creado con éxito!",
+    "success-updated": "¡Producto actualizado con éxito!",
+    "duplicate-product": "No se puede crear un producto con el mismo nombre.",
+    "limitMessage": "Estás utilizando {current} de {max} productos permitidos."
+  },
+  "inventory": {
+    "title": "Inventario",
+    "manage-products": "Gestionar Productos",
+    "product-details": "Detalles del Producto",
+    "product-id": "ID del Producto",
+    "name": "Nombre",
+    "liquor-type": "Tipo de Licor",
+    "image": "Imagen",
+    "unit-price": "Precio Unitario",
+    "minimum-stock": "Stock Mínimo",
+    "current-stock": "Stock Actual",
+    "state": "Estado",
+    "best-date-before": "Fecha de Vencimiento",
+    "status": {
+      "WithStock": "En Stock",
+      "OutOfStock": "Sin Stock"
+    },
+    "valid-date": "Debe seleccionar una fecha válida",
+    "stock-added": "¡Stock añadido con éxito!",
+    "stock-reduced": "¡Stock reducido con éxito!",
+    "stock-reduced-error": "No se puede reducir el stock por debajo del stock mínimo.",
+    "stock-added-title": "Añadir Stock",
+    "stock-reduced-title": "Reducir Stock",
+    "quantity-add": "Cantidad a añadir",
+    "quantity-reduce": "Cantidad a reducir",
+    "add-product": "Añadir Producto",
+    "select-product": "Selecciona un Producto",
+    "product-deleted": "¡Producto eliminado con éxito!",
+    "confirm-delete-product": "¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.",
+    "delete-product-current-stock": "No se puede eliminar un producto que tenga stock.",
+    "error-add-duplicate-product": "No se puede añadir un producto que ya existe en este inventario.",
+    "error-past-date": "No se puede añadir stock con una fecha pasada.",
+    "transfer-product": "Transferir Producto"
+  },
+  "profile": {
+    "title": "Perfil"
+  }
+}

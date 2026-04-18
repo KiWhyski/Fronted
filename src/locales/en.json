@@ -1,0 +1,192 @@
+{
+  "login": {
+    "title": "Sign In",
+    "email": "Email",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "signIn": "Sign In",
+    "forgotPassword": "Forgot your password?",
+    "or": "or",
+    "hello": "Hello, user",
+    "createAccount": "Create your personal account to access all the features of the platform",
+    "register": "Register",
+    "invalid-credentials": "Invalid credentials. Please check your email and password."
+  },
+  "sign-up": {
+    "invalid-email-title": "Invalid Email",
+    "invalid-email": "Please enter a valid email address.",
+    "validate-password-title": "Password Mismatch",
+    "validate-password": "Passwords do not match.",
+    "account-created": "Account created successfully!"
+  },
+  "toolbar": {
+    "expand-contract": "Expand/Contract",
+    "dashboard": "Dashboard",
+    "inventory": "Inventory",
+    "alerts": "Alerts",
+    "care": "Care",
+    "order": "Orders",
+    "storage": "Storage",
+    "settings": "Settings",
+    "plans": "Plans",
+    "profile": "Profile",
+    "sign-out": "Sign Out"
+  },
+  "warehouses": {
+    "title": "Warehouses",
+    "address": "Address",
+    "capacity": "Capacity",
+    "create": "New warehouse",
+    "editWarehouseTitle": "Edit Warehouse",
+    "createWarehouseTitle": "New Warehouse",
+    "create_success": "Warehouse created successfully!",
+    "update_success": "Warehouse updated successfully!",
+    "delete_success": "Warehouse deleted successfully!",
+    "delete_confirm": "¿Estás seguro de que deseas eliminar este almacén? Esta acción no se puede deshacer.",
+    "emptyTitle": "No warehouses created",
+    "emptyDescription": "You can create a new warehouse by clicking the button below.",
+    "form": {
+      "name": "Name of Warehouse",
+      "street": "Street",
+      "city": "City",
+      "district": "District",
+      "postal-code": "Postal Code",
+      "country": "Country",
+      "capacity": "Capacity",
+      "max-temperature": "Max Temperature",
+      "min-temperature": "Min Temperature",
+      "warehouse-image": "Warehouse Image"
+    },
+    "error-message": "You have already created a warehouse with the same name or address.",
+    "limitMessage": "You are using {current} of {max} allowed warehouses."
+  },
+  "components": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "accept": "Accept",
+    "confirm": "Confirm",
+    "search": "Search...",
+    "add": "Add",
+    "show": "Show",
+    "update": "Update",
+    "export": "Export",
+    "upload-image": "Choose image",
+    "upload-file": "Upload file",
+    "actual-image": "Current image",
+    "no-chosen-file": "No file chosen",
+    "complete-data": "Complete all fields in the form",
+    "edit-data": "You can edit the data in the form",
+    "preview": "Preview",
+    "confirm-delete": "Delete confirmation"
+  },
+  "toast": {
+    "success": "Success",
+    "error": "Error"
+  },
+  "errors": {
+    "name-required": "The name field is required.",
+    "street-required": "The street field is required.",
+    "city-required": "The city field is required.",
+    "district-required": "The district field is required.",
+    "postal-code-required": "The postal code field is required.",
+    "country-required": "The country field is required.",
+    "capacity-required": "The capacity field is required.",
+    "max-temperature-required": "The max temperature is 50.",
+    "min-temperature-required": "The min temperature is -50."
+  },
+  "dashboard": {
+    "general-summary": "General Summary",
+    "important-notifications": "Important Notifications",
+    "quick-access": "Quick Access"
+  },
+  "alerts": {
+    "title": "Alerts",
+    "urgent-restocking": "Urgent Restocking",
+    "no-content": "Everything in order. No products require restocking.",
+    "no-content-description": "You can add products to the inventory by clicking the button below.",
+    "no-expired": "Everything in order. No expired products.",
+    "no-expired-description": "You can adjust the days in advance for expiration alerts.",
+    "next-to-expire": "Next to Expire",
+    "minimum-stock": {
+      "title": "Configure Minimum Stock",
+      "loading": "Loading products...",
+      "form": {
+        "product": "Product",
+        "actual-stock": "Actual Stock",
+        "minimum-stock": "Minimum Stock",
+        "actions": "Actions"
+      }
+    }
+  },
+  "reports": {
+    "title": "Reports"
+  },
+  "orders": {
+    "title": "Orders",
+    "new-order": "New Order"
+  },
+  "products":{
+    "title": "Products",
+    "emptyTitle": "No products created",
+    "emptyDescription": "You can create a new product by clicking the button below.",
+    "card": {
+      "price": "Price",
+      "minimum-stock": "Minimum Stock"
+    },
+    "name": "Name",
+    "brand": "Brand",
+    "liquor-type": "Liquor Type",
+    "price": "Price",
+    "minimum-stock": "Minimum Stock",
+    "new-title": "New Product",
+    "edit-title": "Edit Product",
+    "confirm-delete": "Are you sure you want to delete this product?",
+    "new-product": "New Product",
+    "empty-title": "No products available",
+    "empty-description": "You can create a new product by clicking the button below.",
+    "products-image": "Product Image",
+    "success-deleted": "Product deleted successfully!",
+    "success-created": "Product created successfully!",
+    "success-updated": "Product updated successfully!",
+    "duplicate-product": "A product with this name already exists.",
+    "limitMessage": "You are using {current} of {max} allowed products."
+  },
+  "inventory": {
+    "title": "Inventory",
+    "manage-products": "Manage Products",
+    "product-details": "Product Details",
+    "product-id": "Product ID",
+    "name": "Name",
+    "liquor-type": "Liquor Type",
+    "image": "Image",
+    "unit-price": "Unit Price",
+    "minimum-stock": "Minimum Stock",
+    "current-stock": "Current Stock",
+    "state": "State",
+    "best-date-before": "Best Date Before",
+    "status": {
+      "WithStock": "In Stock",
+      "OutOfStock": "Out of Stock"
+    },
+    "valid-date": "You must enter a valid date.",
+    "stock-added": "Stock added successfully!",
+    "stock-reduced": "Stock reduced successfully!",
+    "stock-reduced-error": "You cannot reduce stock below zero.",
+    "stock-added-title": "Add Stock",
+    "stock-reduced-title": "Reduce Stock",
+    "quantity-add": "Quantity to add",
+    "quantity-reduce": "Quantity to reduce",
+    "add-product": "Add Product",
+    "select-product": "Select a Product",
+    "product-deleted": "Product deleted successfully!",
+    "confirm-delete-product": "Are you sure you want to delete this product? This action cannot be undone.",
+    "delete-product-current-stock": "You cannot delete a product that has stock.",
+    "error-past-date": "You cannot add stock with a past date.",
+    "transfer-product": "Transfer Product"
+  },
+  "profile": {
+    "title": "Profile"
+  }
+}

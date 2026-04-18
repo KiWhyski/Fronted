@@ -1,0 +1,55 @@
+import axios from 'axios';
+
+const API_URL = 'http://localhost:3000';
+
+export const ReportService = {
+    async getAllReports() {
+        try {
+            const response = await axios.get(`${API_URL}/reports`);
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching reports:', error);
+            throw error;
+        }
+    },
+
+    async getReportById(id) {
+        try {
+            const response = await axios.get(`${API_URL}/reports/${id}`);
+            return response.data;
+        } catch (error) {
+            console.error(`Error fetching report ${id}:`, error);
+            throw error;
+        }
+    },
+
+    async createReport(report) {
+        try {
+            const response = await axios.post(`${API_URL}/reports`, report);
+            return response.data;
+        } catch (error) {
+            console.error('Error creating report:', error);
+            throw error;
+        }
+    },
+
+    async updateReport(id, report) {
+        try {
+            const response = await axios.put(`${API_URL}/reports/${id}`, report);
+            return response.data;
+        } catch (error) {
+            console.error(`Error updating report ${id}:`, error);
+            throw error;
+        }
+    },
+
+    async deleteReport(id) {
+        try {
+            await axios.delete(`${API_URL}/reports/${id}`);
+            return true;
+        } catch (error) {
+            console.error(`Error deleting report ${id}:`, error);
+            throw error;
+        }
+    }
+};
