@@ -91,7 +91,7 @@ export default {
 <style scoped>
 .orders-wrapper {
   padding: 1rem;
-  background-color: #f7eddc;
+  background-color: #ffffff;
   min-height: calc(100vh - 80px);
 }
 

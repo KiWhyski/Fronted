@@ -169,7 +169,7 @@ export default {
       <toolbar-content :pageTitle="isEditMode ? $t('products.edit-title') : $t('products.new-title')" />
       <div class="product-content">
         <div class="form-card">
-          <h2 class="form-title">{{ isEditMode ? 'Edit Product Data' : 'Enter Product Data' }}</h2>
+          <h2 class="form-title">{{ isEditMode ? $t('products.form-heading-edit') : $t('products.form-heading-new') }}</h2>
           <div class="form-grid">
 
             <div class="form-group">
@@ -184,7 +184,7 @@ export default {
                   :options="brandNames"
                   optionLabel="label"
                   optionValue="value"
-                  placeholder="Select a brand"
+                  :placeholder="$t('products.placeholder-brand')"
                   class="p-select"
               />
             </div>
@@ -196,7 +196,7 @@ export default {
                   :options="liquorTypes"
                   optionLabel="label"
                   optionValue="value"
-                  placeholder="Select a liquor type"
+                  :placeholder="$t('products.placeholder-liquor-type')"
                   class="p-select"
               />
             </div>
@@ -241,8 +241,8 @@ export default {
 
           <div class="form-actions">
             <div class="right-actions">
-              <Button label="Back" class="cancel-button" @click="$router.push({ name: 'ProductList' })" />
-              <Button label="Save" class="submit-button" @click="onSave" />
+              <Button :label="$t('products.back')" class="cancel-button" @click="$router.push({ name: 'ProductList' })" />
+              <Button :label="$t('components.save')" class="submit-button" @click="onSave" />
             </div>
           </div>
         </div>
@@ -253,7 +253,7 @@ export default {
 
 <style scoped>
 .product-bg {
-  background: #F7EDDC;
+  background: #ffffff;
   min-height: 100vh;
   display: flex;
 }

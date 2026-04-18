@@ -2,10 +2,10 @@
   <div>
     <div class="provider-input">
       <span class="p-float-label">
-        <label for="providerEmail">Supplier email</label>
-        <InputText id="providerEmail" class="InputText" v-model="providerEmail" placeholder="supplier@example.com" />
+        <label for="providerEmail">{{ $t('catalog.supplier-email') }}</label>
+        <InputText id="providerEmail" class="InputText" v-model="providerEmail" :placeholder="$t('catalog.supplier-placeholder')" />
       </span>
-      <Button label="Search" icon="pi pi-search" class="search-btn" @click="loadProviderCatalogs" />
+      <Button :label="$t('catalog.search')" icon="pi pi-search" class="search-btn" @click="loadProviderCatalogs" />
     </div>
 
     <div class="market-container">
@@ -19,9 +19,9 @@
             {{ catalog.name }}
           </div>
         </template>
-        <template #subtitle>Publicado el {{ formatDate(catalog.dateCreated) }}
+        <template #subtitle>{{ $t('catalog.published-on', { date: formatDate(catalog.dateCreated) }) }}
           <div class="catalog-content">
-            <Button label="See all products" icon="pi pi-eye" text @click="loadItems(catalog.catalogId)" />
+            <Button :label="$t('catalog.see-all-products')" icon="pi pi-eye" text @click="loadItems(catalog.catalogId)" />
             <ul v-if="selectedItems[catalog.catalogId]">
               <li
                   v-for="item in selectedItems[catalog.catalogId]"
@@ -36,7 +36,7 @@
 
         <template #footer>
           <Button
-              label="New Order"
+              :label="$t('orders.new-order')"
               icon="pi pi-shopping-cart"
               @click="goToOrderPage(catalog.catalogId)"
               class="new-order"
@@ -193,7 +193,7 @@ export default {
 }
 
 .p-float-label {
-  background-color: #f7eddc;
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
 }

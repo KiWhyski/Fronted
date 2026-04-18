@@ -3,8 +3,28 @@ import {defineStore} from "pinia";
 import {SignInResponse} from "../model/sign-in.response.js";
 import {SignUpResponse} from "../model/sign-up.response.js";
 import { AccountService } from "@/payment-and-subscriptions/services/account.service.js";
+import { isFrontendOnly } from "@/shared/config/frontend-only.js";
 
 const authenticationService = new AuthenticationService();
+
+/** Perfil demo para guards (catalog/order) que leen userService.getCurrentUserProfile() */
+function setDemoUserForGuards(username) {
+    const email = username || 'demo@local.dev';
+    const profile = {
+        profileId: '0',
+        name: 'Demo',
+        email,
+        role: 'Liquor Store Owner',
+    };
+    const currentUser = {
+        id: '0',
+        profileId: '0',
+        profile,
+        accountId: '00000000-0000-0000-0000-000000000001',
+        account: { accountId: '00000000-0000-0000-0000-000000000001' },
+    };
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+}
 
 /** Token stored for offline / no-backend UI preview (Register button). */
 export const LOCAL_PREVIEW_TOKEN = 'dev-local-preview-token';
@@ -113,6 +133,8 @@ export const useAuthenticationStore = defineStore('authentication',{
                 JSON.stringify({ accountId, accountRole, username })
             );
 
+            setDemoUserForGuards(username);
+
             router.push({ name: 'Dashboard' });
         },
         /**
@@ -149,6 +171,10 @@ export const useAuthenticationStore = defineStore('authentication',{
                 };
                 localStorage.setItem('currentAccount', JSON.stringify(currentAccount));
 
+                if (isFrontendOnly()) {
+                    setDemoUserForGuards(username);
+                }
+
                 const accountService = new AccountService();
                 const { accountStatus } = await accountService.getAccountStatus(accountId);
                 console.log("✅ Account Status:", accountStatus);
@@ -174,6 +200,10 @@ export const useAuthenticationStore = defineStore('authentication',{
              * @param signUpdRequest - The {@link SignUpRequest} object to sign-up
              * @param router - Vue router instance
              */
+            if (isFrontendOnly()) {
+                router.push({ name: 'sign-in' });
+                return Promise.resolve();
+            }
             authenticationService.signUp(signUpdRequest)
                 .then(response => {
                     let signUpResponse = new SignUpResponse(response.data.message);
@@ -204,6 +234,7 @@ export const useAuthenticationStore = defineStore('authentication',{
             localStorage.removeItem('username');
             localStorage.removeItem('accountRole');
             localStorage.removeItem('currentAccount');
+            localStorage.removeItem('currentUser');
             localStorage.removeItem('devBypassAuth');
             console.log('Signed out');
             router.push({ name: 'sign-in' });

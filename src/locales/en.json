@@ -20,11 +20,11 @@
     "account-created": "Account created successfully!"
   },
   "toolbar": {
+    "brandSubtitle": "Inventory",
     "expand-contract": "Expand/Contract",
     "dashboard": "Dashboard",
     "inventory": "Inventory",
     "alerts": "Alerts",
-    "care": "Care",
     "order": "Orders",
     "storage": "Storage",
     "settings": "Settings",

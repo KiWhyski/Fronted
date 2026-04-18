@@ -247,8 +247,8 @@ export default {
                   @delete-item-requested="onDeleteItem($event)"
                   @delete-selected-items-requested="onDeleteSelectedItems($event)">
       <template #custom-columns>
-        <pv-column :sortable="true" field="id" header="Id" style="min-width: 12rem"/>
-        <pv-column :sortable="true" field="name" header="Name" style="min-width: 24rem"/>
+        <pv-column :sortable="true" field="id" :header="$t('common.col-id')" style="min-width: 12rem"/>
+        <pv-column :sortable="true" field="name" :header="$t('common.col-name')" style="min-width: 24rem"/>
       </template>
     </data-manager>
     <category-item-create-and-edit-dialog

@@ -106,12 +106,12 @@ export default {
      */
     confirmDeleteItem(item) {
       this.$confirm.require({
-        message:      `Are you sure you want to delete this ${this.title.singular}?`,
-        header:       'Confirmation',
+        message:      this.$t('common.delete-confirm-message', { entity: this.title.singular }),
+        header:       this.$t('common.confirmation'),
         icon:         'pi pi-exclamation-triangle',
         rejectClass:  'p-button-secondary p-button-outlined',
-        rejectLabel:  'Cancel',
-        acceptLabel:  'Delete',
+        rejectLabel:  this.$t('components.cancel'),
+        acceptLabel:  this.$t('components.delete'),
         acceptClass:  'p-button-danger',
         accept:       () => this.$emit('delete-item-requested', item),
         reject:       () => {}
@@ -136,10 +136,10 @@ export default {
   <!-- Toolbar Section -->
   <pv-toolbar class="mb-4">
     <template #start>
-      <pv-button class="mr-2" icon="pi pi-plus" label="New" severity="success" @click="newItem"/>
+      <pv-button class="mr-2" icon="pi pi-plus" :label="$t('components.new-item')" severity="success" @click="newItem"/>
     </template>
     <template #end>
-      <pv-button icon="pi pi-download" label="Export" severity="help" @click="exportToCsv($event)"/>
+      <pv-button icon="pi pi-download" :label="$t('components.export-csv')" severity="help" @click="exportToCsv($event)"/>
     </template>
   </pv-toolbar>
 

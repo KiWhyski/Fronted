@@ -1,10 +1,12 @@
 import axios from 'axios';
+import { isFrontendOnly } from '@/shared/config/frontend-only.js';
 
 const API_URL = 'http://localhost:3000';
 
 export const ReportService = {
     async getAllReports() {
         try {
+            if (isFrontendOnly()) return [];
             const response = await axios.get(`${API_URL}/reports`);
             return response.data;
         } catch (error) {
@@ -15,6 +17,7 @@ export const ReportService = {
 
     async getReportById(id) {
         try {
+            if (isFrontendOnly()) return { id, title: 'Demo report' };
             const response = await axios.get(`${API_URL}/reports/${id}`);
             return response.data;
         } catch (error) {
@@ -25,6 +28,7 @@ export const ReportService = {
 
     async createReport(report) {
         try {
+            if (isFrontendOnly()) return { id: 'mock' };
             const response = await axios.post(`${API_URL}/reports`, report);
             return response.data;
         } catch (error) {
@@ -35,6 +39,7 @@ export const ReportService = {
 
     async updateReport(id, report) {
         try {
+            if (isFrontendOnly()) return { id, ...report };
             const response = await axios.put(`${API_URL}/reports/${id}`, report);
             return response.data;
         } catch (error) {
@@ -45,6 +50,7 @@ export const ReportService = {
 
     async deleteReport(id) {
         try {
+            if (isFrontendOnly()) return true;
             await axios.delete(`${API_URL}/reports/${id}`);
             return true;
         } catch (error) {

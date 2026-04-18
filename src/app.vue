@@ -14,7 +14,17 @@ export default {
 </template>
 
 <style>
-/* Global styles */
+/* Global styles: lienzo blanco en toda la app (Vuetify aplica gris por defecto en v-main). */
+html,
+body,
+#app,
+.v-application,
+.v-application__wrap,
+.v-main,
+.v-main__wrap {
+  background-color: #ffffff !important;
+}
+
 body {
   margin: 0;
   font-family: 'Roboto', sans-serif;

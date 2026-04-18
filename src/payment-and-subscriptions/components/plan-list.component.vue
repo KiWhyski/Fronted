@@ -1,12 +1,11 @@
 <script>
 
 import {Plan} from "@/payment-and-subscriptions/model/plan.entity.js";
-import WarehouseItem from "@/inventory-management/components/warehouse-item.component.vue";
 import PlanItem from "@/payment-and-subscriptions/components/plan-item.components.vue";
 
 export default {
   name: 'PlanList',
-  components: {PlanItem, WarehouseItem},
+  components: { PlanItem },
   props: {
     plans: {Type: Array[Plan], required: true},
     currentPlanId: {
@@ -35,20 +34,45 @@ export default {
 .grid-container {
   display: flex;
   justify-content: center;
+  width: 100%;
 }
 
+/* Dos planes siempre en fila horizontal cuando caben; si no, se apilan */
 .grid {
-  display: grid;
-  gap: 1.5rem;
-
-  max-width: 1200px;
-  width: fit-content;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   justify-content: center;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  align-items: stretch;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 880px;
+  box-sizing: border-box;
 }
 
 .grid-item {
-  aspect-ratio: 1 / 1;
+  flex: 1 1 300px;
+  min-width: 0;
+  max-width: 420px;
+  display: flex;
+  justify-content: center;
+}
+
+.grid-item :deep(.plan-card) {
+  width: 100%;
+  max-width: 360px;
+}
+
+@media (max-width: 639px) {
+  .grid {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .grid-item {
+    max-width: 100%;
+    width: 100%;
+  }
 }
 
 </style>

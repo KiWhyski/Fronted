@@ -5,12 +5,11 @@ export default {
 </script>
 
 <template>
-  <h2>
-    Page Not Found xd
-
-    <br />
-    pulsa el boyon para volver a la página principal
-  </h2>
+  <div class="not-found">
+    <h2>{{ $t('not-found.title') }}</h2>
+    <p>{{ $t('not-found.hint') }}</p>
+    <router-link to="/dashboard">{{ $t('not-found.home') }}</router-link>
+  </div>
 </template>
 
 <style scoped>

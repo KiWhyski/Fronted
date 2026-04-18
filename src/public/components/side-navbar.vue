@@ -3,7 +3,7 @@ import { useRouter } from 'vue-router';
 import { useAuthenticationStore } from '@/authentication/services/authentication.store.js';
 
 /** Ancho fijo del sidebar (debe coincidir con `--sidenav-width` en estilos). */
-export const SIDENAV_WIDTH_PX = 240;
+export const SIDENAV_WIDTH_PX = 280;
 
 export default {
   name: 'side-navbar',
@@ -29,83 +29,132 @@ export default {
     :class="{ 'sidenav-container--with-slot': !!$slots.default }"
     :style="{ '--sidenav-width': `${sidenavWidthPx}px` }"
   >
-    <aside class="sidenav" role="navigation" aria-label="Main">
+    <aside class="sidenav" role="navigation" aria-label="Navegación principal">
       <div class="sidenav-inner">
         <div class="sidenav-logo-zone">
           <slot name="logo">
-            <router-link
-              to="/dashboard"
-              class="sidenav-logo-link"
-              :aria-label="$t('toolbar.dashboard')"
-            >
-              <!-- Sustituye por: <img class="sidenav-logo-img" src="@/assets/logo.svg" alt="Stocksip" /> -->
-              <div class="sidenav-logo-frame" aria-hidden="true" />
+            <router-link to="/dashboard" custom v-slot="{ navigate }">
+              <button
+                type="button"
+                class="sidenav-brand"
+                :aria-label="$t('toolbar.dashboard')"
+                @click="navigate"
+              >
+                <span class="sidenav-brand__text">
+                  <span class="sidenav-brand__title">KiWhyski</span>
+                  <span class="sidenav-brand__subtitle">{{ $t('toolbar.brandSubtitle') }}</span>
+                </span>
+              </button>
             </router-link>
+            <div class="sidenav-quick">
+              <router-link to="/profile" custom v-slot="{ navigate, isActive }">
+                <button
+                  type="button"
+                  class="sidenav-pill sidenav-pill--outline"
+                  :class="{ 'router-link-active': isActive }"
+                  @click="navigate"
+                >
+                  <i class="pi pi-user sidenav-pill__icon" aria-hidden="true"></i>
+                  <span>{{ $t('toolbar.profile') }}</span>
+                </button>
+              </router-link>
+            </div>
           </slot>
         </div>
 
-        <nav class="sidenav-main" aria-label="App">
+        <div class="sidenav-divider" role="presentation" />
+
+        <nav class="sidenav-main" aria-label="Aplicación">
           <ul class="nav-list">
             <li>
-              <router-link to="/dashboard" class="nav-item" v-tooltip="$t('toolbar.dashboard')">
-                <i class="pi pi-chart-bar nav-item__icon" aria-hidden="true"></i>
-                <span class="nav-item__label">{{ $t('toolbar.dashboard') }}</span>
+              <router-link to="/dashboard" custom v-slot="{ navigate, isActive }">
+                <button
+                  type="button"
+                  class="nav-item"
+                  :class="{ 'router-link-active': isActive }"
+                  @click="navigate"
+                >
+                  <i class="pi pi-chart-bar nav-item__icon" aria-hidden="true"></i>
+                  <span class="nav-item__label">{{ $t('toolbar.dashboard') }}</span>
+                </button>
               </router-link>
             </li>
             <li>
-              <router-link to="/warehouses" class="nav-item" v-tooltip="$t('toolbar.inventory')">
-                <i class="pi pi-warehouse nav-item__icon" aria-hidden="true"></i>
-                <span class="nav-item__label">{{ $t('toolbar.inventory') }}</span>
+              <router-link to="/warehouses" custom v-slot="{ navigate, isActive }">
+                <button
+                  type="button"
+                  class="nav-item"
+                  :class="{ 'router-link-active': isActive }"
+                  @click="navigate"
+                >
+                  <i class="pi pi-warehouse nav-item__icon" aria-hidden="true"></i>
+                  <span class="nav-item__label">{{ $t('toolbar.inventory') }}</span>
+                </button>
               </router-link>
             </li>
             <li>
-              <router-link to="/alerts" class="nav-item" v-tooltip="$t('toolbar.alerts')">
-                <i class="pi pi-exclamation-triangle nav-item__icon" aria-hidden="true"></i>
-                <span class="nav-item__label">{{ $t('toolbar.alerts') }}</span>
+              <router-link to="/alerts" custom v-slot="{ navigate, isActive }">
+                <button
+                  type="button"
+                  class="nav-item"
+                  :class="{ 'router-link-active': isActive }"
+                  @click="navigate"
+                >
+                  <i class="pi pi-bell nav-item__icon" aria-hidden="true"></i>
+                  <span class="nav-item__label">{{ $t('toolbar.alerts') }}</span>
+                </button>
               </router-link>
             </li>
             <li>
-              <router-link to="/care-guides" class="nav-item" v-tooltip="$t('toolbar.care')">
-                <i class="pi pi-file nav-item__icon" aria-hidden="true"></i>
-                <span class="nav-item__label">{{ $t('toolbar.care') }}</span>
+              <router-link to="/orders" custom v-slot="{ navigate, isActive }">
+                <button
+                  type="button"
+                  class="nav-item"
+                  :class="{ 'router-link-active': isActive }"
+                  @click="navigate"
+                >
+                  <i class="pi pi-shopping-cart nav-item__icon" aria-hidden="true"></i>
+                  <span class="nav-item__label">{{ $t('toolbar.order') }}</span>
+                </button>
               </router-link>
             </li>
             <li>
-              <router-link to="/orders" class="nav-item" v-tooltip="$t('toolbar.order')">
-                <i class="pi pi-shopping-cart nav-item__icon" aria-hidden="true"></i>
-                <span class="nav-item__label">{{ $t('toolbar.order') }}</span>
-              </router-link>
-            </li>
-            <li>
-              <router-link to="/products" class="nav-item" v-tooltip="$t('toolbar.storage')">
-                <i class="pi pi-building nav-item__icon" aria-hidden="true"></i>
-                <span class="nav-item__label">{{ $t('toolbar.storage') }}</span>
+              <router-link to="/products" custom v-slot="{ navigate, isActive }">
+                <button
+                  type="button"
+                  class="nav-item"
+                  :class="{ 'router-link-active': isActive }"
+                  @click="navigate"
+                >
+                  <i class="pi pi-box nav-item__icon" aria-hidden="true"></i>
+                  <span class="nav-item__label">{{ $t('toolbar.storage') }}</span>
+                </button>
               </router-link>
             </li>
           </ul>
         </nav>
 
+        <div class="sidenav-divider" role="presentation" />
+
         <div class="sidenav-footer">
-          <router-link
-            :to="{ name: 'PlanChoose' }"
-            class="nav-item"
-            v-tooltip="$t('toolbar.plans')"
-          >
-            <i class="pi pi-credit-card nav-item__icon" aria-hidden="true"></i>
-            <span class="nav-item__label">{{ $t('toolbar.plans') }}</span>
-          </router-link>
-          <router-link to="/profile" class="nav-item" v-tooltip="$t('toolbar.profile')">
-            <i class="pi pi-user nav-item__icon" aria-hidden="true"></i>
-            <span class="nav-item__label">{{ $t('toolbar.profile') }}</span>
+          <router-link :to="{ name: 'PlanChoose' }" custom v-slot="{ navigate, isActive }">
+            <button
+              type="button"
+              class="sidenav-pill sidenav-pill--outline sidenav-footer__pill"
+              :class="{ 'router-link-active': isActive }"
+              @click="navigate"
+            >
+              <i class="pi pi-wallet sidenav-pill__icon" aria-hidden="true"></i>
+              <span>{{ $t('toolbar.plans') }}</span>
+            </button>
           </router-link>
           <button
             type="button"
-            class="nav-item nav-item--signout"
+            class="sidenav-pill sidenav-pill--danger sidenav-footer__pill"
             @click="handleSignOut"
-            v-tooltip="$t('toolbar.sign-out')"
           >
-            <i class="pi pi-sign-out nav-item__icon" aria-hidden="true"></i>
-            <span class="nav-item__label">{{ $t('toolbar.sign-out') }}</span>
+            <i class="pi pi-power-off sidenav-pill__icon" aria-hidden="true"></i>
+            <span>{{ $t('toolbar.sign-out') }}</span>
           </button>
         </div>
       </div>
@@ -118,7 +167,13 @@ export default {
 
 <style scoped>
 .sidenav-container {
-  --sidenav-width: 240px;
+  --sidenav-width: 280px;
+  /* Equilibrio: más vivo que un verde apagado, sin llegar al green-500 chillón */
+  --sidenav-green-deep: #174d32;
+  --sidenav-green-accent: #30a46c;
+  --sidenav-green-accent-hover: #2a8f5c;
+  --sidenav-green-soft: #e6f4ed;
+  --sidenav-green-muted: #3f6b52;
   /* Separación solo arriba y abajo (lateral izquierdo pegado a la pantalla) */
   --sidenav-float: 14px;
   min-height: 100vh;
@@ -187,39 +242,120 @@ export default {
 
 .sidenav-logo-zone {
   flex-shrink: 0;
-  padding: 14px 12px 12px;
+  padding: 18px 14px 14px;
   background-color: #ffffff;
-  border-bottom: 1px solid rgba(60, 60, 67, 0.08);
 }
 
-.sidenav-logo-link {
-  display: block;
+/* Marca centrada (título + subtítulo) */
+.sidenav-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  width: 100%;
+  margin: 0 0 14px;
+  padding: 0;
+  border: none;
   text-decoration: none;
   outline: none;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
 }
 
-.sidenav-logo-link:focus-visible .sidenav-logo-frame {
-  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.35);
+.sidenav-brand:focus-visible {
+  border-radius: 12px;
+  box-shadow: 0 0 0 3px rgba(48, 164, 108, 0.38);
 }
 
-/* Área del logo: fondo blanco; placeholder solo con línea muy suave */
-.sidenav-logo-frame {
-  min-height: 48px;
+.sidenav-brand__text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.15;
   width: 100%;
-  border-radius: 10px;
-  background-color: #ffffff;
-  border: 1px solid rgba(60, 60, 67, 0.06);
+  text-align: center;
+}
+
+.sidenav-brand__title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--sidenav-green-deep);
+  letter-spacing: -0.02em;
+}
+
+.sidenav-brand__subtitle {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--sidenav-green-muted);
+}
+
+.sidenav-quick {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidenav-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
   box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+  font-family: inherit;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    opacity 0.15s ease;
 }
 
-.sidenav-logo-zone :deep(.sidenav-logo-img) {
-  display: block;
-  width: 100%;
-  max-height: 56px;
-  height: auto;
-  object-fit: contain;
-  object-position: left center;
-  border-radius: 10px;
+.sidenav-pill__icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.sidenav-pill--outline {
+  background: #ffffff;
+  border: 1px solid rgba(60, 60, 67, 0.15);
+  color: rgba(60, 60, 67, 0.88);
+}
+
+.sidenav-pill--outline:hover {
+  background: rgba(60, 60, 67, 0.04);
+}
+
+.sidenav-pill--outline.router-link-active {
+  background: rgba(60, 60, 67, 0.06);
+}
+
+.sidenav-pill--danger {
+  background: rgba(255, 59, 48, 0.12);
+  color: #a30f0f;
+}
+
+.sidenav-pill--danger:hover {
+  background: rgba(255, 59, 48, 0.18);
+}
+
+.sidenav-divider {
+  flex-shrink: 0;
+  height: 1px;
+  margin: 0 14px;
+  background: rgba(60, 60, 67, 0.08);
 }
 
 .sidenav-main {
@@ -245,7 +381,7 @@ export default {
   width: 100%;
   padding: 10px 12px;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   text-decoration: none;
   text-align: left;
   cursor: pointer;
@@ -254,6 +390,9 @@ export default {
   letter-spacing: -0.01em;
   color: rgba(60, 60, 67, 0.85);
   background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  font-family: inherit;
   transition:
     background-color 0.15s ease,
     color 0.15s ease;
@@ -265,7 +404,7 @@ export default {
 }
 
 .nav-item.router-link-active {
-  background-color: rgba(60, 60, 67, 0.1);
+  background-color: #e8e8ed;
   color: #1d1d1f;
   font-weight: 600;
 }
@@ -281,16 +420,7 @@ export default {
 
 .nav-item:hover .nav-item__icon,
 .nav-item.router-link-active .nav-item__icon {
-  color: #007aff;
-}
-
-.nav-item--signout:hover .nav-item__icon {
-  color: rgba(255, 59, 48, 0.95);
-}
-
-.nav-item--signout:hover {
-  color: #c41e1e;
-  background-color: rgba(255, 59, 48, 0.08);
+  color: var(--sidenav-green-accent);
 }
 
 .nav-item__label {
@@ -301,13 +431,16 @@ export default {
 
 .sidenav-footer {
   flex-shrink: 0;
-  padding: 10px 10px 18px;
+  padding: 12px 14px 18px;
   margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  border-top: 1px solid rgba(60, 60, 67, 0.1);
+  gap: 8px;
   background-color: #ffffff;
+}
+
+.sidenav-footer__pill {
+  flex-shrink: 0;
 }
 
 .content {
@@ -319,6 +452,6 @@ export default {
   padding: 20px;
   overflow-y: auto;
   box-sizing: border-box;
-  background-color: #f5f5f7;
+  background-color: #ffffff;
 }
 </style>

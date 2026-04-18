@@ -1,101 +1,138 @@
 <script>
-import {Plan} from "@/payment-and-subscriptions/model/plan.entity.js";
+import { Plan } from "@/payment-and-subscriptions/model/plan.entity.js";
 
 const PLAN_RANK = {
   plan_free: 1,
   plan_premium_monthly: 2,
-  plan_premium_annual: 3
 };
 
 export default {
-  name: 'PlanItem',
+  name: "PlanItem",
   props: {
     plan: { type: Plan, required: true },
-    currentPlanId: { type: String, required: false }
+    currentPlanId: { type: String, required: false },
   },
   computed: {
+    isPremium() {
+      return this.plan.planType === "PremiumMonthly";
+    },
     isCurrentPlan() {
-      console.log("Current Plan ID:", this.currentPlanId);
       return this.plan.planId === this.currentPlanId;
     },
     isDowngradeOrSame() {
       const currentRank = PLAN_RANK[this.currentPlanId] || 0;
       const thisRank = PLAN_RANK[this.plan.planId] || 0;
       return thisRank <= currentRank;
-
-    }
+    },
+    formattedPrice() {
+      if (!Number.isFinite(Number(this.plan.price)) || Number(this.plan.price) === 0) {
+        return this.$t("plans-page.price-free");
+      }
+      return Number(this.plan.price).toLocaleString("es-PE", {
+        style: "currency",
+        currency: "PEN",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+    },
+    planTypeKey() {
+      if (this.plan.planType === "Free") return "plans-page.type-free";
+      return "plans-page.type-premium";
+    },
   },
   methods: {
     choosePlan() {
       if (!this.isCurrentPlan && !this.isDowngradeOrSame) {
-        this.$emit('choose', this.plan.planId);
+        this.$emit("choose", this.plan.planId);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 <template>
-  <pv-card class="plan-card" :class="{ 'premium': isPremium, 'selected': isCurrentPlan }">
-    <!-- Header -->
+  <pv-card
+    class="plan-card"
+    :class="{ premium: isPremium, selected: isCurrentPlan }"
+  >
     <template #header>
       <div class="plan-header">
-        <!-- Badge -->
-        <div v-if="plan.planType === 'PremiumMonthly'" class="plan-badge yellow">Most Popular</div>
-        <div v-else-if="plan.planType === 'PremiumAnnual'" class="plan-badge gold">Premium Plan</div>
-
+        <div v-if="isPremium" class="plan-badge plan-badge--accent">
+          {{ $t("plans-page.badge-recommended") }}
+        </div>
         <h2 class="plan-title">{{ plan.description }}</h2>
       </div>
     </template>
 
-    <!-- Content -->
     <template #content>
       <div class="price-section">
-        <span class="price-amount">${{ plan.price }}</span>
-        <span class="price-period">
-          {{ plan.planType === 'PremiumAnnual' ? 'per year' : (plan.planType === 'PremiumMonthly' ? 'per month' : '') }}
+        <span class="price-amount">{{ formattedPrice }}</span>
+        <span v-if="isPremium" class="price-period">
+          {{ $t("plans-page.per-month") }}
         </span>
       </div>
 
       <ul class="features-list">
-        <li><i class="pi pi-home icon"></i> Max Warehouses: {{ plan.maxWarehouses }}</li>
-        <li><i class="pi pi-box icon"></i> Max Products: {{ plan.maxProducts }}</li>
-        <li><i class="pi pi-shield icon"></i> Plan Type: {{ plan.planType }}</li>
+        <li>
+          <i class="pi pi-home icon" aria-hidden="true"></i>
+          {{ $t("plans-page.feature-warehouses", { n: plan.maxWarehouses }) }}
+        </li>
+        <li>
+          <i class="pi pi-box icon" aria-hidden="true"></i>
+          {{ $t("plans-page.feature-products", { n: plan.maxProducts }) }}
+        </li>
+        <li>
+          <i class="pi pi-shield icon" aria-hidden="true"></i>
+          {{ $t("plans-page.feature-type", { type: $t(planTypeKey) }) }}
+        </li>
       </ul>
     </template>
 
-    <!-- Footer -->
     <template #footer>
       <div class="action-buttons">
         <pv-button
-            :disabled="isCurrentPlan || isDowngradeOrSame"
-            @click="choosePlan"
-            class="p-button-rounded p-button-lg"
+          :disabled="isCurrentPlan || isDowngradeOrSame"
+          class="plan-choose-btn p-button-rounded p-button-lg"
+          @click="choosePlan"
         >
-          {{ isCurrentPlan ? 'Current Plan' : (isDowngradeOrSame ? 'Unavailable' : 'Choose') }}
+          {{
+            isCurrentPlan
+              ? $t("plans-page.btn-current")
+              : isDowngradeOrSame
+                ? $t("plans-page.btn-unavailable")
+                : $t("plans-page.btn-choose")
+          }}
         </pv-button>
       </div>
     </template>
   </pv-card>
 </template>
 
-
 <style scoped>
+/* Misma familia de verdes que login (login.component.vue) */
 .plan-card {
+  --plan-green-deep: #0d3b26;
+  --plan-green-accent: #2e7d32;
+  --plan-green-accent-hover: #1b5e20;
+  --plan-green-border: #a5d6a7;
+  --plan-green-soft: #e8f5e9;
+  --plan-text: #1b3326;
+  --plan-muted: #3d5c48;
+
   background-color: #ffffff;
   width: 100%;
   max-width: 360px;
-  min-height: 540px;
+  min-height: 480px;
   border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(13, 59, 38, 0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
 }
 
 .plan-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(13, 59, 38, 0.12);
 }
 
 .plan-header {
@@ -107,7 +144,7 @@ export default {
 .plan-title {
   font-size: 1.3rem;
   font-weight: 700;
-  color: #2d3a3f;
+  color: var(--plan-text);
   margin: 0.5rem 0 0;
 }
 
@@ -117,17 +154,14 @@ export default {
   right: 1rem;
   padding: 4px 10px;
   font-size: 0.75rem;
-  font-weight: bold;
+  font-weight: 600;
   border-radius: 12px;
-  color: #000;
 }
 
-.plan-badge.yellow {
-  background-color: #ffca28;
-}
-
-.plan-badge.gold {
-  background-color: gold;
+.plan-badge--accent {
+  background-color: var(--plan-green-soft);
+  color: var(--plan-green-deep);
+  border: 1px solid var(--plan-green-border);
 }
 
 .price-section {
@@ -138,13 +172,14 @@ export default {
 .price-amount {
   font-size: 2rem;
   font-weight: bold;
-  color: #5A033A;
+  color: var(--plan-green-accent);
 }
 
 .price-period {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--plan-muted);
   display: block;
+  margin-top: 0.25rem;
 }
 
 .features-list {
@@ -162,7 +197,7 @@ export default {
 }
 
 .features-list .icon {
-  color: #5A033A;
+  color: var(--plan-green-accent);
   margin-right: 0.5rem;
 }
 
@@ -172,19 +207,32 @@ export default {
   display: flex;
   justify-content: center;
   border-top: 1px solid #eee;
-  pv-button {
-    width: 100%;
-    max-width: 200px;
-    background-color: #5A033A;
-  }
+}
+
+.action-buttons :deep(.p-button) {
+  width: 100%;
+  max-width: 220px;
+  background: var(--plan-green-accent) !important;
+  border-color: var(--plan-green-accent) !important;
+  color: #fff !important;
+}
+
+.action-buttons :deep(.p-button:not(:disabled):hover) {
+  background: var(--plan-green-accent-hover) !important;
+  border-color: var(--plan-green-accent-hover) !important;
+}
+
+.action-buttons :deep(.p-button:disabled) {
+  opacity: 0.55;
+  filter: grayscale(0.15);
 }
 
 .premium {
-  border: 2px solid #3f51b5;
+  border: 2px solid var(--plan-green-border);
 }
 
 .selected {
-  border: 2px solid #5A033A;
+  border: 2px solid var(--plan-green-accent);
+  box-shadow: 0 0 0 1px rgba(46, 125, 50, 0.2);
 }
 </style>
-

@@ -1,4 +1,5 @@
 import {useAuthenticationStore, LOCAL_PREVIEW_TOKEN} from "./authentication.store.js";
+import { isFrontendOnly } from "@/shared/config/frontend-only.js";
 
 /**
  * Guard to check if user is authenticated
@@ -21,6 +22,7 @@ export const authenticationGuard = async (to, from, next) => {
 
     const accountId = authenticationStore.currentAccountId;
     const skipAccountStatusCheck =
+        isFrontendOnly() ||
         localStorage.getItem('devBypassAuth') === 'true' ||
         localStorage.getItem('token') === LOCAL_PREVIEW_TOKEN;
 

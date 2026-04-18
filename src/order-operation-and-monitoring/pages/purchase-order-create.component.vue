@@ -1,17 +1,17 @@
 <template>
   <SideNavbar>
-    <ToolbarContent pageTitle="New Order" />
+    <ToolbarContent :pageTitle="$t('purchase.new-order')" />
     <div class="purchase-order-container">
-      <p>Total items: {{ catalogItems.length }}</p>
+      <p>{{ $t('purchase.total-items', { n: catalogItems.length }) }}</p>
 
       <table>
         <thead>
         <tr>
-          <th>Select</th>
-          <th>Name</th>
-          <th>Brand</th>
-          <th>Price</th>
-          <th>Quantity</th>
+          <th>{{ $t('purchase.select') }}</th>
+          <th>{{ $t('purchase.th-name') }}</th>
+          <th>{{ $t('purchase.th-brand') }}</th>
+          <th>{{ $t('purchase.th-price') }}</th>
+          <th>{{ $t('purchase.th-quantity') }}</th>
         </tr>
         </thead>
         <tbody>
@@ -25,7 +25,7 @@
           <td>
             <input type="number"
                    min="1"
-                   placeholder="e.g. 2"
+                   :placeholder="$t('purchase.qty-placeholder')"
                    v-model.number="quantities[item.id]"
                    :disabled="!selectedItems[item.id]"
                    class="qty-input" />
@@ -34,9 +34,9 @@
         </tbody>
       </table>
 
-      <p class="total-amount">Total Amount: {{ formatPrice(totalAmount) }}</p>
+      <p class="total-amount">{{ $t('purchase.total-amount-label') }} {{ formatPrice(totalAmount) }}</p>
 
-      <button class="create-btn" @click="createOrder">🛒 Save Order</button>
+      <button class="create-btn" @click="createOrder">🛒 {{ $t('purchase.save-order') }}</button>
     </div>
   </SideNavbar>
 </template>

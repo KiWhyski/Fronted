@@ -1,6 +1,7 @@
 import axios from "axios";
 import { StockAlert, ExpirationAlert } from "@/alerts-and-notifications/model/alert.entity.js";
 import { getExpirationSettings } from './settings.service.js';
+import { isFrontendOnly } from '@/shared/config/frontend-only.js';
 
 const API_BASE = "http://localhost:3000";
 
@@ -10,6 +11,7 @@ const API_BASE = "http://localhost:3000";
  * @throws {Error} If API request fails
  */
 export async function fetchStockAlerts() {
+    if (isFrontendOnly()) return [];
     const res = await axios.get(`${API_BASE}/products`);
     // Filtrar productos con stock bajo (current < min)
     const lowStockProducts = res.data.filter(product => product.current < product.min);
@@ -29,6 +31,7 @@ export async function fetchStockAlerts() {
  * @throws {Error} If API request fails
  */
 export async function fetchAllStockAlerts() {
+    if (isFrontendOnly()) return [];
     const res = await axios.get(`${API_BASE}/products`);
     // Filtrar productos con stock bajo (current < min)
     const lowStockProducts = res.data.filter(product => product.current < product.min);
@@ -47,6 +50,7 @@ export async function fetchAllStockAlerts() {
  */
 export async function fetchExpirationAlerts() {
     try {
+        if (isFrontendOnly()) return [];
         const settings = await getExpirationSettings();
         const res = await axios.get(`${API_BASE}/products`);
         // Filtrar productos que expiran en los próximos días según la configuración
@@ -77,6 +81,7 @@ export async function fetchExpirationAlerts() {
  */
 export async function fetchAllExpirationAlerts() {
     try {
+        if (isFrontendOnly()) return [];
         const settings = await getExpirationSettings();
         const res = await axios.get(`${API_BASE}/products`);
         // Filtrar productos que expiran en los próximos días según la configuración

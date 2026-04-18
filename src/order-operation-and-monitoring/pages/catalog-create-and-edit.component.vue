@@ -1,30 +1,30 @@
 <template>
   <SideNavbar>
-    <ToolbarContent :pageTitle="isEditMode ? 'Edit Catalog' : 'New Catalog'" />
+    <ToolbarContent :pageTitle="isEditMode ? $t('catalog.edit-title') : $t('catalog.new-title')" />
     <div class="catalog-row">
       <div class="catalog-form">
         <div class="p-fluid">
           <div class="field">
-            <label for="catalogName">Catalog Name</label>
+            <label for="catalogName">{{ $t('catalog.name-label') }}</label>
             <InputText id="catalogName" class="Input" v-model="catalog.name" required />
           </div>
 
-          <h3>Add New Product</h3>
+          <h3>{{ $t('catalog.add-product') }}</h3>
 
           <div class="field">
-            <label>Name</label>
+            <label>{{ $t('catalog.name') }}</label>
             <InputText class="Input" v-model="newProduct.name" />
           </div>
           <div class="field">
-            <label>Type</label>
+            <label>{{ $t('catalog.type') }}</label>
             <InputText class="Input" v-model="newProduct.productType" />
           </div>
           <div class="field">
-            <label>Brand</label>
+            <label>{{ $t('catalog.brand') }}</label>
             <InputText class="Input" v-model="newProduct.brand" />
           </div>
           <div class="field">
-            <label>Content (ml)</label>
+            <label>{{ $t('catalog.content-ml') }}</label>
             <pv-input-number
                 v-model="newProduct.content"
                 :min="0"
@@ -33,7 +33,7 @@
 
           </div>
           <div class="field">
-            <label>Price (S/)</label>
+            <label>{{ $t('catalog.price-pen') }}</label>
             <pv-input-number
                 v-model="newProduct.price"
                 mode="currency"
@@ -45,11 +45,11 @@
           </div>
 
           <div class="buttons">
-            <Button label="Save" @click="onSave" class="p-button-primary" />
-            <Button label="Reset" @click="resetForm" class="p-button-secondary" />
+            <Button :label="$t('catalog.save')" @click="onSave" class="p-button-primary" />
+            <Button :label="$t('catalog.reset')" @click="resetForm" class="p-button-secondary" />
           </div>
 
-          <div v-if="showError" class="error">Please, complete all the labels.</div>
+          <div v-if="showError" class="error">{{ $t('catalog.complete-fields') }}</div>
         </div>
       </div>
     </div>

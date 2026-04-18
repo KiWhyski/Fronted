@@ -175,7 +175,7 @@ export default {
               <pv-input-text
                   name="name"
                   v-model="form.name"
-                  placeholder="Principal Warehouse"
+                  :placeholder="$t('warehouses.form.placeholder-name-example')"
                   class="form-input"
                   :class="{ 'input-error': errors.name }"
               />
@@ -363,7 +363,7 @@ export default {
 
 <style scoped>
 .warehouse-bg {
-  background: #F7EDDC;
+  background: #ffffff;
   min-height: 100vh;
   display: flex;
 }

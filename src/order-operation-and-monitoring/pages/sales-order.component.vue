@@ -4,17 +4,17 @@
       <Card v-for="order in orders" :key="order.id" class="order-card">
         <template #title>
           <div class="order-title">
-            Order #{{ order.id }}
+            {{ $t('orders.sales.order-ref', { id: order.id }) }}
           </div>
         </template>
 
         <template #content>
           <div class="order-content">
-            <p><strong>Date:</strong> {{ formatDate(order.date) }}</p>
-            <p><strong>Buyer:</strong> {{ order.buyer.email }}</p>
+            <p><strong>{{ $t('orders.sales.date') }}:</strong> {{ formatDate(order.date) }}</p>
+            <p><strong>{{ $t('orders.sales.buyer') }}:</strong> {{ order.buyer.email }}</p>
             <p>
-              <strong>Status:</strong>
-              <span :class="'st-' + order.status">{{ order.status }}</span>
+              <strong>{{ $t('orders.sales.status') }}:</strong>
+              <span :class="'st-' + order.status">{{ translateOrderStatus(order.status) }}</span>
               <Button
                   size="small"
                   icon="pi pi-pencil"
@@ -22,9 +22,9 @@
                   @click="openStatusDialog(order)"
               />
             </p>
-            <p><strong>Total:</strong> {{ formatPrice(order.totalAmount) }}</p>
+            <p><strong>{{ $t('orders.sales.total') }}:</strong> {{ formatPrice(order.totalAmount) }}</p>
 
-            <h4>Items:</h4>
+            <h4>{{ $t('orders.sales.items') }}</h4>
             <ul>
               <li v-for="item in order.items" :key="item.id">
                 {{ item.name }} - {{ formatPrice(item.unitPrice) }}
@@ -38,7 +38,7 @@
     <Dialog
         v-model:visible="showDialog"
         modal
-        header="Change order status"
+        :header="$t('orders.sales.change-status')"
         :style="{ width: '25rem' }"
     >
       <div class="p-fluid">
@@ -47,12 +47,12 @@
             :options="statusOptions"
             optionLabel="label"
             optionValue="value"
-            placeholder="Select a status"
+            :placeholder="$t('orders.sales.select-status')"
         />
 
         <div class="dlg-actions">
-          <Button label="Cancel" severity="secondary" @click="showDialog=false" />
-          <Button label="Save" icon="pi pi-check" @click="applyStatusChange" />
+          <Button :label="$t('components.cancel')" severity="secondary" @click="showDialog=false" />
+          <Button :label="$t('components.save')" icon="pi pi-check" @click="applyStatusChange" />
         </div>
       </div>
     </Dialog>
@@ -86,17 +86,32 @@ export default {
       orders: [],
       showDialog: false,
       currentOrder: null,
-      selectedStatus: null,
-      statusOptions: [
-        { label: 'Received',  value: 0 },
-        { label: 'InProcess', value: 1 },
-        { label: 'Arrived',   value: 2 },
-        { label: 'Canceled',  value: 3 }
-      ]
+      selectedStatus: null
     };
   },
 
+  computed: {
+    statusOptions() {
+      return [
+        { label: this.$t('orders.sales.status-received'), value: 0, apiStatus: 'Received' },
+        { label: this.$t('orders.sales.status-inprocess'), value: 1, apiStatus: 'InProcess' },
+        { label: this.$t('orders.sales.status-arrived'), value: 2, apiStatus: 'Arrived' },
+        { label: this.$t('orders.sales.status-canceled'), value: 3, apiStatus: 'Canceled' }
+      ];
+    }
+  },
+
   methods: {
+    translateOrderStatus(status) {
+      const key = {
+        Received: 'orders.sales.status-received',
+        InProcess: 'orders.sales.status-inprocess',
+        Arrived: 'orders.sales.status-arrived',
+        Canceled: 'orders.sales.status-canceled'
+      }[status];
+      return key ? this.$t(key) : status;
+    },
+
     formatDate(date) {
       const raw = typeof date === 'object' && date?._date ? date._date : date;
       return raw
@@ -134,7 +149,7 @@ export default {
         return;
       }
       this.currentOrder   = order;
-      this.selectedStatus = this.statusOptions.find(o => o.label === order.status)?.value ?? null;
+      this.selectedStatus = this.statusOptions.find(o => o.apiStatus === order.status)?.value ?? null;
       this.showDialog     = true;
     },
 
@@ -144,7 +159,7 @@ export default {
       try {
         const svc = new PurchaseOrderService();
         await svc.updateStatus(this.currentOrder.id, this.selectedStatus);
-        this.currentOrder.status = this.statusOptions.find(opt => opt.value === this.selectedStatus).label;
+        this.currentOrder.status = this.statusOptions.find(opt => opt.value === this.selectedStatus).apiStatus;
         this.showDialog = false;
       } catch (e) {
         console.error('Error updating status', e);
@@ -163,7 +178,7 @@ export default {
 :root {
   --primary-900: #5A033A;   /* vino            */
   --primary-700: #6E0081;   /* púrpura oscuro  */
-  --accent-100 : #f7eddc;   /* crema / fondo   */
+  --accent-100 : #ffffff;   /* lienzo de vista */
   --text-900   : #242424;
   --text-600   : #555;
 }

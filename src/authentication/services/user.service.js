@@ -1,5 +1,6 @@
 import { BaseService } from '@/shared/services/base.service.js';
 import axios from 'axios';
+import { isFrontendOnly } from '@/shared/config/frontend-only.js';
 
 class UserService extends BaseService {
     constructor() {
@@ -21,6 +22,23 @@ class UserService extends BaseService {
      * @returns {Promise<boolean>}
      */
     async login(username, password) {
+        if (isFrontendOnly()) {
+            const profile = {
+                profileId: '0',
+                name: 'Demo',
+                email: username,
+                role: 'Liquor Store Owner',
+            };
+            const currentUser = {
+                id: '0',
+                profileId: '0',
+                profile,
+                accountId: '00000000-0000-0000-0000-000000000001',
+                account: { accountId: '00000000-0000-0000-0000-000000000001' },
+            };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            return true;
+        }
         try {
             // 1) Buscar usuario
             const { data: users } = await axios.get(
@@ -81,6 +99,13 @@ class UserService extends BaseService {
     /* ───────────────────────────  SEARCH BY EMAIL  ──────────────────────── */
 
     async getProfileByEmail(email) {
+        if (isFrontendOnly()) {
+            return {
+                profileId: '0',
+                email,
+                name: 'Demo',
+            };
+        }
         try {
             const { data: profiles } = await axios.get(`${this.apiUrl}${this.profileEndpoint}`, {
                 params: { email }
@@ -93,6 +118,12 @@ class UserService extends BaseService {
     }
 
     async getAccountByEmail(email) {
+        if (isFrontendOnly()) {
+            return {
+                accountId: '00000000-0000-0000-0000-000000000001',
+                email,
+            };
+        }
         try {
             const { data: accounts } = await axios.get(`${this.apiUrl}${this.accountEndpoint}`, {
                 params: { email }
@@ -107,6 +138,9 @@ class UserService extends BaseService {
     /* ──────────────────────────────  REGISTER  ──────────────────────────── */
 
     async register({ name, email, password, role }) {
+        if (isFrontendOnly()) {
+            return { id: '0', username: email };
+        }
         try {
             // lógica mock con JSON‑server
             const { data: newUser } = await axios.post(`${this.apiUrl}/users`, {

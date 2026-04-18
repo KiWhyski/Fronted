@@ -3,10 +3,12 @@ import {PlanService} from "@/payment-and-subscriptions/services/plan.service.js"
 import PlanList from "@/payment-and-subscriptions/components/plan-list.component.vue";
 import {SubscriptionService} from "@/payment-and-subscriptions/services/subscription.service.js";
 import httpInstance from "@/shared/services/http.instance.js";
+import SideNavbar from "@/public/components/side-navbar.vue";
+import ToolbarContent from "@/public/components/toolbar-content.component.vue";
 
 export default {
   name: "payment-choose",
-  components: { PlanList },
+  components: { PlanList, SideNavbar, ToolbarContent },
   data() {
     return {
       plans: [],
@@ -21,7 +23,7 @@ export default {
         const planService = new PlanService();
         this.plans = await planService.getAllPlans();
       } catch (error) {
-        this.error = "Failed to load plans";
+        this.error = this.$t("plans-page.load-error");
         console.error(error);
       }
     },
@@ -29,14 +31,21 @@ export default {
     async checkCurrentPlanAndLoad() {
       try {
         const accountId = localStorage.getItem("accountId");
-        const response = await httpInstance.get(`/accounts/${accountId}/subscriptions/current-plan`);
-
-        this.currentPlanId = response.data;
-        console.log("Current Plan ID:", this.currentPlanId);
-
-        await this.getAllPlans();
+        if (accountId) {
+          const response = await httpInstance.get(`/accounts/${accountId}/subscriptions/current-plan`);
+          const d = response.data;
+          this.currentPlanId =
+            typeof d === "string" || typeof d === "number"
+              ? String(d)
+              : (d?.planId ?? d?.planCode ?? null);
+          if (this.currentPlanId && /^free$/i.test(String(this.currentPlanId))) {
+            this.currentPlanId = "plan_free";
+          }
+        }
       } catch (error) {
         console.error(" Error checking current plan:", error);
+      } finally {
+        await this.getAllPlans();
       }
     },
 
@@ -47,8 +56,7 @@ export default {
 
         let data;
 
-        if (this.currentPlanId && this.currentPlanId !== "free") {
-
+        if (this.currentPlanId && this.currentPlanId !== "plan_free") {
           data = await subscriptionService.upgradeSubscription(planId, accountId);
         } else {
           data = await subscriptionService.subscribeToPlan(planId, accountId);
@@ -71,26 +79,44 @@ export default {
 </script>
 
 <template>
-  <div class="plan-list-wrapper">
-    <plan-list
-        :plans="plans"
-        :current-plan-id="currentPlanId"
-        @choose="subscribeToPlan"
-    />
+  <div class="plan-page-bg">
+    <side-navbar />
+    <div class="plan-page-main">
+      <toolbar-content :page-title="$t('toolbar.plans')" />
+      <div class="plan-list-wrapper">
+        <plan-list
+            :plans="plans"
+            :current-plan-id="currentPlanId"
+            @choose="subscribeToPlan"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 
 <style scoped>
+.plan-page-bg {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background: #ffffff;
+}
 
+.plan-page-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
 
 .plan-list-wrapper {
   display: flex;
   justify-content: center;
+  flex: 1;
   padding: 2rem;
-  min-height: 100vh;
-  max-width: 100vw;
-  background-color: #F4EDE3;
+  box-sizing: border-box;
+  background-color: #ffffff;
 }
 
 </style>

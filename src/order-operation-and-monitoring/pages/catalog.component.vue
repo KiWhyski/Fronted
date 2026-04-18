@@ -1,9 +1,9 @@
 <template>
   <SideNavbar>
-    <ToolbarContent pageTitle="Catalogs" />
+    <ToolbarContent :pageTitle="$t('catalog.title')" />
     <div class="container-catalogs">
       <div v-if="isSupplier" class="add-catalog-btn">
-        <Button label="New Catalog" icon="pi pi-plus" @click="goToNewCatalog" />
+        <Button :label="$t('catalog.new')" icon="pi pi-plus" @click="goToNewCatalog" />
       </div>
 
       <CatalogList v-if="isSupplier" :catalogs="catalogs" />
@@ -99,7 +99,7 @@ export default {
   }
 }
 .container-catalogs {
-  background-color: #f7eddc;
+  background-color: #ffffff;
   padding: 1rem;
 }
 

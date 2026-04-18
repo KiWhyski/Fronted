@@ -71,45 +71,45 @@ export default {
   <div class="report-bg">
     <side-navbar />
     <div class="report-main">
-      <h1 class="title">Reports</h1>
+      <h1 class="title">{{ $t('reports.page-title') }}</h1>
 
       <div class="report-nav">
-        <button class="nav-btn">Internal referral</button>
-        <button class="nav-btn active">Loss reporting</button>
-        <button class="nav-btn">Resupplies</button>
-        <button class="nav-btn">Conservation</button>
+        <button class="nav-btn">{{ $t('reports.nav-internal') }}</button>
+        <button class="nav-btn active">{{ $t('reports.nav-loss') }}</button>
+        <button class="nav-btn">{{ $t('reports.nav-resupplies') }}</button>
+        <button class="nav-btn">{{ $t('reports.nav-conservation') }}</button>
       </div>
 
-      <h2 class="subtitle">Loss Report Form</h2>
+      <h2 class="subtitle">{{ $t('reports.form-title') }}</h2>
 
       <form @submit.prevent="handleSubmit" class="report-form">
         <div class="form-group">
-          <label>Product name</label>
+          <label>{{ $t('reports.product-name') }}</label>
           <input v-model="form.products" required />
         </div>
         <div class="form-group">
-          <label>Type</label>
+          <label>{{ $t('reports.type') }}</label>
           <input v-model="form.type" required />
         </div>
         <div class="form-group">
-          <label>Price</label>
+          <label>{{ $t('reports.price') }}</label>
           <input type="number" v-model.number="form.price" required min="0" step="0.01" />
         </div>
         <div class="form-group">
-          <label>Quantity</label>
+          <label>{{ $t('reports.quantity') }}</label>
           <input type="number" v-model.number="form.amount" required min="1" />
         </div>
         <div class="form-group">
-          <label>Date</label>
+          <label>{{ $t('reports.date') }}</label>
           <input type="date" v-model="form.date" required />
         </div>
         <div class="form-group">
-          <label>Total cost</label>
+          <label>{{ $t('reports.total-cost') }}</label>
           <input :value="totalCost" readonly />
         </div>
         <div class="form-actions">
-          <button type="submit" class="btn save">Save</button>
-          <button type="button" class="btn cancel" @click="cancel">Cancel</button>
+          <button type="submit" class="btn save">{{ $t('reports.save') }}</button>
+          <button type="button" class="btn cancel" @click="cancel">{{ $t('components.cancel') }}</button>
         </div>
       </form>
     </div>
@@ -119,7 +119,7 @@ export default {
 <style scoped>
 .report-bg {
   display: flex;
-  background: #f7eddc;
+  background: #ffffff;
   min-height: 100vh;
 }
 .report-main {

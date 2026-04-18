@@ -78,11 +78,11 @@ export default {
   <div class="auth-container">
     <!-- Left section: Role selection and info -->
     <div class="register-section">
-      <h2>Welcome back</h2>
-      <p>Enter your personal details to use all the features of the platform</p>
+      <h2>{{ $t('sign-up.welcome-back') }}</h2>
+      <p>{{ $t('sign-up.subtitle') }}</p>
 
       <button class="sign-in-button" @click="goToSignIn">
-        Sign up
+        {{ $t('sign-up.go-to-login') }}
       </button>
 
       <div class="security-logos">
@@ -93,50 +93,50 @@ export default {
 
     <!-- Right section: Registration form -->
     <div class="registration-form">
-      <h2>Create Account</h2>
+      <h2>{{ $t('sign-up.create-account-title') }}</h2>
       <form @submit.prevent="onSignUp">
 
         <div class="form-group select-group">
-          <label for="role" class="select-label">Select Your Role</label>
+          <label for="role" class="select-label">{{ $t('sign-up.select-your-role') }}</label>
           <select v-model="formData.role" id="role" class="form-select">
-            <option value="" class="select-role" disabled selected>Select role</option>
-            <option value="LiquorStoreOwner">Liquor Store Owner</option>
-            <option value="Supplier">Supplier</option>
+            <option value="" class="select-role" disabled selected>{{ $t('sign-up.select-role') }}</option>
+            <option value="LiquorStoreOwner">{{ $t('sign-up.role-liquor') }}</option>
+            <option value="Supplier">{{ $t('sign-up.role-supplier') }}</option>
           </select>
           <span class="select-arrow"></span>
         </div>
 
         <div class="form-group">
-          <label for="fullName">Full Name</label>
+          <label for="fullName">{{ $t('sign-up.full-name') }}</label>
           <input
               id="fullName"
               v-model="formData.fullName"
               type="text"
               class="form-input"
-              placeholder="Enter your full name"
+              :placeholder="$t('sign-up.placeholder-full-name')"
           />
         </div>
 
         <div class="form-group">
-          <label for="username">Email address</label>
+          <label for="username">{{ $t('sign-up.email-label') }}</label>
           <input
               id="username"
               v-model="formData.username"
               type="email"
               class="form-input"
-              placeholder="Enter your email"
+              :placeholder="$t('sign-up.placeholder-email-reg')"
           />
         </div>
 
         <div class="form-group">
-          <label for="password">Password</label>
+          <label for="password">{{ $t('sign-up.password') }}</label>
           <div class="password-input">
             <input
                 id="password"
                 v-model="formData.password"
                 :type="hide ? 'password' : 'text'"
                 class="form-input"
-                placeholder="Enter your password"
+                :placeholder="$t('sign-up.placeholder-password-reg')"
             />
             <button
                 type="button"
@@ -149,14 +149,14 @@ export default {
         </div>
 
         <div class="form-group">
-          <label for="confirmPassword">Confirm Password</label>
+          <label for="confirmPassword">{{ $t('sign-up.confirm-password') }}</label>
           <div class="password-input">
             <input
                 id="confirmPassword"
                 v-model="formData.confirmPassword"
                 :type="hideConfirm ? 'password' : 'text'"
                 class="form-input"
-                placeholder="Confirm your password"
+                :placeholder="$t('sign-up.placeholder-confirm-reg')"
             />
             <button
                 type="submit"
@@ -169,10 +169,10 @@ export default {
         </div>
 
         <button class="register-button" type="submit">
-          Create account
+          {{ $t('sign-up.create-account-button') }}
         </button>
 
-        <div class="divider">or</div>
+        <div class="divider">{{ $t('sign-up.divider-or') }}</div>
 
         <div class="social-login">
           <button type="button" class="social-button">
@@ -194,7 +194,7 @@ export default {
   display: flex;
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
-  background-color: #F7EDDC;
+  background-color: #ffffff;
 }
 
 .register-section {
@@ -229,7 +229,7 @@ export default {
   width: 240px;
   margin-top: 1rem;
   position: relative;
-  background-color: #f7eddc;
+  background-color: #ffffff;
 
   .select-label {
     font-family: 'Inter', sans-serif;

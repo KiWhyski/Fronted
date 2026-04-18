@@ -15,9 +15,6 @@ import ProductCreateAndEditComponent from "@/inventory-management/pages/product-
 
 import ReportsComponent from '../analytics-and-reporting/pages/report-management.component.vue'
 import ReportCreateAndEdit from '../analytics-and-reporting/pages/report-create-and-edit.component.vue'
-import CareGuideComponent from '../inventory-management/pages/care-guide-dashboard.component.vue'
-import CareGuideCreate from '../inventory-management/pages/care-guide-create-and-edit.component.vue'
-
 import CatalogComponent from "@/order-operation-and-monitoring/pages/catalog.component.vue";
 import CatalogCreateAndEditComponent from "@/order-operation-and-monitoring/pages/catalog-create-and-edit.component.vue";
 import PurchaseOrderCreateComponent from "@/order-operation-and-monitoring/pages/purchase-order-create.component.vue";
@@ -93,23 +90,6 @@ const routes = [
         name: 'report-edit',
         component: ReportCreateAndEdit,
         props: true
-    },
-    {
-        path: '/care-guides',
-        name: 'care-guide',
-        component: CareGuideComponent
-    },
-    {
-        path: '/care-guides/new',
-        name: 'care-guide-create',
-        component: CareGuideCreate,
-        props: { isEdit: false }
-    },
-    {
-        path: '/care-guides/:id/edit',
-        name: 'care-guide-edit',
-        component: CareGuideCreate,
-        props: route => ({ id: route.params.id, isEdit: true })
     },
     {
         path: '/inventory/id_i/products',

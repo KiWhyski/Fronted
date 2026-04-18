@@ -30,7 +30,7 @@ export default {
         const data = await ReportService.getAllReports()
         this.reports = data.map(item => new Report(item))
       } catch (error) {
-        this.error = 'Error al cargar los reportes'
+        this.error = this.$t('reports.load-error')
         console.error('Error loading reports:', error)
       } finally {
         this.loading = false
@@ -50,13 +50,10 @@ export default {
           await ReportService.deleteReport(id)
           await this.loadReports() // Recargar la lista después de eliminar
         } catch (error) {
-          this.error = 'Error al eliminar el reporte'
+          this.error = this.$t('reports.delete-error')
           console.error('Error deleting report:', error)
         }
       }
-    },
-    goToCareGuide() {
-      this.$router.push({ name: 'care-guide' })
     },
     goToResupplies() {
       this.$router.push({ name: 'Resupplies' })
@@ -72,20 +69,19 @@ export default {
       <toolbar-content :pageTitle="$t('reports.title')"/>
 
       <div class="report-nav">
-        <button class="nav-btn">Internal referral</button>
-        <button class="nav-btn active">Loss reporting</button>
-        <button class="nav-btn" @click="goToResupplies">Resupplies</button>
-        <button class="nav-btn" @click="goToCareGuide">Conservation</button>
+        <button class="nav-btn">{{ $t('reports.nav-internal') }}</button>
+        <button class="nav-btn active">{{ $t('reports.nav-loss') }}</button>
+        <button class="nav-btn" @click="goToResupplies">{{ $t('reports.nav-resupplies') }}</button>
       </div>
 
       <div class="report-subheader">
-        <h2 class="subtitle">Loss Report Form</h2>
-        <button class="generate-btn" @click="generateReport">Generate Report</button>
+        <h2 class="subtitle">{{ $t('reports.subtitle-form') }}</h2>
+        <button class="generate-btn" @click="generateReport">{{ $t('reports.generate') }}</button>
       </div>
 
       <div v-if="loading" class="loading-state">
         <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-        <p>Cargando reportes...</p>
+        <p>{{ $t('reports.loading') }}</p>
       </div>
 
       <div v-else-if="error" class="error-state">
@@ -107,7 +103,7 @@ export default {
 <style scoped>
 .report-bg {
   display: flex;
-  background: #f7eddc;
+  background: #ffffff;
   min-height: 100vh;
 }
 .report-main {

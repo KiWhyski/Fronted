@@ -3,6 +3,56 @@ import ToolbarContent from '@/public/components/toolbar-content.component.vue';
 import SideNavbar from '@/public/components/side-navbar.vue';
 import Chart from 'primevue/chart';
 import { useRouter } from 'vue-router';
+import { computed } from 'vue';
+
+/** Días hasta la fecha de vencimiento (puede ser negativo si ya venció). */
+function daysUntilExpiry(isoDateStr) {
+  const end = new Date(isoDateStr);
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  end.setHours(0, 0, 0, 0);
+  return Math.round((end - start) / 86400000);
+}
+
+function addDays(base, n) {
+  const d = new Date(base);
+  d.setDate(d.getDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+
+/**
+ * Niveles (de menor a mayor gravedad): bajo → moderado → medio → alto → crítico
+ * Colores: verde, amarillo, ámbar, naranja, rojo
+ */
+function riskLevelFromDays(days) {
+  if (days < 0) return 'critico';
+  if (days <= 3) return 'critico';
+  if (days <= 10) return 'alto';
+  if (days <= 20) return 'medio';
+  if (days <= 35) return 'moderado';
+  return 'bajo';
+}
+
+const RISK_SEVERITY = {
+  bajo: 0,
+  moderado: 1,
+  medio: 2,
+  alto: 3,
+  critico: 4,
+};
+
+function worstRiskLevel(levels) {
+  let worst = 'bajo';
+  let maxSev = -1;
+  for (const lvl of levels) {
+    const s = RISK_SEVERITY[lvl] ?? 0;
+    if (s > maxSev) {
+      maxSev = s;
+      worst = lvl;
+    }
+  }
+  return worst;
+}
 
 export default {
   name: 'dashboard',
@@ -29,6 +79,8 @@ export default {
     };
 
     const rotationOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: {
           display: false
@@ -47,11 +99,11 @@ export default {
       }
     };
 
-    const products = [
+    const productsRaw = [
       {
         name: 'Malbec Red Wine',
         type: 'Spirit',
-        expiration: '2024-04-24',
+        expiration: addDays(new Date(), 50),
         currentStock: 20,
         minStock: 20,
         price: 20
@@ -59,18 +111,42 @@ export default {
       {
         name: 'White Wine',
         type: 'Spirit',
-        expiration: '2024-04-23',
+        expiration: addDays(new Date(), 18),
         currentStock: 20,
         minStock: 15,
         price: 20
+      },
+      {
+        name: 'Vodka Premium',
+        type: 'Spirit',
+        expiration: addDays(new Date(), 6),
+        currentStock: 10,
+        minStock: 5,
+        price: 35
       }
     ];
+
+    const products = computed(() =>
+      productsRaw.map((p) => {
+        const days = daysUntilExpiry(p.expiration);
+        const riskLevel = riskLevelFromDays(days);
+        return { ...p, daysUntilExpiry: days, riskLevel };
+      })
+    );
+
+    const overallExpirationRisk = computed(() =>
+      worstRiskLevel(products.value.map((p) => p.riskLevel))
+    );
+
+    const riskBadgeClass = (level) => `risk-badge risk-badge--${level}`;
 
     return {
       goToDashboard,
       rotationData,
       rotationOptions,
-      products
+      products,
+      overallExpirationRisk,
+      riskBadgeClass
     };
   }
 };
@@ -80,7 +156,7 @@ export default {
   <div class="dashboard-bg dashboard-view--white">
     <side-navbar />
     <div class="dashboard-main">
-      <toolbar-content :pageTitle="'Dashboard'" />
+      <toolbar-content :pageTitle="$t('dashboard.page-title')" />
       <div class="dashboard-content">
         <div class="dashboard-row">
           <div class="dashboard-card resumen resumen-flex">
@@ -90,8 +166,8 @@ export default {
                 <li><span class="resumen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#6E0081"><path d="M7 18c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v8c0 1.1-.9 2-2 2H7zm0-2h10V8H7v8z"/></svg></span> Ventas hoy:<span class="resumen-label">S/. <b>450.00</b></span></li>
                 <li><span class="resumen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#D98C4A"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg></span> Última factura:<span class="resumen-label">24/04/2025</span></li>
                 <li><span class="resumen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#D98C4A"><path d="M20.54 5.23l-1.39-1.39c-.36-.36-.86-.59-1.41-.59H6.26c-.55 0-1.05.23-1.41.59L3.46 5.23C3.17 5.52 3 5.91 3 6.32V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.32c0-.41-.17-.8-.46-1.09zM12 17c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/></svg></span> Productos en stock:<span class="resumen-label">142</span></li>
-                <li><span class="resumen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#D90429"><circle cx="12" cy="12" r="10"/></svg></span> Products low in stock:<span class="resumen-label danger">7</span></li>
-                <li><span class="resumen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#D98C4A"><circle cx="12" cy="12" r="10"/></svg></span> Products about to expire:<span class="resumen-label warning">5</span></li>
+                <li><span class="resumen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#D90429"><circle cx="12" cy="12" r="10"/></svg></span> {{ $t('dashboard.low-stock') }}<span class="resumen-label danger">7</span></li>
+                <li><span class="resumen-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#D98C4A"><circle cx="12" cy="12" r="10"/></svg></span> {{ $t('dashboard.about-to-expire') }}<span class="resumen-label warning">5</span></li>
               </ul>
             </div>
             <div class="resumen-img">
@@ -101,62 +177,76 @@ export default {
             <h2>{{ $t('dashboard.important-notifications') }}</h2>
             <div class="alert-item">
               <div>Whisky Escocés Premium</div>
-              <div>Current stock: <span class="danger">5</span></div>
-              <div>Minimum stock: <span>10</span></div>
+              <div>{{ $t('dashboard.current-stock') }} <span class="danger">5</span></div>
+              <div>{{ $t('dashboard.minimum-stock') }} <span>10</span></div>
             </div>
             <hr />
             <div class="alerta-item">
               <div>Malbec White Wine</div>
-              <div class="warning">Expires in 8 days!</div>
+              <div class="warning">{{ $t('dashboard.expires-in-days', { days: 8 }) }}</div>
             </div>
           </div>
         </div>
-        <div class="dashboard-card access">
-          <h2 class="access-title">{{ $t('dashboard.quick-access') }}</h2>
-          <div class="access-row">
-            <router-link to="/catalog" class="access-btn acceso-inventario access-btn-lg">
-              <span class="access-icon"><i class="pi pi-box"></i></span>
-              <span class="access-link">Catalogs</span>
-            </router-link>
-            <router-link to="/orders" class="access-btn acceso-compras access-btn-lg">
-              <span class="access-icon"><i class="pi pi-shopping-cart"></i></span>
-              <span class="access-link">Orders</span>
-            </router-link>
-            <router-link to="/warehouses" class="access-btn acceso-zonas access-btn-lg">
-              <span class="access-icon"><i class="pi pi-building"></i></span>
-              <span class="access-link">Inventory</span>
-            </router-link>
+        <div class="dashboard-access-charts">
+          <aside class="dashboard-access-col">
+            <div class="dashboard-card access access--sidebar">
+              <h2 class="access-title access-title--sidebar">{{ $t('dashboard.quick-access') }}</h2>
+              <div class="access-row access-row--sidebar">
+                <router-link to="/catalog" class="access-btn access-btn--sidebar">
+                  <span class="access-icon"><i class="pi pi-box"></i></span>
+                  <span class="access-link">{{ $t('dashboard.access-catalogs') }}</span>
+                </router-link>
+                <router-link to="/orders" class="access-btn access-btn--sidebar">
+                  <span class="access-icon"><i class="pi pi-shopping-cart"></i></span>
+                  <span class="access-link">{{ $t('dashboard.access-orders') }}</span>
+                </router-link>
+                <router-link to="/warehouses" class="access-btn access-btn--sidebar">
+                  <span class="access-icon"><i class="pi pi-building"></i></span>
+                  <span class="access-link">{{ $t('dashboard.access-inventory') }}</span>
+                </router-link>
+              </div>
+            </div>
+          </aside>
+          <div class="dashboard-charts-col">
+            <section class="rotation rotation--beside-access" :aria-label="$t('common.charts')">
+              <div class="rotation-row rotation-row--fluid">
+                <div class="rotation-card">
+                  <h3>{{ $t('dashboard.chart-highest-turnover') }}</h3>
+                  <div class="rotation-chart-wrap">
+                    <Chart class="char" type="bar" :data="rotationData" :options="rotationOptions" />
+                  </div>
+                </div>
+                <div class="rotation-card">
+                  <h3>{{ $t('dashboard.chart-lowest-turnover') }}</h3>
+                  <div class="rotation-chart-wrap">
+                    <Chart class="char" type="bar" :data="rotationData" :options="rotationOptions" />
+                  </div>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       </div>
 
-      <!-- Rotation charts -->
-      <section class="rotation">
-        <div class="rotation-row">
-          <div class="rotation-card">
-            <h3>Highest Turnover</h3>
-            <Chart class="char" type="bar" :data="rotationData" :options="rotationOptions" />
-          </div>
-          <div class="rotation-card">
-            <h3>Lowest Turnover</h3>
-            <Chart class="char" type="bar" :data="rotationData" :options="rotationOptions" />
-          </div>
-        </div>
-      </section>
-
       <!-- Expiration risk table -->
       <section class="risk">
         <div class="risk-card">
-          <h3>Expiration Risk <span class="badge">Highest</span></h3>
+          <h3 class="risk-section-title">
+            {{ $t('dashboard.expiration-risk') }}
+            <span :class="riskBadgeClass(overallExpirationRisk)">
+              {{ $t('dashboard.risk-level-' + overallExpirationRisk) }}
+            </span>
+          </h3>
           <table class="risk-table">
             <thead>
             <tr>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Expiration Date</th>
-              <th>Current Stock</th>
-              <th>Minimum Stock</th>
-              <th>Price</th>
+              <th>{{ $t('dashboard.table-name') }}</th>
+              <th>{{ $t('dashboard.table-type') }}</th>
+              <th>{{ $t('dashboard.table-expiration') }}</th>
+              <th>{{ $t('dashboard.table-risk') }}</th>
+              <th>{{ $t('dashboard.table-current-stock') }}</th>
+              <th>{{ $t('dashboard.table-min-stock') }}</th>
+              <th>{{ $t('dashboard.table-price') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -164,6 +254,11 @@ export default {
               <td>{{ product.name }}</td>
               <td>{{ product.type }}</td>
               <td>{{ product.expiration }}</td>
+              <td>
+                <span class="risk-badge risk-badge--compact" :class="'risk-badge--' + product.riskLevel">
+                  {{ $t('dashboard.risk-level-' + product.riskLevel) }}
+                </span>
+              </td>
               <td>{{ product.currentStock }}</td>
               <td>{{ product.minStock }}</td>
               <td>{{ product.price }}</td>
@@ -207,7 +302,7 @@ export default {
 .dashboard-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem;
+  gap: 1.25rem;
 }
 .dashboard-card {
   background: #fff;
@@ -219,8 +314,101 @@ export default {
   color: #323130;
   font-size: 1.5rem;
 }
+
+/* KPIs superiores (resumen + alertas): más compactos */
+.dashboard-row .dashboard-card {
+  padding: 1rem 1.15rem;
+  font-size: 0.8125rem;
+  border-radius: 12px;
+  flex: 1 1 260px;
+  min-width: 220px;
+}
+.dashboard-row .resumen-title,
+.dashboard-row .alerts h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+  color: #111111;
+}
+.dashboard-row .resumen ul,
+.dashboard-row .resumen li {
+  font-size: 0.8125rem;
+}
+.dashboard-row .resumen-info li {
+  margin-bottom: 0.4rem;
+  font-size: 0.8125rem;
+  gap: 0.35rem;
+}
+.dashboard-row .resumen-icon svg {
+  width: 16px;
+  height: 16px;
+}
+.dashboard-row .alerts {
+  font-size: 0.8125rem;
+}
+.dashboard-row .alert-item {
+  margin-bottom: 0.5rem;
+}
+.dashboard-row .resumen-flex {
+  gap: 1rem;
+}
+
+/* Columna estrecha (accesos) + columna ancha (gráficos) */
+.dashboard-access-charts {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 1.25rem;
+  width: 100%;
+  min-width: 0;
+}
+.dashboard-access-col {
+  flex: 0 0 clamp(150px, 18vw, 210px);
+  min-width: 0;
+}
+.dashboard-charts-col {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.dashboard-card.access--sidebar {
+  padding: 1rem 0.75rem;
+  margin: 0;
+  min-width: 0;
+  font-size: 0.875rem;
+  height: 100%;
+  box-sizing: border-box;
+}
+.access-row--sidebar {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 0.45rem;
+  margin-top: 0;
+}
+.access-btn--sidebar {
+  min-width: 0;
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.8125rem;
+  gap: 0.45rem;
+  justify-content: flex-start;
+  border-radius: 10px;
+}
+.access-btn--sidebar .access-icon {
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+.access-btn--sidebar .access-link {
+  font-size: 0.8125rem;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .resumen h2, .alertas h2, .accesos h2 {
-  color: #6E0081;
+  color: #111111;
   font-size: 2rem;
   margin-bottom: 1rem;
 }
@@ -264,10 +452,17 @@ hr {
   margin: 0.5rem 0;
 }
 .access-title {
-  color: #26021D;
+  color: #111111;
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 1rem;
+}
+.access-title.access-title--sidebar {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.65rem;
+  line-height: 1.25;
+  color: #111111;
 }
 .access-row {
   display: flex;
@@ -276,7 +471,7 @@ hr {
   margin-top: 0.5rem;
 }
 .access-btn {
-  background: #f5f5f7;
+  background: #ffffff;
   border: 1px solid rgba(60, 60, 67, 0.1);
   color: #6E0081;
   border-radius: 14px;
@@ -292,7 +487,7 @@ hr {
   min-width: 160px;
 }
 .access-btn:hover {
-  background: #ebebed;
+  background: #f5f5f5;
   color: #59033A;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
@@ -319,6 +514,11 @@ hr {
   flex-direction: column;
   align-items: center;
 }
+.rotation--beside-access {
+  padding: 0;
+  align-items: stretch;
+  width: 100%;
+}
 .rotation-row {
   display: flex;
   gap: 2rem;
@@ -330,6 +530,15 @@ hr {
   justify-items: center;
   justify-content: center;
 }
+.rotation-row--fluid {
+  width: 100%;
+  max-width: none;
+  margin-top: 0;
+  height: auto;
+  min-height: 300px;
+  align-items: stretch;
+  gap: 1rem;
+}
 
 .rotation-card {
   background: #fff;
@@ -339,60 +548,126 @@ hr {
   flex: 1;
   font-size: 1.5rem;
 }
+.rotation--beside-access .rotation-card {
+  padding: 1rem 1.15rem;
+  font-size: 1rem;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+}
+.rotation--beside-access .rotation-card h3 {
+  font-size: 1.05rem;
+  margin: 0 0 0.5rem;
+  font-weight: 600;
+  color: #111111;
+}
 
 .rotation-card .char {
   width: 100%;
   height: 100%;
   font-size: 2rem;
 }
+.rotation-chart-wrap {
+  flex: 1 1 auto;
+  min-height: 200px;
+  width: 100%;
+  position: relative;
+}
+.rotation--beside-access .rotation-card .char {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 200px;
+  max-height: 320px;
+}
 
 .risk-card {
   background: #ffffff;
-  padding: 2rem;
+  padding: 1rem 1.25rem 1.15rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
 }
 
-.risk-card h3 {
-  color: #6E0081;
-  font-size: 3rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
+.risk-section-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  color: #111111;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
   font-family: 'Poppins', sans-serif;
 }
 
 .risk-table {
-  width: 1400px;
+  width: 100%;
+  max-width: 1400px;
   background: #fff;
   border-collapse: collapse;
-  font-size: 1rem;
-  margin-top: 1rem;
+  font-size: 0.875rem;
+  margin-top: 0.35rem;
 }
 .risk-table th,
 .risk-table td {
-  padding: 0.75rem;
+  padding: 0.45rem 0.5rem;
   border-bottom: 1px solid #ddd;
   text-align: left;
-  font-size: 1.2rem;
+  font-size: 0.9rem;
+  line-height: 1.35;
 }
 .risk-table th {
-  background-color: #f5f5f5;
+  background-color: #ffffff;
   font-weight: bold;
 }
-.badge {
-  background: #6E0081;
-  color: white;
+.risk-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
   padding: 0.2rem 0.6rem;
-  font-size: 1rem;
-  border-radius: 0.5rem;
-  margin-left: 0.5rem;
+  border-radius: 999px;
+  margin-left: 0.35rem;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+
+.risk-badge--bajo {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+.risk-badge--moderado {
+  background: #eab308;
+  color: #1a1a1a;
+}
+
+.risk-badge--medio {
+  background: #f59e0b;
+  color: #1a1a1a;
+}
+
+.risk-badge--alto {
+  background: #ea580c;
+  color: #ffffff;
+}
+
+.risk-badge--critico {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.risk-badge--compact {
+  margin-left: 0;
+  font-size: 0.68rem;
+  padding: 0.15rem 0.45rem;
 }
 
 .risk {
   background: #ffffff;
-  padding: 2rem;
+  padding: 1rem 1.25rem 1.25rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -405,6 +680,22 @@ hr {
   }
   .dashboard-main {
     margin-left: 0;
+  }
+  .dashboard-access-charts {
+    flex-direction: column;
+  }
+  .dashboard-access-col {
+    flex: 1 1 auto;
+    max-width: none;
+    width: 100%;
+  }
+  .access-row--sidebar {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .access-btn--sidebar {
+    flex: 1 1 140px;
+    width: auto;
   }
   .access-row {
     flex-direction: column;
@@ -450,10 +741,10 @@ hr {
   height: auto;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(38,2,29,0.07);
-  background: #f5f5f7;
+  background: #ffffff;
 }
 .resumen-title {
-  color: #6E0081;
+  color: #111111;
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 1.2rem;

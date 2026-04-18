@@ -3,18 +3,18 @@
     <template #title>
       <div class="catalog-header">
         <span class="catalog-info">
-          <strong>Catalog Name:</strong> {{ catalog?.name }} |
-          <strong>Created:</strong> {{ formatDate(catalog?.dateCreated) }}
+          <strong>{{ $t('catalog.catalog-name-prefix') }}</strong> {{ catalog?.name }} |
+          <strong>{{ $t('catalog.created-label') }}</strong> {{ formatDate(catalog?.dateCreated) }}
         </span>
         <div class="actions">
-          <Button label="Publish" @click="onPublish" severity="info" class="publish" />
-          <Button label="Edit" @click="goToEdit" class="edit" />
+          <Button :label="$t('catalog.publish')" @click="onPublish" severity="info" class="publish" />
+          <Button :label="$t('catalog.edit')" @click="goToEdit" class="edit" />
         </div>
       </div>
     </template>
 
     <template #content>
-      <h3>Products in catalog</h3>
+      <h3>{{ $t('catalog.products-in-catalog') }}</h3>
       <DataTable
           :value="catalogItems"
           :paginator="true"
@@ -22,17 +22,16 @@
           :rowsPerPageOptions="[5, 10, 25]"
           class="p-datatable-striped"
       >
-        <Column field="name" header="Name" />
-        <Column field="content" header="Content">
+        <Column field="name" :header="$t('catalog.name')" />
+        <Column field="content" :header="$t('catalog.col-content')">
           <template #body="{ data }">{{ data.content }}ml</template>
         </Column>
-        <Column field="productType" header="Type" />
-        <Column field="brand" header="Brand" />
-        <Column header="Price">
+        <Column field="productType" :header="$t('catalog.col-type')" />
+        <Column field="brand" :header="$t('catalog.brand')" />
+        <Column :header="$t('catalog.col-price')">
           <template #body="{ data }">{{ formatPrice(data.unitPrice) }}</template>
         </Column>
-        <Column header="Actions" style="width: 100px;">
-          console.log('[CatalogItem] data en botón eliminar:', data);
+        <Column :header="$t('catalog.actions')" style="width: 100px;">
           <template #body="{ data }">
             <Button icon="pi pi-trash" severity="danger" text @click="deleteItem(data.id)" />
           </template>

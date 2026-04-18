@@ -5,7 +5,7 @@
         <div class="actions">
           <router-link to="/catalog" class="new-order-button">
             <i class="pi pi-plus" style="margin-right: 0.5rem;"></i>
-            New Order
+            {{ $t('orders.new-order') }}
           </router-link>
         </div>
 
@@ -20,11 +20,9 @@ import PurchaseOrderListComponent from "@/order-operation-and-monitoring/compone
 import { PurchaseOrderService } from "@/order-operation-and-monitoring/services/purchase-order.service.js";
 import SideNavbar from "@/public/components/side-navbar.vue";
 import ToolbarContent from "@/public/components/toolbar-content.component.vue";
-import {$t} from "@primeuix/styled";
 
 export default {
   name: 'PurchaseOrder',
-  methods: {$t},
   components: {
     ToolbarContent,
     SideNavbar,
@@ -55,7 +53,7 @@ export default {
 }
 
 .order-container-page {
-  background-color: #f7eddc;
+  background-color: #ffffff;
   min-height: 100vh;
   padding: 2rem;
 }

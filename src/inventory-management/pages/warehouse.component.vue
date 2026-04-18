@@ -79,7 +79,7 @@ export default {
               :label="($t('warehouses.create'))"
               class="create-button p-button-raised p-button-rounded"
               @click="navigateToCreate"
-              aria-label="Create a new Warehouse"
+              :aria-label="$t('warehouses.create')"
               :disabled="warehousesCount >= maxWarehouses"
           />
         </div>
@@ -90,7 +90,7 @@ export default {
 
 <style scoped>
 .warehouse-bg {
-  background: #F7EDDC;
+  background: #ffffff;
   min-height: 100vh;
   display: flex;
 }

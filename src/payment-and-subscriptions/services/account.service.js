@@ -1,4 +1,5 @@
 import httpInstance from "@/shared/services/http.instance.js";
+import { isFrontendOnly } from "@/shared/config/frontend-only.js";
 
 const accountStatusEndpoint = import.meta.env.VITE_ACCOUNT_STATUS_ENDPOINT_PATH;
 
@@ -19,6 +20,9 @@ export class AccountService {
     }
 
     async getAccountStatus(accountId) {
+        if (isFrontendOnly()) {
+            return { accountStatus: 'ACTIVE' };
+        }
         const endpoint = accountStatusEndpoint.replace('{accountId}', accountId);
         const response = await httpInstance.get(endpoint, {
         });
@@ -27,6 +31,9 @@ export class AccountService {
     }
 
     async getCurrentAccountBenefitsLimits() {
+        if (isFrontendOnly()) {
+            return { limits: [] };
+        }
         const accountId = this.getCurrentAccountId();
         const endpoint = this.accountCurrentBenefitsLimitsEndpoint.replace('{accountId}', accountId);
 

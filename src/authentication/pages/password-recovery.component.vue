@@ -29,11 +29,11 @@ export default {
 
       // Validate email
       if (!this.form.email) {
-        this.errors.email = 'Email is required';
+        this.errors.email = this.$t('password-recovery.email-required');
         return;
       }
       if (!this.validateEmail(this.form.email)) {
-        this.errors.email = 'Please enter a valid email';
+        this.errors.email = this.$t('password-recovery.email-invalid');
         return;
       }
 
@@ -45,8 +45,8 @@ export default {
       } catch (err) {
         this.toast.add({
           severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to send recovery email. Please try again.',
+          summary: this.$t('toast.error'),
+          detail: this.$t('password-recovery.error-send'),
           life: 3000
         })
         console.error(err);
@@ -64,10 +64,10 @@ export default {
 <template>
   <div class="recover-container">
     <div class="recover-header">
-      <h2>Recover password</h2>
+      <h2>{{ $t('password-recovery.title') }}</h2>
     </div>
     <p class="recover-description">
-      Enter your email address. We'll send you a message to recover your account.
+      {{ $t('password-recovery.description') }}
     </p>
 
     <form @submit.prevent="onSubmit" class="recover-form">
@@ -75,14 +75,14 @@ export default {
         <input
             v-model="form.email"
             type="email"
-            placeholder="Email"
+            :placeholder="$t('password-recovery.placeholder-email')"
             class="form-input"
         />
         <span v-if="errors.email" class="error-message">{{ errors.email }}</span>
       </div>
 
       <button class="send-button-recover" type="submit">
-        Send
+        {{ $t('password-recovery.send') }}
       </button>
     </form>
   </div>
@@ -92,7 +92,7 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&family=Roboto:wght@400;500;700&display=swap');
 
 .recover-container {
-  background-color: #F7EDDC;
+  background-color: #ffffff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;

@@ -122,7 +122,7 @@ export default {
 <style scoped>
 
 .products-bg {
-  background: #F7EDDC;
+  background: #ffffff;
   min-height: 100vh;
   display: flex;
 }

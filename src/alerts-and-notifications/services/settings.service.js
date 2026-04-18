@@ -7,8 +7,11 @@
  */
 
 import axios from 'axios';
+import { isFrontendOnly } from '@/shared/config/frontend-only.js';
 
 const API_URL = 'http://localhost:3000';
+
+const MOCK_SETTINGS_ROW = { id: 1, expirationAlertMargin: 7, stockAlertEnabled: true };
 
 /**
  * Fetches current alert settings from the API
@@ -17,6 +20,7 @@ const API_URL = 'http://localhost:3000';
  */
 export const fetchSettings = async () => {
   try {
+    if (isFrontendOnly()) return [MOCK_SETTINGS_ROW];
     const response = await axios.get(`${API_URL}/settings`);
     return response.data;
   } catch (error) {
@@ -33,6 +37,7 @@ export const fetchSettings = async () => {
  */
 export const updateSettings = async (settings) => {
   try {
+    if (isFrontendOnly()) return { ...MOCK_SETTINGS_ROW, ...settings };
     const response = await axios.put(`${API_URL}/settings`, settings);
     return response.data;
   } catch (error) {
@@ -47,6 +52,7 @@ export const updateSettings = async (settings) => {
  */
 export const getExpirationSettings = async () => {
   try {
+    if (isFrontendOnly()) return MOCK_SETTINGS_ROW;
     const response = await axios.get(`${API_URL}/settings`);
     return response.data[0]; // Asumimos que solo hay un registro de settings
   } catch (error) {
@@ -66,6 +72,7 @@ export const updateExpirationSettings = async (days) => {
   }
 
   try {
+    if (isFrontendOnly()) return { ...MOCK_SETTINGS_ROW, expirationAlertMargin: days };
     const response = await axios.patch(`${API_URL}/settings/1`, {
       expirationAlertMargin: days
     });

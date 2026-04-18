@@ -451,7 +451,7 @@ export default {
         </template>
       </pv-dialog>
 
-      <pv-dialog v-model:visible="deleteProductDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">
+      <pv-dialog v-model:visible="deleteProductDialog" :style="{ width: '450px' }" :header="$t('common.confirmation')" :modal="true">
         <div class="flex items-center gap-4">
           <i class="pi pi-exclamation-triangle !text-3xl" />
           <span>{{ $t('inventory.confirm-delete-product') }}</span>

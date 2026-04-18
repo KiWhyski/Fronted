@@ -65,27 +65,27 @@ export default {
 
     <!-- Login Section -->
     <div class="login-section">
-      <h2>Sign In</h2>
+      <h2>{{ $t('sign-in.title') }}</h2>
       <form @submit.prevent="goToConfirmation">
         <div class="form-group">
-          <label for="username">Email</label>
+          <label for="username">{{ $t('sign-in.email') }}</label>
           <input
               id="username"
               v-model="username"
               type="email"
-              placeholder="email@example.com"
+              :placeholder="$t('sign-in.placeholder-email')"
               class="form-input"
           />
         </div>
 
         <div class="form-group">
-          <label for="password">Password</label>
+          <label for="password">{{ $t('sign-in.password') }}</label>
           <div class="password-input">
             <input
                 id="password"
                 v-model="password"
                 :type="hide ? 'password' : 'text'"
-                placeholder="Enter your password"
+                :placeholder="$t('sign-in.placeholder-password')"
                 class="form-input"
             />
             <button
@@ -105,16 +105,16 @@ export default {
                 v-model="rememberMe"
             />
             <span class="checkmark"></span>
-            <span>Remember me</span>
+            <span>{{ $t('sign-in.rememberMe') }}</span>
           </label>
         </div>
 
         <button type="submit" class="sign-in-button" @click="onSignIn">
-          Sign In
+          {{ $t('sign-in.signIn') }}
         </button>
 
         <div class="forgot-password">
-          <a href="#" @click.prevent="goToPasswordRecovery">{{ $t('login.forgotPassword') }}</a>
+          <a href="#" @click.prevent="goToPasswordRecovery">{{ $t('sign-in.forgotPassword') }}</a>
         </div>
 
         <p class="register-row">
@@ -131,7 +131,7 @@ export default {
           </button>
         </p>
 
-        <div class="divider">or</div>
+        <div class="divider">{{ $t('sign-in.or') }}</div>
 
         <div class="social-login">
           <button type="button" class="social-button">

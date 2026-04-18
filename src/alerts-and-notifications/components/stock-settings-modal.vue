@@ -1,5 +1,6 @@
 <script>
 import axios from "axios";
+import { isFrontendOnly } from "@/shared/config/frontend-only.js";
 
 const API_BASE = "http://localhost:3000";
 
@@ -26,6 +27,12 @@ export default {
     async loadProducts() {
       try {
         this.loading = true;
+        if (isFrontendOnly()) {
+          this.products = [
+            { id: '1', name: 'Producto demo', current: 10, min: 5 },
+          ];
+          return;
+        }
         const res = await axios.get(`${API_BASE}/products`);
         this.products = res.data;
       } catch (err) {
@@ -38,6 +45,10 @@ export default {
     async updateMinStock(product) {
       try {
         this.saving = true;
+        if (isFrontendOnly()) {
+          this.$emit('stock-updated');
+          return;
+        }
         await axios.put(`${API_BASE}/products/${product.id}`, {
           ...product,
           min: product.min

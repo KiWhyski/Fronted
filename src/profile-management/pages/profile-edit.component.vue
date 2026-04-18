@@ -1,6 +1,7 @@
 <script>
 import { ref, reactive, onMounted } from 'vue';
 import { useToast } from 'primevue/usetoast';
+import { useI18n } from 'vue-i18n';
 import profileService from "@/profile-management/services/profile.service.js";
 import userService from "@/authentication/services/user.service.js";
 
@@ -8,6 +9,7 @@ export default {
   name: 'profile-edit',
   setup() {
     const toast = useToast();
+    const { t } = useI18n();
 
     const hideActual = ref(true);
     const hideNew = ref(true);
@@ -39,16 +41,16 @@ export default {
 
     const validateForm = () => {
       let isValid = true;
-      errors.name = !form.name ? 'Name is required' : '';
-      errors.email = !form.email ? 'Email is required' :
-          !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) ? 'Invalid email format' : '';
-      errors.businessName = !form.businessName ? 'Business name is required' : '';
-      errors.businessAddress = !form.businessAddress ? 'Business address is required' : '';
-      errors.phone = !form.phone ? 'Phone is required' : '';
+      errors.name = !form.name ? t('profile.errors.name-required') : '';
+      errors.email = !form.email ? t('profile.errors.email-required') :
+          !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) ? t('profile.errors.email-invalid') : '';
+      errors.businessName = !form.businessName ? t('profile.errors.business-name-required') : '';
+      errors.businessAddress = !form.businessAddress ? t('profile.address-required') : '';
+      errors.phone = !form.phone ? t('profile.errors.phone-required') : '';
 
       if (form.newPassword || form.confirmPassword) {
         if (form.newPassword !== form.confirmPassword) {
-          errors.passwordMismatch = 'Passwords do not match';
+          errors.passwordMismatch = t('profile.password-mismatch');
           isValid = false;
         } else {
           errors.passwordMismatch = '';
@@ -62,8 +64,8 @@ export default {
       if (!validateForm()) {
         toast.add({
           severity: 'error',
-          summary: 'Validation Error',
-          detail: 'Please check the form for errors',
+          summary: t('profile.errors.validation-summary'),
+          detail: t('profile.errors.validation-detail'),
           life: 3000
         });
         return;
@@ -73,16 +75,16 @@ export default {
         await profileService.editProfile(form);
         toast.add({
           severity: 'success',
-          summary: 'Success',
-          detail: 'Profile saved successfully',
+          summary: t('toast.success'),
+          detail: t('profile.errors.save-success'),
           life: 3000
         });
         resetForm();
       } catch (error) {
         toast.add({
           severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to save profile',
+          summary: t('toast.error'),
+          detail: t('profile.errors.save-error'),
           life: 3000
         });
       }
@@ -133,16 +135,16 @@ export default {
   <div class="profile-edit-container profile-edit--apple">
     <div class="profile-left">
       <div class="password-section">
-        <h2>Change Password</h2>
+        <h2>{{ $t('profile.change-password-title') }}</h2>
 
         <div class="form-group">
-          <label>Current password</label>
+          <label>{{ $t('profile.current-password') }}</label>
           <div class="password-input">
             <input
                 :type="hideActual ? 'password' : 'text'"
                 v-model="form.currentPassword"
                 class="form-input"
-                placeholder="Enter current password"
+                :placeholder="$t('profile.placeholder-current-password')"
             />
             <button
                 type="button"
@@ -155,13 +157,13 @@ export default {
         </div>
 
         <div class="form-group">
-          <label>New password</label>
+          <label>{{ $t('profile.new-password') }}</label>
           <div class="password-input">
             <input
                 :type="hideNew ? 'password' : 'text'"
                 v-model="form.newPassword"
                 class="form-input"
-                placeholder="Enter new password"
+                :placeholder="$t('profile.placeholder-new-password')"
             />
             <button
                 type="button"
@@ -174,13 +176,13 @@ export default {
         </div>
 
         <div class="form-group">
-          <label>Confirm password</label>
+          <label>{{ $t('profile.confirm-password') }}</label>
           <div class="password-input">
             <input
                 :type="hideConfirm ? 'password' : 'text'"
                 v-model="form.confirmPassword"
                 class="form-input"
-                placeholder="Confirm new password"
+                :placeholder="$t('profile.placeholder-confirm-new-password')"
             />
             <button
                 type="button"
@@ -196,24 +198,24 @@ export default {
         </div>
 
         <div class="actions">
-          <button class="save-button" @click="save">Save</button>
-          <button class="cancel-button" @click="cancel">Cancel</button>
+          <button class="save-button" @click="save">{{ $t('components.save') }}</button>
+          <button class="cancel-button" @click="cancel">{{ $t('components.cancel') }}</button>
         </div>
       </div>
     </div>
 
     <div class="profile-right">
       <div class="profile-section">
-        <h2>Profile Information</h2>
+        <h2>{{ $t('profile.profile-info-title') }}</h2>
 
         <div class="form-group">
-          <label>Name</label>
+          <label>{{ $t('profile.name-label') }}</label>
           <div class="input-with-icon">
             <input
                 type="text"
                 v-model="form.name"
                 class="form-input"
-                placeholder="Enter your name"
+                :placeholder="$t('profile.placeholder-name')"
             />
             <i class="pi pi-pencil"></i>
           </div>
@@ -221,13 +223,13 @@ export default {
         </div>
 
         <div class="form-group">
-          <label>Email</label>
+          <label>{{ $t('profile.email-label') }}</label>
           <div class="input-with-icon">
             <input
                 type="email"
                 v-model="form.email"
                 class="form-input"
-                placeholder="Enter your email"
+                :placeholder="$t('profile.placeholder-email')"
             />
             <i class="pi pi-pencil"></i>
           </div>
@@ -235,13 +237,13 @@ export default {
         </div>
 
         <div class="form-group">
-          <label>Business</label>
+          <label>{{ $t('profile.business-label') }}</label>
           <div class="input-with-icon">
             <input
                 type="text"
                 v-model="form.businessName"
                 class="form-input"
-                placeholder="Enter business name"
+                :placeholder="$t('profile.placeholder-business')"
             />
             <i class="pi pi-pencil"></i>
           </div>
@@ -249,13 +251,13 @@ export default {
         </div>
 
         <div class="form-group">
-          <label>Phone</label>
+          <label>{{ $t('profile.phone-label') }}</label>
           <div class="input-with-icon">
             <input
                 type="text"
                 v-model="form.phone"
                 class="form-input"
-                placeholder="Enter phone number"
+                :placeholder="$t('profile.placeholder-phone')"
             />
             <i class="pi pi-pencil"></i>
           </div>
@@ -263,13 +265,13 @@ export default {
         </div>
 
         <div class="form-group">
-          <label>Business address</label>
+          <label>{{ $t('profile.business-address') }}</label>
           <div class="input-with-icon">
             <input
                 type="text"
                 v-model="form.businessAddress"
                 class="form-input"
-                placeholder="Enter business address"
+                :placeholder="$t('profile.placeholder-business-address')"
             />
             <button class="map-button">
               <i class="pi pi-map-marker"></i>
@@ -279,8 +281,8 @@ export default {
         </div>
 
         <div class="actions">
-          <button class="save-button" @click="save">Save</button>
-          <button class="cancel-button" @click="cancel">Cancel</button>
+          <button class="save-button" @click="save">{{ $t('components.save') }}</button>
+          <button class="cancel-button" @click="cancel">{{ $t('components.cancel') }}</button>
         </div>
       </div>
     </div>
@@ -292,7 +294,10 @@ export default {
   --apple-blue: #007aff;
   --apple-text: #1d1d1f;
   --apple-secondary: rgba(60, 60, 67, 0.6);
-  --apple-border: rgba(60, 60, 67, 0.18);
+  --apple-border: rgba(60, 60, 67, 0.12);
+  --apple-field-bg: #f2f2f7;
+  --apple-field-bg-focus: #ffffff;
+  --apple-placeholder: rgba(60, 60, 67, 0.35);
   --apple-bg: #ffffff;
   --apple-card: #ffffff;
   --apple-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -343,26 +348,56 @@ export default {
   color: var(--apple-secondary);
   font-weight: 400;
   font-size: 0.8125rem;
+  letter-spacing: -0.01em;
 }
 
+/* Campos estilo Apple (iOS / macOS): fondo gris sistema, foco blanco + anillo azul */
 .profile-edit--apple .form-input {
+  -webkit-appearance: none;
+  appearance: none;
   width: 100%;
-  padding: 0.65rem 0.75rem;
-  border: 1px solid var(--apple-border);
+  min-height: 44px;
+  padding-left: 14px;
+  padding-right: 14px;
+  border: 1px solid transparent;
   border-radius: 10px;
   font-family: var(--apple-font);
-  font-size: 1.0625rem;
+  font-size: 17px;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
   color: var(--apple-text);
-  background-color: #fafafa;
+  background-color: var(--apple-field-bg);
+  background-clip: padding-box;
   outline: none;
-  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: inset 0 0 0 0.5px rgba(60, 60, 67, 0.14);
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
   box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+
+.profile-edit--apple .form-input::placeholder {
+  color: var(--apple-placeholder);
+  opacity: 1;
+}
+
+.profile-edit--apple .form-input:hover:not(:focus) {
+  background-color: #ebebf0;
 }
 
 .profile-edit--apple .form-input:focus {
   border-color: var(--apple-blue);
-  background-color: #fff;
-  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
+  background-color: var(--apple-field-bg-focus);
+  box-shadow:
+    0 0 0 3px rgba(0, 122, 255, 0.22),
+    inset 0 0 0 0.5px rgba(0, 122, 255, 0.35);
+}
+
+.profile-edit--apple .form-input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .profile-edit--apple .password-input,
@@ -370,32 +405,53 @@ export default {
   position: relative;
 }
 
+.profile-edit--apple .input-with-icon .form-input {
+  padding-right: 2.5rem;
+}
+
+.profile-edit--apple .password-input .form-input {
+  padding-right: 2.75rem;
+}
+
 .profile-edit--apple .toggle-password,
 .profile-edit--apple .map-button {
   position: absolute;
-  right: 10px;
+  right: 8px;
   top: 50%;
   transform: translateY(-50%);
-  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: transparent;
   border: none;
   color: var(--apple-secondary);
   cursor: pointer;
-  padding: 0.35rem;
-  border-radius: 6px;
+  padding: 0;
+  border-radius: 8px;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .profile-edit--apple .toggle-password:hover,
 .profile-edit--apple .map-button:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(60, 60, 67, 0.08);
+  color: var(--apple-text);
+}
+
+.profile-edit--apple .toggle-password:active,
+.profile-edit--apple .map-button:active {
+  background: rgba(60, 60, 67, 0.12);
 }
 
 .profile-edit--apple .input-with-icon i {
   position: absolute;
-  right: 12px;
+  right: 14px;
   top: 50%;
   transform: translateY(-50%);
+  pointer-events: none;
   color: rgba(60, 60, 67, 0.45);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 
 .profile-edit--apple .error-message {

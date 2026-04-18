@@ -13,9 +13,9 @@ export default {
 <template>
   <div class="alert-item">
     <p class="item-name">{{ alert.name }}</p>
-    <p v-if="alert.stock !== undefined" class="item-critical">Actual stock: {{ alert.stock }}</p>
-    <p v-if="alert.minStock !== undefined" class="item-min">Minimum stock: {{ alert.minStock }}</p>
-    <p v-if="alert.expiresIn !== undefined" class="item-expiring">Expires in {{ alert.expiresIn }} days!</p>
+    <p v-if="alert.stock !== undefined" class="item-critical">{{ $t('alerts.actual-stock') }} {{ alert.stock }}</p>
+    <p v-if="alert.minStock !== undefined" class="item-min">{{ $t('alerts.min-stock') }} {{ alert.minStock }}</p>
+    <p v-if="alert.expiresIn !== undefined" class="item-expiring">{{ $t('alerts.expires-in-days', { days: alert.expiresIn }) }}</p>
   </div>
 </template>
 

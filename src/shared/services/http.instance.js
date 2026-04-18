@@ -4,6 +4,8 @@
  */
 import axios from "axios";
 import {authenticationInterceptor} from "@/authentication/services/authentication.interceptor.js";
+import { isFrontendOnly } from "@/shared/config/frontend-only.js";
+import { resolveFrontendMockPayload } from "@/shared/services/http.frontend-mock.js";
 
 /**
  * Configured axios instance for making HTTP requests
@@ -21,5 +23,19 @@ const httpInstance = axios.create({
 
 // Add request interceptor to add authentication token
 httpInstance.interceptors.request.use(authenticationInterceptor);
+
+if (isFrontendOnly()) {
+  httpInstance.defaults.adapter = async (config) => {
+    const data = resolveFrontendMockPayload(config);
+    return {
+      data,
+      status: 200,
+      statusText: "OK",
+      headers: {},
+      config,
+      request: {},
+    };
+  };
+}
 
 export default httpInstance;

@@ -32,17 +32,17 @@ export default {
       const authStore = useAuthenticationStore();
 
       if (!this.form.password) {
-        this.errors.password = 'Password is required';
+        this.errors.password = this.$t('reset-password.error-password-required');
         return;
       }
 
       if (this.form.password.length < 6) {
-        this.errors.password = 'Password must be at least 6 characters';
+        this.errors.password = this.$t('reset-password.error-password-length');
         return;
       }
 
       if (this.form.password !== this.form.confirmPassword) {
-        this.errors.confirmPassword = 'Passwords do not match';
+        this.errors.confirmPassword = this.$t('reset-password.error-mismatch');
         return;
       }
 
@@ -50,7 +50,7 @@ export default {
         const email = authStore.getRecoveryEmail();
 
         if (!email) {
-          this.errors.general = 'Recovery session expired. Please restart the process.';
+          this.errors.general = this.$t('reset-password.error-session');
           return;
         }
 
@@ -58,13 +58,13 @@ export default {
 
         this.toast.add({
           severity: 'success',
-          summary: 'Password Reset Successful',
-          detail: 'Your password has been reset successfully.',
+          summary: this.$t('reset-password.toast-success-title'),
+          detail: this.$t('reset-password.toast-success-detail'),
           life: 3000
         });
         this.$router.push('/sign-in');
       } catch (err) {
-        this.errors.general = 'Failed to reset password. Try again.';
+        this.errors.general = this.$t('reset-password.error-failed');
       } finally {
       }
     }
@@ -75,10 +75,10 @@ export default {
 <template>
   <div class="recover-container">
     <div class="recover-header">
-      <h2>Reset Password</h2>
+      <h2>{{ $t('reset-password.title') }}</h2>
     </div>
     <p class="recover-description">
-      Enter your new password below. Make sure it's strong and secure.
+      {{ $t('reset-password.description') }}
     </p>
 
     <form @submit.prevent="onSubmit" class="recover-form">
@@ -86,7 +86,7 @@ export default {
         <input
             v-model="form.password"
             type="password"
-            placeholder="New Password"
+            :placeholder="$t('reset-password.placeholder-new')"
             class="form-input"
         />
         <span v-if="errors.password" class="error-message">{{ errors.password }}</span>
@@ -96,7 +96,7 @@ export default {
         <input
             v-model="form.confirmPassword"
             type="password"
-            placeholder="Confirm Password"
+            :placeholder="$t('reset-password.placeholder-confirm')"
             class="form-input"
         />
         <span v-if="errors.confirmPassword" class="error-message">{{ errors.confirmPassword }}</span>
@@ -107,7 +107,7 @@ export default {
       </div>
 
       <button class="send-button-recover" type="submit">
-        Reset
+        {{ $t('reset-password.submit') }}
       </button>
     </form>
   </div>
@@ -117,7 +117,7 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&family=Roboto:wght@400;500;700&display=swap');
 
 .recover-container {
-  background-color: #F7EDDC;
+  background-color: #ffffff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;

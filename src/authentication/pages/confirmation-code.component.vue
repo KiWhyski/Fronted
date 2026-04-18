@@ -156,7 +156,7 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&family=Roboto:wght@400;500;700&display=swap');
 
 .confirmation-container {
-  background-color: #F7EDDC;
+  background-color: #ffffff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;

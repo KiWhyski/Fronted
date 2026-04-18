@@ -1,6 +1,6 @@
 <template>
   <div class="purchase-list-card">
-    <h2 class="recent-orders">Recent Orders</h2>
+    <h2 class="recent-orders">{{ $t('orders.recent-orders') }}</h2>
 
     <DataTable
         v-if="orders.length > 0"
@@ -9,38 +9,38 @@
         :paginator="true"
         :rows="5"
     >
-      <Column field="id" header="ID">
+      <Column field="id" :header="$t('common.col-id')">
         <template #body="{ data }">
           <span>{{ data.id }}</span>
         </template>
       </Column>
 
-      <Column header="Date">
+      <Column :header="$t('orders.col-date')">
         <template #body="{ data }">
           <span>{{ formatDate(data.orderDate ?? data.date ?? data._date) }}</span>
         </template>
       </Column>
 
-      <Column field="status" header="Status">
+      <Column field="status" :header="$t('orders.col-status')">
         <template #body="{ data }">
           <span>{{ data.status }}</span>
         </template>
       </Column>
 
-      <Column header="Products">
+      <Column :header="$t('orders.col-products')">
         <template #body="{ data }">
-          <span>{{ data.totalItems !== undefined ? data.totalItems + ' products' : 'No items' }}</span>
+          <span>{{ data.totalItems !== undefined ? $t('orders.products-count', { n: data.totalItems }) : $t('orders.no-items') }}</span>
         </template>
       </Column>
 
-      <Column header="Total">
+      <Column :header="$t('orders.col-total')">
         <template #body="{ data }">
           <span>{{ formatPrice(data.totalAmount) }}</span>
         </template>
       </Column>
     </DataTable>
 
-    <p v-else class="empty-text">No orders found.</p>
+    <p v-else class="empty-text">{{ $t('orders.none') }}</p>
   </div>
 </template>
 
@@ -127,7 +127,7 @@ export default {
   color: #5A033A;
 }
 .p-datatable-striped {
-  background-color: #f7eddc;
+  background-color: #ffffff;
 }
 .empty-text {
   font-size: 1.2rem;

@@ -24,7 +24,7 @@ export default {
 
 <style scoped>
 .inventory-bg {
-  background: #f7eddc;
+  background: #ffffff;
   min-height: 100vh;
   width: 100vw;
   display: flex;
