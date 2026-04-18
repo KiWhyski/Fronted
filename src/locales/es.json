@@ -11,7 +11,7 @@
     "createAccount": "Crea tu cuenta personal para acceder a todas las funciones de la plataforma",
     "register": "Registrarse",
     "invalid-credentials": "Credenciales inválidas. Por favor, verifica tu correo electrónico y contraseña.",
-    "placeholder-email": "correo@ejemplo.com",
+    "placeholder-email": "correo{'@'}ejemplo.com",
     "placeholder-password": "Introduce tu contraseña"
   },
   "common": {
@@ -305,7 +305,7 @@
     "col-price": "Precio",
     "actions": "Acciones",
     "supplier-email": "Correo del proveedor",
-    "supplier-placeholder": "proveedor@ejemplo.com",
+    "supplier-placeholder": "proveedor{'@'}ejemplo.com",
     "search": "Buscar",
     "see-all-products": "Ver todos los productos",
     "published-on": "Publicado el {date}"
