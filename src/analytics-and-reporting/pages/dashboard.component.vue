@@ -101,24 +101,24 @@ export default {
 
     const productsRaw = [
       {
-        name: 'Malbec Red Wine',
-        type: 'Spirit',
+        name: 'Manzana Fuji',
+        type: 'Manzana',
         expiration: addDays(new Date(), 50),
         currentStock: 20,
         minStock: 20,
         price: 20
       },
       {
-        name: 'White Wine',
-        type: 'Spirit',
+        name: 'Plátano de seda',
+        type: 'Plátano',
         expiration: addDays(new Date(), 18),
         currentStock: 20,
         minStock: 15,
         price: 20
       },
       {
-        name: 'Vodka Premium',
-        type: 'Spirit',
+        name: 'Fresa orgánica',
+        type: 'Fresa',
         expiration: addDays(new Date(), 6),
         currentStock: 10,
         minStock: 5,
@@ -209,7 +209,7 @@ export default {
             <div class="alerts-notify alerts-notify--danger">
               <div class="alerts-notify__head">
                 <span class="alerts-notify__badge" aria-hidden="true"><i class="pi pi-exclamation-triangle"></i></span>
-                <span class="alerts-notify__product">Whisky Escocés Premium</span>
+                <span class="alerts-notify__product">Mango Ataulfo premium</span>
               </div>
               <ul class="alerts-notify__lines">
                 <li>
@@ -234,7 +234,7 @@ export default {
             <div class="alerts-notify alerts-notify--warning">
               <div class="alerts-notify__head">
                 <span class="alerts-notify__badge alerts-notify__badge--warn" aria-hidden="true"><i class="pi pi-calendar-clock"></i></span>
-                <span class="alerts-notify__product">Malbec White Wine</span>
+                <span class="alerts-notify__product">Uva Red Globe</span>
               </div>
               <p class="alerts-notify__expire warning">{{ $t('dashboard.expires-in-days', { days: 8 }) }}</p>
             </div>

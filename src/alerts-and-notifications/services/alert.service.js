@@ -7,13 +7,13 @@ import { getBackendBaseUrl } from '@/shared/config/backend-url.js';
 const apiBase = () => getBackendBaseUrl();
 
 const MOCK_STOCK_ALERTS = [
-    new StockAlert({ id: 'demo-p-1', name: 'Vino tinto reserva', stock: 4, minStock: 10 }),
-    new StockAlert({ id: 'demo-p-2', name: 'Whisky 12 años', stock: 2, minStock: 5 }),
+    new StockAlert({ id: 'demo-p-1', name: 'Manzana Fuji', stock: 4, minStock: 10 }),
+    new StockAlert({ id: 'demo-p-2', name: 'Mango Ataulfo', stock: 2, minStock: 5 }),
 ];
 
 const MOCK_EXPIRATION_ALERTS = [
-    new ExpirationAlert({ id: 'demo-p-1', name: 'Vino tinto reserva', expiresIn: 5 }),
-    new ExpirationAlert({ id: 'demo-p-3', name: 'Cerveza artesanal', expiresIn: 12 }),
+    new ExpirationAlert({ id: 'demo-p-1', name: 'Manzana Fuji', expiresIn: 5 }),
+    new ExpirationAlert({ id: 'demo-p-3', name: 'Uva Red Globe', expiresIn: 12 }),
 ];
 
 /**
