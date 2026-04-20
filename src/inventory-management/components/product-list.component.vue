@@ -66,16 +66,15 @@ export default {
 <style scoped>
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-  padding: 1rem;
-}
-.product-grid-tile {
-  display: flex;
-  transition: transform 0.3s ease;
+  grid-template-columns: repeat(auto-fill, minmax(272px, 1fr));
+  gap: clamp(1.25rem, 3vw, 1.75rem);
+  padding: 0.25rem 0.5rem 2rem;
+  max-width: 1280px;
+  margin: 0 auto;
 }
 
-.product-grid-tile:hover {
-  transform: translateY(-10px);
+.product-grid-tile {
+  display: flex;
+  min-width: 0;
 }
 </style>

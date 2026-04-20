@@ -847,7 +847,7 @@ hr {
 }
 
 .risk-badge--bajo {
-  background: #16a34a;
+  background: var(--app-green-accent, #16a34a);
   color: #ffffff;
 }
 

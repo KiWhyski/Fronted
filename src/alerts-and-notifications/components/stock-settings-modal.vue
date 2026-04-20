@@ -1,8 +1,7 @@
 <script>
 import axios from "axios";
 import { isFrontendOnly } from "@/shared/config/frontend-only.js";
-
-const API_BASE = "http://localhost:3000";
+import { getBackendBaseUrl } from "@/shared/config/backend-url.js";
 
 export default {
   name: "stock-settings-modal",
@@ -15,13 +14,17 @@ export default {
   data() {
     return {
       products: [],
-      loading: true,
+      loading: false,
       error: null,
       saving: false
     };
   },
-  async mounted() {
-    await this.loadProducts();
+  watch: {
+    show(val) {
+      if (val) {
+        this.loadProducts();
+      }
+    }
   },
   methods: {
     async loadProducts() {
@@ -33,7 +36,13 @@ export default {
           ];
           return;
         }
-        const res = await axios.get(`${API_BASE}/products`);
+        const base = getBackendBaseUrl();
+        if (!base) {
+          this.products = [];
+          this.error = null;
+          return;
+        }
+        const res = await axios.get(`${base}/products`);
         this.products = res.data;
       } catch (err) {
         this.error = "Error loading products";
@@ -49,7 +58,9 @@ export default {
           this.$emit('stock-updated');
           return;
         }
-        await axios.put(`${API_BASE}/products/${product.id}`, {
+        const base = getBackendBaseUrl();
+        if (!base) return;
+        await axios.put(`${base}/products/${product.id}`, {
           ...product,
           min: product.min
         });
@@ -153,8 +164,10 @@ export default {
 
 .modal-header h2 {
   margin: 0;
-  color: #26021d;
-  font-size: 1.5rem;
+  color: #1d1d1f;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 .close-button {
@@ -167,7 +180,7 @@ export default {
 }
 
 .close-button:hover {
-  color: #26021d;
+  color: #1d1d1f;
 }
 
 .modal-body {
@@ -183,13 +196,13 @@ export default {
 .products-table td {
   padding: 1rem;
   text-align: left;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .products-table th {
-  background: #f8f8f8;
+  background: #f5f5f7;
   font-weight: 600;
-  color: #26021d;
+  color: #424245;
 }
 
 .stock-input {
@@ -200,22 +213,25 @@ export default {
 }
 
 .stock-input:focus {
-  border-color: #6e0081;
+  border-color: rgba(0, 0, 0, 0.12);
   outline: none;
+  box-shadow: none;
 }
 
 .save-button {
-  background: #6e0081;
+  background: var(--app-green-accent, #16a34a);
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease;
 }
 
 .save-button:hover {
-  background: #59033a;
+  background: var(--app-green-accent-hover, #15803d);
 }
 
 .save-button:disabled {

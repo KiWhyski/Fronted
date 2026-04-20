@@ -22,23 +22,25 @@ export default {
 <style scoped>
 .alert-item {
   margin-bottom: 1rem;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  padding-bottom: 0.65rem;
 }
 .item-name {
   font-weight: 600;
+  color: #1d1d1f;
+  letter-spacing: -0.01em;
 }
 .item-critical {
-  color: #d90429;
-  font-size: 0.95rem;
+  color: #b91c1c;
+  font-size: 0.9375rem;
 }
 .item-min {
-  font-size: 0.95rem;
-  color: #555;
+  font-size: 0.9375rem;
+  color: #6e6e73;
 }
 .item-expiring {
-  color: #d98c4a;
-  font-weight: bold;
-  font-size: 0.95rem;
+  color: #b45309;
+  font-weight: 600;
+  font-size: 0.9375rem;
 }
 </style>

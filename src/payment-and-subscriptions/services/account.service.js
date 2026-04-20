@@ -32,7 +32,7 @@ export class AccountService {
 
     async getCurrentAccountBenefitsLimits() {
         if (isFrontendOnly()) {
-            return { limits: [] };
+            return { maxProducts: 50, maxWarehouses: 5, limits: [] };
         }
         const accountId = this.getCurrentAccountId();
         const endpoint = this.accountCurrentBenefitsLimitsEndpoint.replace('{accountId}', accountId);

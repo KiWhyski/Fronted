@@ -2,8 +2,19 @@ import axios from "axios";
 import { StockAlert, ExpirationAlert } from "@/alerts-and-notifications/model/alert.entity.js";
 import { getExpirationSettings } from './settings.service.js';
 import { isFrontendOnly } from '@/shared/config/frontend-only.js';
+import { getBackendBaseUrl } from '@/shared/config/backend-url.js';
 
-const API_BASE = "http://localhost:3000";
+const apiBase = () => getBackendBaseUrl();
+
+const MOCK_STOCK_ALERTS = [
+    new StockAlert({ id: 'demo-p-1', name: 'Vino tinto reserva', stock: 4, minStock: 10 }),
+    new StockAlert({ id: 'demo-p-2', name: 'Whisky 12 años', stock: 2, minStock: 5 }),
+];
+
+const MOCK_EXPIRATION_ALERTS = [
+    new ExpirationAlert({ id: 'demo-p-1', name: 'Vino tinto reserva', expiresIn: 5 }),
+    new ExpirationAlert({ id: 'demo-p-3', name: 'Cerveza artesanal', expiresIn: 12 }),
+];
 
 /**
  * Fetches stock alerts with a limit of 3 items
@@ -11,8 +22,10 @@ const API_BASE = "http://localhost:3000";
  * @throws {Error} If API request fails
  */
 export async function fetchStockAlerts() {
-    if (isFrontendOnly()) return [];
-    const res = await axios.get(`${API_BASE}/products`);
+    if (isFrontendOnly()) return MOCK_STOCK_ALERTS.slice(0, 3);
+    const base = apiBase();
+    if (!base) return [];
+    const res = await axios.get(`${base}/products`);
     // Filtrar productos con stock bajo (current < min)
     const lowStockProducts = res.data.filter(product => product.current < product.min);
     return lowStockProducts
@@ -31,8 +44,10 @@ export async function fetchStockAlerts() {
  * @throws {Error} If API request fails
  */
 export async function fetchAllStockAlerts() {
-    if (isFrontendOnly()) return [];
-    const res = await axios.get(`${API_BASE}/products`);
+    if (isFrontendOnly()) return [...MOCK_STOCK_ALERTS];
+    const base = apiBase();
+    if (!base) return [];
+    const res = await axios.get(`${base}/products`);
     // Filtrar productos con stock bajo (current < min)
     const lowStockProducts = res.data.filter(product => product.current < product.min);
     return lowStockProducts.map(item => new StockAlert({
@@ -50,9 +65,11 @@ export async function fetchAllStockAlerts() {
  */
 export async function fetchExpirationAlerts() {
     try {
-        if (isFrontendOnly()) return [];
+        if (isFrontendOnly()) return MOCK_EXPIRATION_ALERTS.slice(0, 3);
+        const base = apiBase();
+        if (!base) return [];
         const settings = await getExpirationSettings();
-        const res = await axios.get(`${API_BASE}/products`);
+        const res = await axios.get(`${base}/products`);
         // Filtrar productos que expiran en los próximos días según la configuración
         const expiringProducts = res.data.filter(product => {
             if (!product.expirationDate) return false;
@@ -81,9 +98,11 @@ export async function fetchExpirationAlerts() {
  */
 export async function fetchAllExpirationAlerts() {
     try {
-        if (isFrontendOnly()) return [];
+        if (isFrontendOnly()) return [...MOCK_EXPIRATION_ALERTS];
+        const base = apiBase();
+        if (!base) return [];
         const settings = await getExpirationSettings();
-        const res = await axios.get(`${API_BASE}/products`);
+        const res = await axios.get(`${base}/products`);
         // Filtrar productos que expiran en los próximos días según la configuración
         const expiringProducts = res.data.filter(product => {
             if (!product.expirationDate) return false;

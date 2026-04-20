@@ -1,0 +1,8 @@
+/**
+ * Tokens compartidos (sidebar, dashboard, etc.)
+ * Verde acento = mismo que píldora "Bajo" en riesgo de vencimiento del dashboard.
+ */
+:root {
+  --app-green-accent: #16a34a;
+  --app-green-accent-hover: #15803d;
+}

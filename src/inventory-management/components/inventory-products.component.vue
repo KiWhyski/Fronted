@@ -531,4 +531,14 @@ export default {
   border-top: 1px solid #e5e7eb;
 }
 
+.inventory-container :deep(.p-button-success:not(:disabled)) {
+  background: var(--app-green-accent, #16a34a) !important;
+  border-color: var(--app-green-accent, #16a34a) !important;
+}
+
+.inventory-container :deep(.p-button-success:not(:disabled):hover) {
+  background: var(--app-green-accent-hover, #15803d) !important;
+  border-color: var(--app-green-accent-hover, #15803d) !important;
+}
+
 </style>

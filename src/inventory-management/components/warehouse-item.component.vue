@@ -55,7 +55,11 @@ export default {
   width: 100%;
   max-width: 400px;
   margin: 16px;
-  background-color: white;
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
 }
 .center-text {
   display: flex;
@@ -86,49 +90,46 @@ export default {
 }
 
 .warehouse-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #6E0081;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #1d1d1f;
   margin: 0.5rem 0;
 }
 
 .warehouse-text {
-  font-size: 1rem;
-  color: #333;
+  font-size: 0.9375rem;
+  color: #6e6e73;
   margin: 0.5rem 0;
-  font-weight: bold;
+  font-weight: 500;
+  line-height: 1.45;
 }
 
-.edit-button {
-  background-color: #790b38;
-  color: white;
-  border: none;
-  transition: all 0.3s ease;
-  cursor: pointer;
+.edit-button,
+.edit-button.p-button {
+  background-color: var(--app-green-accent, #16a34a) !important;
+  border-color: var(--app-green-accent, #16a34a) !important;
+  color: #ffffff !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .edit-button:hover {
-  background-color: #7a044d !important;
-  border-color: #46062c !important;
-  transform: translateY(-1px);
-  box-shadow: 0 3px 5px rgba(121, 11, 56, 0.3);
-  color: white !important;
-  filter: brightness(1.1);
+  background-color: var(--app-green-accent-hover, #15803d) !important;
+  border-color: var(--app-green-accent-hover, #15803d) !important;
+  color: #ffffff !important;
 }
 
-.show-button {
-  background-color: #59033A;
-  color: white;
-  border: none;
+.show-button,
+.show-button.p-button {
+  background-color: #f5f5f7 !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #1d1d1f !important;
 }
 
 .show-button:hover {
-  background-color: #7a044d !important;
-  border-color: #46062c !important;
-  transform: translateY(-1px);
-  color: white !important;
-  filter: brightness(1.1);
-  box-shadow: 0 3px 5px rgba(89, 3, 58, 0.3);
+  background-color: #ebebed !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  color: #1d1d1f !important;
 }
 
 </style>

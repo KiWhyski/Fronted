@@ -120,9 +120,9 @@ export default {
   --apple-text: #1d1d1f;
   /* Títulos: negro + stack del sistema (alineado con secciones del formulario) */
   --profile-title-color: #111111;
-  /* Misma verde que login (sign-in) */
-  --stocksip-green: #2e7d32;
-  --stocksip-green-hover: #1b5e20;
+  /* Mismo verde que dashboard / sidebar (--app-green-accent) */
+  --stocksip-green: var(--app-green-accent, #16a34a);
+  --stocksip-green-hover: var(--app-green-accent-hover, #15803d);
   --apple-separator: rgba(60, 60, 67, 0.12);
   --apple-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   /* Misma cápsula que inputs / perfil edit */

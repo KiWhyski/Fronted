@@ -109,11 +109,10 @@ export default {
 
 <style scoped>
 .plan-card {
-  /* Verdes Stocksip (login / perfil) */
-  --plan-green: #2e7d32;
-  --plan-green-hover: #1b5e20;
-  --plan-green-soft: #e8f5e9;
-  --plan-border: rgba(46, 125, 50, 0.18);
+  /* Mismo verde global que perfil / dashboard (--app-green-accent) */
+  --plan-green: var(--app-green-accent, #16a34a);
+  --plan-green-hover: var(--app-green-accent-hover, #15803d);
+  --plan-border: rgba(22, 163, 74, 0.2);
   --plan-text: #111111;
 
   background: #ffffff;

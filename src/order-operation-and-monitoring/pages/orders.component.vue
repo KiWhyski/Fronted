@@ -1,57 +1,82 @@
 <template>
   <SideNavbar>
-    <ToolbarContent pageTitle="Orders" />
+    <ToolbarContent :pageTitle="$t('orders.title')" />
 
-    <div class="orders-wrapper">
-
-
+    <div
+      class="orders-wrapper"
+      :class="{ 'orders-wrapper--restricted': !isSupplier && !isLiquorStoreOwner }"
+    >
       <SalesOrderComponent
-          v-if="isSupplier"
-          :orders="orders"
+        v-if="isSupplier"
+        :orders="orders"
       />
 
       <PurchaseOrder
-          v-if="isLiquorStoreOwner"
-          :orders="orders"
+        v-if="isLiquorStoreOwner"
+        :orders="orders"
       />
 
-
-      <p v-if="!isSupplier && !isLiquorStoreOwner" class="unauthorized">
-        Tu cuenta no tiene acceso a órdenes.
-      </p>
+      <div
+        v-if="!isSupplier && !isLiquorStoreOwner"
+        class="no-access"
+        role="status"
+        aria-live="polite"
+      >
+        <div class="no-access-card">
+          <div class="no-access-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M14 21V15a10 10 0 0 1 20 0v6"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+              <rect
+                x="10"
+                y="21"
+                width="28"
+                height="22"
+                rx="5.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <circle cx="24" cy="31" r="1.75" fill="currentColor" />
+            </svg>
+          </div>
+          <h2 class="no-access-title">{{ $t('orders.no-access-title') }}</h2>
+          <p class="no-access-lede">{{ $t('orders.no-access-lede') }}</p>
+        </div>
+      </div>
     </div>
   </SideNavbar>
 </template>
-
 
 <script>
 import { ref, onMounted } from 'vue';
 import { useAuthenticationStore } from '@/authentication/services/authentication.store.js';
 import { PurchaseOrderService } from '@/order-operation-and-monitoring/services/purchase-order.service.js';
 
-import SideNavbar        from '@/public/components/side-navbar.vue';
-import ToolbarContent    from '@/public/components/toolbar-content.component.vue';
-import Button            from 'primevue/button';
+import SideNavbar from '@/public/components/side-navbar.vue';
+import ToolbarContent from '@/public/components/toolbar-content.component.vue';
 
-import SalesOrderComponent from "@/order-operation-and-monitoring/pages/sales-order.component.vue";
-import PurchaseOrder  from '@/order-operation-and-monitoring/pages/purchase-order.component.vue';
+import SalesOrderComponent from '@/order-operation-and-monitoring/pages/sales-order.component.vue';
+import PurchaseOrder from '@/order-operation-and-monitoring/pages/purchase-order.component.vue';
 
 export default {
   name: 'OrdersComponent',
   components: {
     SideNavbar,
     ToolbarContent,
-    Button,
     SalesOrderComponent,
-    PurchaseOrder
+    PurchaseOrder,
   },
   setup() {
-    const authStore  = useAuthenticationStore();
-    const orderSrv   = new PurchaseOrderService();
+    const authStore = useAuthenticationStore();
+    const orderSrv = new PurchaseOrderService();
 
-    const orders               = ref([]);
-    const isSupplier           = ref(false);
-    const isLiquorStoreOwner   = ref(false);
+    const orders = ref([]);
+    const isSupplier = ref(false);
+    const isLiquorStoreOwner = ref(false);
 
     const loadOrders = async () => {
       const account = authStore.account;
@@ -82,33 +107,81 @@ export default {
       orders,
       isSupplier,
       isLiquorStoreOwner,
-      loadOrders
+      loadOrders,
     };
-  }
+  },
 };
 </script>
 
 <style scoped>
 .orders-wrapper {
+  flex: 1;
   padding: 1rem;
-  background-color: #ffffff;
   min-height: calc(100vh - 80px);
+  background: #ffffff;
 }
 
-.refresh-btn {
-  margin-bottom: 1rem;
-  background-color: #5A033A;
-  color: #fff;
-  border: none;
-  border-radius: 45px;
-}
-.refresh-btn:hover {
-  background-color: #6E0081;
+.orders-wrapper--restricted {
+  padding: 0;
+  background: #ffffff;
 }
 
-.unauthorized {
-  color: #a00;
-  font-weight: bold;
-  margin-top: 2rem;
+.no-access {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 120px);
+  padding: clamp(2rem, 6vw, 4rem) 1.25rem;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'SF Pro Text',
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+}
+
+.no-access-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 2.75rem 2rem 2.5rem;
+  text-align: center;
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  /* Ligera sombra para separar el bloque del fondo blanco */
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05);
+}
+
+.no-access-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  color: #aeaeb2;
+}
+
+.no-access-icon svg {
+  width: 52px;
+  height: 52px;
+}
+
+.no-access-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: #1d1d1f;
+}
+
+.no-access-lede {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: #6e6e73;
 }
 </style>

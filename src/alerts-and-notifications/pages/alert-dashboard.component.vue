@@ -46,10 +46,10 @@ export default {
   <div class="alerts-bg">
     <side-navbar />
     <div class="alerts-main">
-      <toolbar-content :pageTitle=" $t('alerts.title') " />
+      <toolbar-content :pageTitle="$t('alerts.title')" />
       <div class="alerts-content">
-        <div v-if="loading">Loading...</div>
-        <div v-else-if="error" class="error-msg">{{ error }}</div>
+        <div v-if="loading" class="alerts-loading">{{ $t('alerts.loading-dashboard') }}</div>
+        <div v-else-if="error" class="error-msg" role="alert">{{ error }}</div>
         <template v-else>
           <AlertList 
             :title="$t('alerts.urgent-restocking')"
@@ -74,7 +74,7 @@ export default {
 .alerts-bg {
   background: #ffffff;
   min-height: 100vh;
-  width: 100vw;
+  width: 100%;
   display: flex;
 }
 .alerts-main {
@@ -85,12 +85,31 @@ export default {
 .alerts-content {
   padding: 2rem;
   display: flex;
-  gap: 2rem;
+  gap: 1.75rem;
   flex-wrap: wrap;
+  max-width: 1280px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  width: 100%;
 }
+
+.alerts-loading {
+  width: 100%;
+  padding: 2rem 1rem;
+  text-align: center;
+  font-size: 0.9375rem;
+  color: #86868b;
+}
+
 .error-msg {
-  color: red;
-  font-weight: bold;
-  margin-top: 2rem;
+  width: 100%;
+  color: #b91c1c;
+  font-weight: 500;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: #fef2f2;
+  border: 1px solid rgba(185, 28, 28, 0.15);
+  border-radius: 10px;
+  font-size: 0.9375rem;
 }
 </style>

@@ -80,6 +80,19 @@ export default {
               </router-link>
             </li>
             <li>
+              <router-link to="/products" custom v-slot="{ navigate, isActive }">
+                <button
+                  type="button"
+                  class="nav-item"
+                  :class="{ 'router-link-active': isActive }"
+                  @click="navigate"
+                >
+                  <i class="pi pi-box nav-item__icon" aria-hidden="true"></i>
+                  <span class="nav-item__label">{{ $t('toolbar.storage') }}</span>
+                </button>
+              </router-link>
+            </li>
+            <li>
               <router-link to="/warehouses" custom v-slot="{ navigate, isActive }">
                 <button
                   type="button"
@@ -115,19 +128,6 @@ export default {
                 >
                   <i class="pi pi-shopping-cart nav-item__icon" aria-hidden="true"></i>
                   <span class="nav-item__label">{{ $t('toolbar.order') }}</span>
-                </button>
-              </router-link>
-            </li>
-            <li>
-              <router-link to="/products" custom v-slot="{ navigate, isActive }">
-                <button
-                  type="button"
-                  class="nav-item"
-                  :class="{ 'router-link-active': isActive }"
-                  @click="navigate"
-                >
-                  <i class="pi pi-box nav-item__icon" aria-hidden="true"></i>
-                  <span class="nav-item__label">{{ $t('toolbar.storage') }}</span>
                 </button>
               </router-link>
             </li>
@@ -168,10 +168,10 @@ export default {
 <style scoped>
 .sidenav-container {
   --sidenav-width: 280px;
-  /* Equilibrio: más vivo que un verde apagado, sin llegar al green-500 chillón */
   --sidenav-green-deep: #174d32;
-  --sidenav-green-accent: #30a46c;
-  --sidenav-green-accent-hover: #2a8f5c;
+  /* Mismo verde que badge "Bajo" (riesgo de vencimiento) en dashboard */
+  --sidenav-green-accent: var(--app-green-accent, #16a34a);
+  --sidenav-green-accent-hover: var(--app-green-accent-hover, #15803d);
   --sidenav-green-soft: #e6f4ed;
   --sidenav-green-muted: #3f6b52;
   /* Separación solo arriba y abajo (lateral izquierdo pegado a la pantalla) */
@@ -268,7 +268,7 @@ export default {
 
 .sidenav-brand:focus-visible {
   border-radius: 12px;
-  box-shadow: 0 0 0 3px rgba(48, 164, 108, 0.38);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.12);
 }
 
 .sidenav-brand__text {
@@ -339,7 +339,19 @@ export default {
 }
 
 .sidenav-pill--outline.router-link-active {
-  background: rgba(60, 60, 67, 0.06);
+  background: var(--sidenav-green-accent);
+  border-color: var(--sidenav-green-accent);
+  color: #ffffff;
+}
+
+.sidenav-pill--outline.router-link-active:hover {
+  background: var(--sidenav-green-accent-hover);
+  border-color: var(--sidenav-green-accent-hover);
+  color: #ffffff;
+}
+
+.sidenav-pill--outline.router-link-active .sidenav-pill__icon {
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .sidenav-pill--danger {
@@ -404,9 +416,14 @@ export default {
 }
 
 .nav-item.router-link-active {
-  background-color: #e8e8ed;
-  color: #1d1d1f;
+  background-color: var(--sidenav-green-accent);
+  color: #ffffff;
   font-weight: 600;
+}
+
+.nav-item.router-link-active:hover {
+  background-color: var(--sidenav-green-accent-hover);
+  color: #ffffff;
 }
 
 .nav-item__icon {
@@ -418,9 +435,12 @@ export default {
   transition: color 0.15s ease;
 }
 
-.nav-item:hover .nav-item__icon,
-.nav-item.router-link-active .nav-item__icon {
+.nav-item:hover .nav-item__icon {
   color: var(--sidenav-green-accent);
+}
+
+.nav-item.router-link-active .nav-item__icon {
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .nav-item__label {

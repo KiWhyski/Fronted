@@ -53,13 +53,17 @@ export default {
   data() {
     return {
       days: 7,
-      loading: true,
+      loading: false,
       saving: false,
       error: null
     };
   },
-  async mounted() {
-    await this.loadSettings();
+  watch: {
+    show(val) {
+      if (val) {
+        this.loadSettings();
+      }
+    }
   },
   methods: {
     async loadSettings() {
@@ -139,8 +143,10 @@ export default {
 
 .modal-header h2 {
   margin: 0;
-  color: #26021d;
-  font-size: 1.5rem;
+  color: #1d1d1f;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 .close-button {
@@ -153,7 +159,7 @@ export default {
 }
 
 .close-button:hover {
-  color: #26021d;
+  color: #1d1d1f;
 }
 
 .modal-body {
@@ -167,7 +173,7 @@ export default {
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #26021d;
+  color: #424245;
   font-weight: 500;
 }
 
@@ -180,8 +186,9 @@ export default {
 }
 
 .days-input:focus {
-  border-color: #6e0081;
+  border-color: rgba(0, 0, 0, 0.12);
   outline: none;
+  box-shadow: none;
 }
 
 .input-hint {
@@ -197,18 +204,19 @@ export default {
 }
 
 .save-button {
-  background: #6e0081;
+  background: var(--app-green-accent, #16a34a);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 0.9375rem;
+  transition: background-color 0.2s ease;
 }
 
 .save-button:hover {
-  background: #59033a;
+  background: var(--app-green-accent-hover, #15803d);
 }
 
 .save-button:disabled {

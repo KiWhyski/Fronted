@@ -1,7 +1,7 @@
 /**
- * Cuando VITE_FRONTEND_ONLY=true, la app no depende del backend:
- * login/registro simulados, HTTP con respuestas mock y servicios sueltos acortados.
+ * Modo solo-frontend: sin backend real (axios mock, login simulado, etc.).
+ * Por defecto está activo; desactívalo con VITE_FRONTEND_ONLY=false (p. ej. contra API real).
  */
 export function isFrontendOnly() {
-  return import.meta.env.VITE_FRONTEND_ONLY === 'true';
+  return import.meta.env.VITE_FRONTEND_ONLY !== 'false';
 }

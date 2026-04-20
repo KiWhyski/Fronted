@@ -122,10 +122,11 @@ export default {
 
 <style scoped>
 .alert-card {
-  background: white;
+  background: #ffffff;
   padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(38, 2, 29, 0.07);
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   flex: 1 1 320px;
   min-width: 280px;
 }
@@ -138,63 +139,69 @@ export default {
 }
 
 .card-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #26021d;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #1d1d1f;
   margin: 0;
 }
 
 .settings-button {
   background: none;
   border: none;
-  color: #6e0081;
+  color: var(--app-green-accent, #16a34a);
   cursor: pointer;
   padding: 0.5rem;
-  border-radius: 50%;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .settings-button:hover {
-  background-color: rgba(110, 0, 129, 0.1);
+  background-color: rgba(22, 163, 74, 0.08);
+  color: var(--app-green-accent-hover, #15803d);
 }
 
 .card-link {
-  font-size: 0.95rem;
-  color: #6e0081;
-  text-decoration: underline;
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--app-green-accent, #16a34a);
+  text-decoration: none;
   cursor: pointer;
 }
 
 .card-link:hover {
-  color: #59033a;
+  color: var(--app-green-accent-hover, #15803d);
+  text-decoration: underline;
 }
 
 .no-alerts {
   text-align: center;
   padding: 2rem 1rem;
-  color: #666;
+  color: #6e6e73;
 }
 
 .no-alerts-icon {
-  font-size: 2.5rem;
-  color: #6e0081;
+  font-size: 2.25rem;
+  color: #aeaeb2;
   margin-bottom: 1rem;
-  opacity: 0.7;
 }
 
 .no-alerts-message {
-  font-size: 1.1rem;
-  font-weight: 500;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
   margin-bottom: 0.5rem;
-  color: #26021d;
+  color: #1d1d1f;
 }
 
 .no-alerts-submessage {
-  font-size: 0.9rem;
-  color: #666;
+  font-size: 0.875rem;
+  color: #86868b;
   max-width: 280px;
   margin: 0 auto;
   line-height: 1.4;

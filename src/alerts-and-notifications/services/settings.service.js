@@ -8,8 +8,9 @@
 
 import axios from 'axios';
 import { isFrontendOnly } from '@/shared/config/frontend-only.js';
+import { getBackendBaseUrl } from '@/shared/config/backend-url.js';
 
-const API_URL = 'http://localhost:3000';
+const apiUrl = () => getBackendBaseUrl();
 
 const MOCK_SETTINGS_ROW = { id: 1, expirationAlertMargin: 7, stockAlertEnabled: true };
 
@@ -21,7 +22,9 @@ const MOCK_SETTINGS_ROW = { id: 1, expirationAlertMargin: 7, stockAlertEnabled: 
 export const fetchSettings = async () => {
   try {
     if (isFrontendOnly()) return [MOCK_SETTINGS_ROW];
-    const response = await axios.get(`${API_URL}/settings`);
+    const base = apiUrl();
+    if (!base) return [MOCK_SETTINGS_ROW];
+    const response = await axios.get(`${base}/settings`);
     return response.data;
   } catch (error) {
     console.error('Error fetching settings:', error);
@@ -38,7 +41,9 @@ export const fetchSettings = async () => {
 export const updateSettings = async (settings) => {
   try {
     if (isFrontendOnly()) return { ...MOCK_SETTINGS_ROW, ...settings };
-    const response = await axios.put(`${API_URL}/settings`, settings);
+    const base = apiUrl();
+    if (!base) return { ...MOCK_SETTINGS_ROW, ...settings };
+    const response = await axios.put(`${base}/settings`, settings);
     return response.data;
   } catch (error) {
     console.error('Error updating settings:', error);
@@ -53,7 +58,9 @@ export const updateSettings = async (settings) => {
 export const getExpirationSettings = async () => {
   try {
     if (isFrontendOnly()) return MOCK_SETTINGS_ROW;
-    const response = await axios.get(`${API_URL}/settings`);
+    const base = apiUrl();
+    if (!base) return MOCK_SETTINGS_ROW;
+    const response = await axios.get(`${base}/settings`);
     return response.data[0]; // Asumimos que solo hay un registro de settings
   } catch (error) {
     console.error('Error al obtener configuración de expiración:', error);
@@ -73,7 +80,9 @@ export const updateExpirationSettings = async (days) => {
 
   try {
     if (isFrontendOnly()) return { ...MOCK_SETTINGS_ROW, expirationAlertMargin: days };
-    const response = await axios.patch(`${API_URL}/settings/1`, {
+    const base = apiUrl();
+    if (!base) return { ...MOCK_SETTINGS_ROW, expirationAlertMargin: days };
+    const response = await axios.patch(`${base}/settings/1`, {
       expirationAlertMargin: days
     });
     return response.data;

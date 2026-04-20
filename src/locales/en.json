@@ -103,6 +103,7 @@
   },
   "alerts": {
     "title": "Alerts",
+    "loading-dashboard": "Loading alerts…",
     "urgent-restocking": "Urgent Restocking",
     "no-content": "Everything in order. No products require restocking.",
     "no-content-description": "You can add products to the inventory by clicking the button below.",
@@ -125,6 +126,8 @@
   },
   "orders": {
     "title": "Orders",
+    "no-access-title": "Orders unavailable",
+    "no-access-lede": "Your account cannot access purchases or orders. Only store owner or supplier profiles can use this section.",
     "new-order": "New Order"
   },
   "products":{
@@ -151,7 +154,10 @@
     "success-created": "Product created successfully!",
     "success-updated": "Product updated successfully!",
     "duplicate-product": "A product with this name already exists.",
-    "limitMessage": "You are using {current} of {max} allowed products."
+    "limitMessage": "You are using {current} of {max} allowed products.",
+    "search-placeholder": "Search by name, brand, or type…",
+    "search-clear": "Clear search",
+    "search-no-results": "No products match your search."
   },
   "inventory": {
     "title": "Inventory",

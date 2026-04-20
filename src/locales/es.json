@@ -233,6 +233,7 @@
   },
   "alerts": {
     "title": "Alertas",
+    "loading-dashboard": "Cargando alertas…",
     "actual-stock": "Stock actual:",
     "min-stock": "Stock mínimo:",
     "expires-in-days": "¡Vence en {days} días!",
@@ -312,6 +313,8 @@
   },
   "orders": {
     "title": "Pedidos",
+    "no-access-title": "Pedidos no disponibles",
+    "no-access-lede": "Tu cuenta no tiene permisos para ver compras u órdenes. Solo los perfiles de tienda o proveedor pueden acceder a esta sección.",
     "new-order": "Nuevo pedido",
     "none": "No hay pedidos.",
     "recent-orders": "Pedidos recientes",
@@ -373,6 +376,9 @@
     "success-updated": "¡Producto actualizado con éxito!",
     "duplicate-product": "No se puede crear un producto con el mismo nombre.",
     "limitMessage": "Estás utilizando {current} de {max} productos permitidos.",
+    "search-placeholder": "Buscar por nombre, marca o tipo…",
+    "search-clear": "Limpiar búsqueda",
+    "search-no-results": "Ningún producto coincide con tu búsqueda.",
     "placeholder-brand": "Selecciona una marca",
     "placeholder-liquor-type": "Selecciona un tipo de licor",
     "back": "Volver",

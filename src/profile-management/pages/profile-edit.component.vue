@@ -291,13 +291,13 @@ export default {
 
 <style>
 .profile-edit--apple.profile-edit-container {
-  /* Alineado con login: verde principal Stocksip */
-  --stocksip-green: #2e7d32;
-  --stocksip-green-hover: #1b5e20;
-  --stocksip-green-soft: #e8f5e9;
-  --stocksip-green-border: #a5d6a7;
-  --apple-focus-ring: rgba(46, 125, 50, 0.22);
-  --apple-focus-border: rgba(46, 125, 50, 0.35);
+  /* Mismo verde global que alertas / inventario / sidebar */
+  --stocksip-green: var(--app-green-accent, #16a34a);
+  --stocksip-green-hover: var(--app-green-accent-hover, #15803d);
+  --stocksip-green-soft: rgba(22, 163, 74, 0.09);
+  --stocksip-green-border: rgba(22, 163, 74, 0.28);
+  --apple-focus-ring: rgba(22, 163, 74, 0.12);
+  --apple-focus-border: rgba(22, 163, 74, 0.22);
   --apple-text: #1d1d1f;
   --apple-secondary: rgba(60, 60, 67, 0.6);
   --apple-border: rgba(60, 60, 67, 0.12);
@@ -363,7 +363,7 @@ export default {
   letter-spacing: -0.01em;
 }
 
-/* Campos estilo Apple (iOS / macOS): fondo gris sistema, foco blanco + anillo verde (marca) */
+/* Campos: fondo gris sistema, foco blanco + anillo verde suave (marca global) */
 .profile-edit--apple .form-input {
   -webkit-appearance: none;
   appearance: none;
@@ -510,7 +510,7 @@ export default {
 }
 
 .profile-edit--apple .cancel-button:hover {
-  background-color: #c8e6c9;
+  background-color: rgba(22, 163, 74, 0.12);
   border-color: var(--stocksip-green);
 }
 

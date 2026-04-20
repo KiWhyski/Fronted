@@ -2,17 +2,75 @@
  * Respuestas mock para axios (httpInstance) en modo solo-frontend.
  * @param {import('axios').InternalAxiosRequestConfig} config
  */
+
+const DEMO_ACCOUNT_ID = '00000000-0000-0000-0000-000000000001';
+
+const DEMO_PRODUCTS_CATALOG = [
+  {
+    productId: 'demo-p-1',
+    name: 'Vino tinto reserva',
+    brandName: 'Bodega demo',
+    liquorType: 'Wine',
+    unitPriceAmount: 45.9,
+    minimumStock: 10,
+    imageUrl: '',
+    accountId: DEMO_ACCOUNT_ID,
+  },
+  {
+    productId: 'demo-p-2',
+    name: 'Whisky 12 años',
+    brandName: 'Destilería demo',
+    liquorType: 'Whiskey',
+    unitPriceAmount: 120,
+    minimumStock: 5,
+    imageUrl: '',
+    accountId: DEMO_ACCOUNT_ID,
+  },
+];
+
+const DEMO_WAREHOUSE = {
+  warehouseId: 'demo-wh-1',
+  name: 'Almacén central',
+  street: 'Av. Demo 123',
+  city: 'Lima',
+  district: 'Miraflores',
+  postalCode: '15074',
+  country: 'PE',
+  maxTemperature: 25,
+  minTemperature: 10,
+  capacity: 100,
+  imageUrl: '',
+  profileId: '',
+};
+
+/**
+ * @param {import('axios').InternalAxiosRequestConfig} config
+ */
+function requestPath(config) {
+  const u = config.url || '';
+  if (/^https?:\/\//i.test(u)) {
+    return u;
+  }
+  const base = (config.baseURL || '').replace(/\/$/, '');
+  const path = u.startsWith('/') ? u : `/${u}`;
+  return `${base}${path}`;
+}
+
+/**
+ * @param {import('axios').InternalAxiosRequestConfig} config
+ */
 export function resolveFrontendMockPayload(config) {
-  const raw = `${config.baseURL || ''}${config.url || ''}`;
+  const raw = requestPath(config);
   const url = raw.toLowerCase();
   const method = (config.method || 'get').toLowerCase();
+  const pathNoQuery = raw.split(/[?#]/)[0].replace(/\/+$/, '');
 
   if (url.includes('/status')) {
     return { accountStatus: 'ACTIVE' };
   }
 
   if (url.includes('current-benefits-limits')) {
-    return { limits: [] };
+    return { maxProducts: 50, maxWarehouses: 5, limits: [] };
   }
 
   if (url.includes('current-plan')) {
@@ -54,27 +112,91 @@ export function resolveFrontendMockPayload(config) {
     }
   }
 
-  if (url.includes('warehouse') && method === 'get') {
+  if ((url.includes('warehouse') || url.includes('warehouses')) && method === 'get') {
+    if (url.includes('counts')) {
+      return { count: 1 };
+    }
+    if (/\/warehouses\/[^/]+\/inventories\/?$/i.test(pathNoQuery)) {
+      const exp = new Date();
+      exp.setDate(exp.getDate() + 30);
+      const ymd = exp.toISOString().slice(0, 10);
+      return [
+        {
+          id: 'demo-inv-1',
+          productId: 'demo-p-1',
+          name: 'Vino tinto reserva',
+          type: 'Wine',
+          imageUrl: '',
+          unitPriceAmount: 45.9,
+          minimumStock: 10,
+          currentStock: 4,
+          status: 'WithStock',
+          bestBeforeDate: ymd,
+        },
+        {
+          id: 'demo-inv-2',
+          productId: 'demo-p-2',
+          name: 'Whisky 12 años',
+          type: 'Whiskey',
+          imageUrl: '',
+          unitPriceAmount: 120,
+          minimumStock: 5,
+          currentStock: 2,
+          status: 'WithStock',
+          bestBeforeDate: ymd,
+        },
+      ];
+    }
+    if (/\/accounts\/[^/]+\/warehouses\/?$/i.test(pathNoQuery)) {
+      return [DEMO_WAREHOUSE];
+    }
+    if (/\/warehouses\/[^/]+\/?$/i.test(pathNoQuery) && !pathNoQuery.toLowerCase().includes('/inventories')) {
+      return { ...DEMO_WAREHOUSE };
+    }
     return [];
   }
 
   if (url.includes('product') && method === 'get') {
-    if (/\/products\/[^/]+\/?$/i.test(raw) && !url.includes('account')) {
+    const segs = pathNoQuery.split('/').filter(Boolean);
+    const last = (segs[segs.length - 1] || '').toLowerCase();
+    const secondLast = segs.length >= 2 ? segs[segs.length - 2].toLowerCase() : '';
+
+    if (secondLast === 'products' && last === 'counts') {
+      return { count: DEMO_PRODUCTS_CATALOG.length };
+    }
+
+    if (secondLast === 'products' && last !== 'products' && last !== 'counts') {
+      if (last === 'additions' || last === 'substractions') {
+        return [];
+      }
+      const match = DEMO_PRODUCTS_CATALOG.find((p) => p.productId.toLowerCase() === last);
+      if (match) {
+        return { ...match };
+      }
       return {
-        id: 'mock-product',
-        name: 'Demo product',
-        minimumStock: 0,
-        unitPriceAmount: 0,
+        productId: last,
+        name: 'Producto demo',
+        brandName: 'Marca demo',
+        liquorType: 'Wine',
+        unitPriceAmount: 10,
+        minimumStock: 1,
+        imageUrl: '',
+        accountId: DEMO_ACCOUNT_ID,
       };
     }
+
+    if (last === 'products') {
+      return [...DEMO_PRODUCTS_CATALOG];
+    }
+
     return [];
   }
 
   if (url.includes('authentication/sign-in') || (url.includes('sign-in') && method === 'post')) {
     let username = 'demo@local.dev';
     try {
-      const raw = config.data;
-      const body = typeof raw === 'string' ? JSON.parse(raw || '{}') : raw;
+      const bodyRaw = config.data;
+      const body = typeof bodyRaw === 'string' ? JSON.parse(bodyRaw || '{}') : bodyRaw;
       if (body?.username) username = body.username;
     } catch (_) {
       /* ignore */
@@ -83,7 +205,7 @@ export function resolveFrontendMockPayload(config) {
       id: '0',
       username,
       token: 'dev-local-preview-token',
-      accountId: '00000000-0000-0000-0000-000000000001',
+      accountId: DEMO_ACCOUNT_ID,
       accountRole: 'LiquorStoreOwner',
     };
   }

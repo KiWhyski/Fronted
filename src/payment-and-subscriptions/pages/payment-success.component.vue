@@ -89,7 +89,7 @@ export default {
 .dashboard-button {
   margin-top: 1.5rem;
   padding: 0.8rem 2rem;
-  background-color: #5A033A;
+  background-color: var(--app-green-accent, #16a34a);
   color: white;
   border: none;
   border-radius: 45px;
@@ -99,6 +99,6 @@ export default {
 }
 
 .dashboard-button:hover {
-  background-color: #43a047;
+  background-color: var(--app-green-accent-hover, #15803d);
 }
 </style>
