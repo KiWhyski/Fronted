@@ -33,19 +33,24 @@ export default {
     </template>
 
     <template #footer>
-      <div class="action-buttons">
-        <pv-button
-            icon="pi pi-pencil"
-            class="edit-button action-button"
-            :label="$t('components.edit')"
-            @click="navigateToEdit">
-        </pv-button>
-        <pv-button
-            class="show-button action-button"
-            :label="$t('components.show')"
-            @click="navigateToZones">
-        </pv-button>
-      </div>
+      <footer class="warehouse-card__footer">
+        <button
+          type="button"
+          class="warehouse-card__action"
+          :aria-label="$t('components.edit')"
+          @click="navigateToEdit"
+        >
+          <i class="pi pi-pencil" aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          class="warehouse-card__action"
+          :aria-label="$t('components.show')"
+          @click="navigateToZones"
+        >
+          <i class="pi pi-eye" aria-hidden="true" />
+        </button>
+      </footer>
     </template>
   </pv-card>
 </template>
@@ -61,6 +66,22 @@ export default {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   overflow: hidden;
 }
+
+.warehouse-card :deep(.p-card) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.warehouse-card :deep(.p-card-body) {
+  flex: 1;
+}
+
+.warehouse-card :deep(.p-card-footer) {
+  padding: 0;
+  border-top: none;
+  background: transparent;
+}
 .center-text {
   display: flex;
   justify-content: center;
@@ -72,21 +93,6 @@ export default {
   height: 100%;
   max-height: 200px;
   object-fit: cover;
-}
-
-.action-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.action-button {
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
-  flex: 1;
-  min-width: 120px;
-  max-width: 200px;
 }
 
 .warehouse-title {
@@ -105,31 +111,52 @@ export default {
   line-height: 1.45;
 }
 
-.edit-button,
-.edit-button.p-button {
-  background-color: var(--app-green-accent, #16a34a) !important;
-  border-color: var(--app-green-accent, #16a34a) !important;
-  color: #ffffff !important;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+/* Mismo pie y botones circulares que `product-item` (vista Almacenamiento) */
+.warehouse-card__footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1rem 1rem;
+  margin-top: auto;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.6);
 }
 
-.edit-button:hover {
-  background-color: var(--app-green-accent-hover, #15803d) !important;
-  border-color: var(--app-green-accent-hover, #15803d) !important;
-  color: #ffffff !important;
+.warehouse-card__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: #424245;
+  cursor: pointer;
+  font-size: 1rem;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
-.show-button,
-.show-button.p-button {
-  background-color: #f5f5f7 !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
-  color: #1d1d1f !important;
+.warehouse-card__action:hover {
+  background: #f5f5f7;
+  border-color: rgba(0, 0, 0, 0.14);
+  color: #1d1d1f;
 }
 
-.show-button:hover {
-  background-color: #ebebed !important;
-  border-color: rgba(0, 0, 0, 0.12) !important;
-  color: #1d1d1f !important;
+.warehouse-card__action:not(.warehouse-card__action--danger):hover {
+  color: var(--app-green-accent, #16a34a);
+  border-color: rgba(0, 0, 0, 0.12);
+  background: #f5f5f7;
+}
+
+.warehouse-card__action:active {
+  transform: scale(0.96);
 }
 
 </style>

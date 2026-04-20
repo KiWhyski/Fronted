@@ -3,6 +3,15 @@
  * @param {import('axios').InternalAxiosRequestConfig} config
  */
 
+import {
+  warehouseDevList,
+  warehouseDevCountPayload,
+  warehouseDevCreateFromFormData,
+  warehouseDevUpdateFromFormData,
+  warehouseDevDelete,
+  warehouseDevGetByIdOrPlaceholder,
+} from '@/inventory-management/services/warehouse.dev-store.js';
+
 const DEMO_ACCOUNT_ID = '00000000-0000-0000-0000-000000000001';
 
 const DEMO_PRODUCTS_CATALOG = [
@@ -27,21 +36,6 @@ const DEMO_PRODUCTS_CATALOG = [
     accountId: DEMO_ACCOUNT_ID,
   },
 ];
-
-const DEMO_WAREHOUSE = {
-  warehouseId: 'demo-wh-1',
-  name: 'Almacén central',
-  street: 'Av. Demo 123',
-  city: 'Lima',
-  district: 'Miraflores',
-  postalCode: '15074',
-  country: 'PE',
-  maxTemperature: 25,
-  minTemperature: 10,
-  capacity: 100,
-  imageUrl: '',
-  profileId: '',
-};
 
 /**
  * @param {import('axios').InternalAxiosRequestConfig} config
@@ -112,11 +106,12 @@ export function resolveFrontendMockPayload(config) {
     }
   }
 
-  if ((url.includes('warehouse') || url.includes('warehouses')) && method === 'get') {
-    if (url.includes('counts')) {
-      return { count: 1 };
+  if (url.includes('warehouse') || url.includes('warehouses')) {
+    if (method === 'get' && url.includes('counts')) {
+      return warehouseDevCountPayload();
     }
-    if (/\/warehouses\/[^/]+\/inventories\/?$/i.test(pathNoQuery)) {
+
+    if (method === 'get' && /\/warehouses\/[^/]+\/inventories\/?$/i.test(pathNoQuery)) {
       const exp = new Date();
       exp.setDate(exp.getDate() + 30);
       const ymd = exp.toISOString().slice(0, 10);
@@ -147,13 +142,52 @@ export function resolveFrontendMockPayload(config) {
         },
       ];
     }
-    if (/\/accounts\/[^/]+\/warehouses\/?$/i.test(pathNoQuery)) {
-      return [DEMO_WAREHOUSE];
+
+    if (method === 'post' && /\/accounts\/[^/]+\/warehouses\/?$/i.test(pathNoQuery)) {
+      return warehouseDevCreateFromFormData(config.data);
     }
-    if (/\/warehouses\/[^/]+\/?$/i.test(pathNoQuery) && !pathNoQuery.toLowerCase().includes('/inventories')) {
-      return { ...DEMO_WAREHOUSE };
+
+    if (
+      method === 'put' &&
+      /\/warehouses\/[^/]+\/?$/i.test(pathNoQuery) &&
+      !pathNoQuery.toLowerCase().includes('/inventories')
+    ) {
+      const m = pathNoQuery.match(/\/warehouses\/([^/]+)\/?$/i);
+      const id = m?.[1];
+      if (id) {
+        return warehouseDevUpdateFromFormData(id, config.data);
+      }
+      return { success: true };
     }
-    return [];
+
+    if (
+      method === 'delete' &&
+      /\/warehouses\/[^/]+\/?$/i.test(pathNoQuery) &&
+      !pathNoQuery.toLowerCase().includes('/inventories')
+    ) {
+      const m = pathNoQuery.match(/\/warehouses\/([^/]+)\/?$/i);
+      const id = m?.[1];
+      if (id) warehouseDevDelete(id);
+      return { success: true };
+    }
+
+    if (method === 'get' && /\/accounts\/[^/]+\/warehouses\/?$/i.test(pathNoQuery)) {
+      return warehouseDevList();
+    }
+
+    if (
+      method === 'get' &&
+      /\/warehouses\/[^/]+\/?$/i.test(pathNoQuery) &&
+      !pathNoQuery.toLowerCase().includes('/inventories')
+    ) {
+      const m = pathNoQuery.match(/\/warehouses\/([^/]+)\/?$/i);
+      const id = m?.[1];
+      return warehouseDevGetByIdOrPlaceholder(id);
+    }
+
+    if (method === 'get') {
+      return [];
+    }
   }
 
   if (url.includes('product') && method === 'get') {

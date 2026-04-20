@@ -2,6 +2,15 @@ import {WarehouseAssembler} from "@/inventory-management/services/warehouse.asse
 import {BaseService} from "@/shared/services/base.service.js";
 import {useAuthenticationStore} from "@/authentication/services/authentication.store.js";
 import httpInstance from "@/shared/services/http.instance.js";
+import { isFrontendOnly } from "@/shared/config/frontend-only.js";
+import {
+    warehouseDevList,
+    warehouseDevGetById,
+    warehouseDevCreate,
+    warehouseDevUpdate,
+    warehouseDevDelete,
+    warehouseDevCountPayload,
+} from "@/inventory-management/services/warehouse.dev-store.js";
 
 /**
  * @class WarehouseService
@@ -28,6 +37,13 @@ export class WarehouseService extends BaseService {
      * @returns {Promise<Object>} The warehouse data
      */
     async getWarehouseById(id) {
+        if (isFrontendOnly()) {
+            const raw = warehouseDevGetById(id);
+            if (!raw) {
+                throw new Error('Warehouse not found');
+            }
+            return WarehouseAssembler.toEntityFromResource(raw);
+        }
         const response = await this.getById(id);
         return WarehouseAssembler.toEntityFromResource(response.data);
     }
@@ -37,11 +53,20 @@ export class WarehouseService extends BaseService {
      * @returns {Promise<*>} - A promise that resolves to an array of Warehouse entities
      */
     async getWarehousesByAccountId() {
+        if (isFrontendOnly()) {
+            return warehouseDevList().map((r) => WarehouseAssembler.toEntityFromResource(r));
+        }
         const accountId =  this.getAccountId();
         const endpoint = `${import.meta.env.VITE_BASE_API_URL}${this.accountWarehouseEndpoint.replace('{accountId}', accountId)}`;
 
         const response = await httpInstance.get(endpoint);
-        return response.data.map(resource => WarehouseAssembler.toEntityFromResource(resource));
+        const raw = response.data;
+        const list = Array.isArray(raw) ? raw : (raw?.items ?? raw?.data ?? []);
+        if (!Array.isArray(list)) {
+            console.warn('getWarehousesByAccountId: expected array', raw);
+            return [];
+        }
+        return list.map((resource) => WarehouseAssembler.toEntityFromResource(resource));
     }
 
     /**
@@ -51,6 +76,9 @@ export class WarehouseService extends BaseService {
      * @param imageFile
      */
     async createWarehouse(warehouseData, imageFile) {
+        if (isFrontendOnly()) {
+            return warehouseDevCreate(warehouseData);
+        }
         let accountId = this.getAccountId();
         const endpoint = `${import.meta.env.VITE_BASE_API_URL}${this.accountWarehouseEndpoint.replace('{accountId}', accountId)}`;
 
@@ -74,6 +102,10 @@ export class WarehouseService extends BaseService {
      * @returns {Promise<Object>} The deleted warehouse data
      */
     async deleteWarehouse(id) {
+        if (isFrontendOnly()) {
+            warehouseDevDelete(id);
+            return { success: true };
+        }
         const response = await this.delete(id);
         return response.data;
     }
@@ -86,6 +118,10 @@ export class WarehouseService extends BaseService {
      * @returns {Promise<Object>} The updated warehouse data
      */
     async updateWarehouse(warehouseId, warehouseData, imageFile) {
+        if (isFrontendOnly()) {
+            const updated = warehouseDevUpdate(warehouseId, warehouseData);
+            return updated ?? { success: true };
+        }
         const endpoint = `${import.meta.env.VITE_BASE_API_URL}${this.resourceEndpoint}/${warehouseId}`;
         const formData = this.#createWarehouseFormData(warehouseData, imageFile);
 
@@ -99,6 +135,9 @@ export class WarehouseService extends BaseService {
     }
 
     async getWarehousesCount() {
+        if (isFrontendOnly()) {
+            return warehouseDevCountPayload();
+        }
         const accountId = this.getAccountId();
         const endpoint = `${import.meta.env.VITE_BASE_API_URL}${this.accountWarehousesCountEndpoint.replace('{accountId}', accountId)}`;
         const response = await httpInstance.get(endpoint);

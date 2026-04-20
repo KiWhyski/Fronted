@@ -157,7 +157,9 @@
       "warehouse-image": "Imagen del Almacén"
     },
     "error-message": "Ya has creado un almacén con el mismo nombre o dirección.",
-    "limitMessage": "Estás utilizando {current} de {max} almacenes permitidos."
+    "limitMessage": "Estás utilizando {current} de {max} almacenes permitidos.",
+    "search-placeholder": "Buscar por nombre, ciudad o dirección…",
+    "search-no-results": "Ningún almacén coincide con tu búsqueda."
   },
   "components": {
     "save": "Guardar",
@@ -185,6 +187,7 @@
   "toast": {
     "success": "Éxito",
     "error": "Error",
+    "info": "Aviso",
     "delete-success": "¡Eliminación exitosa!"
   },
   "errors": {
@@ -417,7 +420,18 @@
     "delete-product-current-stock": "No se puede eliminar un producto que tenga stock.",
     "error-add-duplicate-product": "No se puede añadir un producto que ya existe en este inventario.",
     "error-past-date": "No se puede añadir stock con una fecha pasada.",
-    "transfer-product": "Transferir Producto"
+    "transfer-product": "Transferir Producto",
+    "search-placeholder": "Buscar por nombre, tipo o ID…",
+    "search-no-results": "Ningún producto del inventario coincide con tu búsqueda.",
+    "summary-pill": "{count} producto(s) en este almacén",
+    "transfer-dialog-title": "Transferir productos",
+    "transfer-dialog-hint": "Se transferirán {count} producto(s) seleccionado(s). Es una simulación (sin API).",
+    "transfer-target-warehouse": "Almacén de destino",
+    "transfer-confirm": "Transferir",
+    "transfer-select-products": "Selecciona al menos un producto en la tabla.",
+    "transfer-success-demo": "Simulación: {count} producto(s) enviado(s) a «{warehouse}».",
+    "transfer-no-targets": "No hay otro almacén de destino. Se usarán almacenes de ejemplo para la demo.",
+    "transfer-error-no-destinations": "No hay ningún almacén de destino disponible (ni de ejemplo)."
   },
   "profile": {
     "title": "Perfil",

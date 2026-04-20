@@ -1,9 +1,14 @@
 <script>
-import { FilterMatchMode } from '@primevue/core/api';
-import { useRoute } from 'vue-router';
 import { InventoryService } from "@/inventory-management/services/inventory.service.js";
-import {ProductService} from "@/inventory-management/services/product.service.js";
-import {Select as PvSelect} from "primevue";
+import { ProductService } from "@/inventory-management/services/product.service.js";
+import { WarehouseService } from "@/inventory-management/services/warehouse.service.js";
+import { Select as PvSelect } from "primevue";
+
+/** Destinos solo para demo si no hay más almacenes reales */
+const DEMO_TRANSFER_WAREHOUSES = [
+  { warehouseId: "wh-demo-norte", name: "Almacén demo — Norte" },
+  { warehouseId: "wh-demo-sur", name: "Almacén demo — Sur" },
+];
 
 const inventoryService = new InventoryService();
 const productService = new ProductService();
@@ -27,7 +32,7 @@ export default {
       deleteProductsDialog: false,
       product: {},
       selectedProducts: null,
-      filters: {},
+      searchQuery: '',
       submitted: false,
       statuses: [
         { label: 'WithStock', value: 'WithStock' },
@@ -38,13 +43,24 @@ export default {
       stockData: {
         quantity: 1,
         expirationDate: null
-      }
+      },
+      transferDialogVisible: false,
+      transferWarehouseOptions: [],
+      transferTargetWarehouseId: null,
     };
   },
+  watch: {
+    '$route.params.warehouseId': {
+      immediate: false,
+      handler(id) {
+        this.warehouseId = id ?? null;
+        this.searchQuery = '';
+        this.refreshProducts();
+      },
+    },
+  },
   created() {
-    this.initFilters();
-    const route = useRoute();
-    this.warehouseId = route.params.warehouseId;
+    this.warehouseId = this.$route.params.warehouseId ?? null;
   },
   async mounted() {
     try {
@@ -97,20 +113,84 @@ export default {
         });
       }
     },
-    async moveProductToWare() {
-      try {
+    async openTransferDialog() {
+      const n = this.transferSelectedCount;
+      if (n === 0) {
+        this.$toast.add({
+          severity: 'warn',
+          summary: this.$t('toast.info'),
+          detail: this.$t('inventory.transfer-select-products'),
+          life: 4000,
+        });
+        return;
+      }
 
-      } catch(error) {
+      let options = [];
+      try {
+        const warehouseService = new WarehouseService();
+        const list = await warehouseService.getWarehousesByAccountId();
+        options = list.map((w) => ({ warehouseId: w.warehouseId, name: w.name }));
+      } catch (e) {
+        console.warn(e);
+      }
+
+      options = options.filter((w) => w.warehouseId !== this.warehouseId);
+
+      if (options.length === 0) {
+        options = DEMO_TRANSFER_WAREHOUSES.filter((w) => w.warehouseId !== this.warehouseId);
+        if (options.length > 0) {
+          this.$toast.add({
+            severity: 'info',
+            summary: this.$t('toast.info'),
+            detail: this.$t('inventory.transfer-no-targets'),
+            life: 3500,
+          });
+        }
+      }
+
+      if (options.length === 0) {
         this.$toast.add({
           severity: 'error',
           summary: this.$t('toast.error'),
-          detail: error.response?.data?.message || this.$t('inventory.error-move-product'),
-          life: 5000
+          detail: this.$t('inventory.transfer-error-no-destinations'),
+          life: 5000,
         });
+        return;
       }
+
+      this.transferWarehouseOptions = options;
+      this.transferTargetWarehouseId = options[0].warehouseId;
+      this.transferDialogVisible = true;
+    },
+    confirmTransferDemo() {
+      if (!this.transferTargetWarehouseId) return;
+      const target = this.transferWarehouseOptions.find(
+        (w) => w.warehouseId === this.transferTargetWarehouseId
+      );
+      const n = this.transferSelectedCount;
+      this.$toast.add({
+        severity: 'success',
+        summary: this.$t('toast.success'),
+        detail: this.$t('inventory.transfer-success-demo', {
+          count: n,
+          warehouse: target?.name ?? this.transferTargetWarehouseId,
+        }),
+        life: 4500,
+      });
+      this.transferDialogVisible = false;
+      this.selectedProducts = null;
     },
     async refreshProducts() {
-      this.products = await inventoryService.getAllProductsByWarehouseId(this.warehouseId);
+      if (!this.warehouseId) {
+        this.products = [];
+        return;
+      }
+      try {
+        this.products = await inventoryService.getAllProductsByWarehouseId(this.warehouseId);
+      } catch (e) {
+        console.error(e);
+        this.products = [];
+      }
     },
     formatCurrency(value) {
       return value ? value.toLocaleString('es-Pe', {style: 'currency', currency: 'PEN'}) : '';
@@ -231,12 +311,7 @@ export default {
       this.deleteProductDialog = true;
     },
     exportCSV() {
-      this.$refs.dt.exportCSV();
-    },
-    initFilters() {
-      this.filters = {
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS }
-      };
+      this.$refs.dt?.exportCSV();
     },
     getStatusLabel(status) {
       switch (status) {
@@ -250,49 +325,115 @@ export default {
     addProductMinDate() {
       return new Date(new Date().setDate(new Date().getDate() + 1));
     },
-  }
+    filteredInventoryProducts() {
+      const q = (this.searchQuery || '').trim().toLowerCase();
+      if (!q) {
+        return this.products;
+      }
+      return this.products.filter((p) => {
+        const hay = [p.name, p.type, p.productId, p.bestBeforeDate, p.status]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase();
+        return hay.includes(q);
+      });
+    },
+    hasNoSearchMatches() {
+      return (
+        this.products.length > 0 &&
+        this.filteredInventoryProducts.length === 0 &&
+        (this.searchQuery || '').trim() !== ''
+      );
+    },
+    transferSelectedCount() {
+      return Array.isArray(this.selectedProducts) ? this.selectedProducts.length : 0;
+    },
+  },
 };
 </script>
 
 <template>
-  <div class="inventory-container">
-    <div>
-      <div class="card">
-        <pv-toolbar class="mb-6">
-          <template #start>
-            <pv-button :label="$t('components.add')" icon="pi pi-plus-circle" class="mr-2" @click="openAddProductDialog" />
-            <pv-button :label="$t('inventory.transfer-product')" icon="pi pi-arrow-right" class="mr-2"/>
-          </template>
-          <template #end>
-            <pv-button :label="$t('components.export')" icon="pi pi-upload" severity="secondary" @click="exportCSV($event)"/>
-          </template>
-        </pv-toolbar>
+  <div class="inventory-page">
+    <div class="products-toolbar">
+      <div class="products-toolbar__inner">
+        <div class="search-field">
+          <i class="pi pi-search search-field__icon" aria-hidden="true" />
+          <input
+            v-model="searchQuery"
+            type="search"
+            class="search-field__input"
+            :class="{ 'search-field__input--has-clear': searchQuery }"
+            :placeholder="$t('inventory.search-placeholder')"
+            :aria-label="$t('inventory.search-placeholder')"
+            autocomplete="off"
+            enterkeyhint="search"
+          />
+          <button
+            v-show="searchQuery"
+            type="button"
+            class="search-field__clear"
+            :aria-label="$t('products.search-clear')"
+            @click="searchQuery = ''"
+          >
+            <i class="pi pi-times" aria-hidden="true" />
+          </button>
+        </div>
+        <div class="limits-pill" role="status">
+          <span class="limits-pill__icon-wrap" aria-hidden="true">
+            <i class="pi pi-box limits-pill__icon" />
+          </span>
+          <p class="limits-pill__text">
+            {{ $t('inventory.summary-pill', { count: products.length }) }}
+          </p>
+        </div>
+      </div>
+    </div>
 
-        <pv-data-table
-            ref="dt"
-            v-model:selection="selectedProducts"
-            :value="products"
-            dataKey="id"
-            :paginator="true"
-            :rows="10"
-            :filters="filters"
-            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-            :rowsPerPageOptions="[5, 10, 25]"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
-        >
-          <template #header>
-            <div class="flex items-center w-full">
-              <h4 class="m-4 inventory-title">{{ $t('inventory.manage-products') }}</h4>
-              <div class="ml-auto">
-                <pv-icon-field>
-                  <pv-input-icon>
-                    <i class="pi pi-search" />
-                  </pv-input-icon>
-                  <pv-input-text v-model="filters['global'].value" :placeholder="$t('components.search')" />
-                </pv-icon-field>
-              </div>
-            </div>
-          </template>
+    <div v-if="products.length > 0 && hasNoSearchMatches" class="search-empty">
+      <p class="search-empty__text">{{ $t('inventory.search-no-results') }}</p>
+    </div>
+
+    <div v-else class="inventory-panel">
+      <pv-toolbar class="inventory-panel__toolbar">
+        <template #start>
+          <pv-button
+            :label="$t('components.add')"
+            icon="pi pi-plus-circle"
+            class="inv-toolbar-btn inv-toolbar-btn--primary mr-2"
+            @click="openAddProductDialog"
+          />
+          <pv-button
+            :label="$t('inventory.transfer-product')"
+            icon="pi pi-arrow-right"
+            class="inv-toolbar-btn inv-toolbar-btn--outline mr-2"
+            @click="openTransferDialog"
+          />
+        </template>
+        <template #end>
+          <pv-button
+            :label="$t('components.export')"
+            icon="pi pi-upload"
+            class="inv-toolbar-btn inv-toolbar-btn--ghost"
+            @click="exportCSV($event)"
+          />
+        </template>
+      </pv-toolbar>
+
+      <pv-data-table
+          ref="dt"
+          class="inventory-data-table"
+          v-model:selection="selectedProducts"
+          :value="filteredInventoryProducts"
+          dataKey="id"
+          :paginator="true"
+          :rows="10"
+          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+          :rowsPerPageOptions="[5, 10, 25]"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+      >
+        <template #header>
+          <h4 class="table-section-title">{{ $t('inventory.manage-products') }}</h4>
+        </template>
 
           <pv-column selectionMode="multiple" style="width: 3rem" :exportable="false" />
           <pv-column field="name" :header="$t('inventory.name')" sortable style="min-width: 8rem" />
@@ -326,7 +467,7 @@ export default {
             </template>
           </pv-column>
         </pv-data-table>
-      </div>
+    </div>
 
       <pv-dialog v-model:visible="stockDialog" :style="{ width: '500px' }"
                  :header="stockOperation === 'add' ? $t('inventory.stock-added-title') : $t('inventory.stock-reduced-title')"
@@ -462,20 +603,356 @@ export default {
         </template>
       </pv-dialog>
 
+      <pv-dialog
+        v-model:visible="transferDialogVisible"
+        :header="$t('inventory.transfer-dialog-title')"
+        :modal="true"
+        :draggable="false"
+        :style="{ width: 'min(480px, 92vw)' }"
+      >
+        <p class="transfer-dialog__hint">
+          {{ $t('inventory.transfer-dialog-hint', { count: transferSelectedCount }) }}
+        </p>
+        <div class="transfer-dialog__field">
+          <label class="transfer-dialog__label">{{ $t('inventory.transfer-target-warehouse') }}</label>
+          <pv-select
+            v-model="transferTargetWarehouseId"
+            :options="transferWarehouseOptions"
+            optionLabel="name"
+            optionValue="warehouseId"
+            :placeholder="$t('inventory.transfer-target-warehouse')"
+            class="w-full"
+          />
+        </div>
+        <template #footer>
+          <pv-button
+            :label="$t('components.cancel')"
+            icon="pi pi-times"
+            text
+            class="p-button-text"
+            @click="transferDialogVisible = false"
+          />
+          <pv-button
+            :label="$t('inventory.transfer-confirm')"
+            icon="pi pi-check"
+            class="p-button-success"
+            :disabled="!transferTargetWarehouseId"
+            @click="confirmTransferDemo"
+          />
+        </template>
+      </pv-dialog>
 
-    </div>
   </div>
 </template>
 
 <style scoped>
-.inventory-container {
-  max-width: 2200px;
-  margin: 2rem 1rem;
-  padding: 1rem 2rem;
+.inventory-page {
+  --inv-font:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 0 2rem;
+  font-family: var(--inv-font);
 }
 
-.inventory-title {
-  font-size: 1.5rem;
+.products-toolbar {
+  max-width: 1280px;
+  margin: 0 auto 1.5rem;
+  padding: 0 0.5rem;
+}
+
+.products-toolbar__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.25rem;
+  padding: 0.875rem 1rem 0.875rem 1.125rem;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 6px 20px rgba(0, 0, 0, 0.04);
+}
+
+.search-field {
+  position: relative;
+  flex: 1 1 min(100%, 240px);
+  min-width: 0;
+  max-width: 440px;
+}
+
+.search-field__icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.9rem;
+  color: #aeaeb2;
+  pointer-events: none;
+}
+
+.search-field__input {
+  width: 100%;
+  box-sizing: border-box;
+  height: 44px;
+  padding: 0 14px 0 2.55rem;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: #1d1d1f;
+  background: #f5f5f7;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  outline: none;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.search-field__input--has-clear {
+  padding-right: 2.65rem;
+}
+
+.search-field__input::placeholder {
+  color: #86868b;
+}
+
+.search-field__input:hover {
+  background: #ebebed;
+}
+
+.search-field__input:focus {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: none;
+  outline: none;
+}
+
+.search-field__clear {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #86868b;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.search-field__clear:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #1d1d1f;
+}
+
+.search-field__clear .pi {
+  font-size: 0.75rem;
+}
+
+.limits-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  max-width: min(100%, 360px);
+  padding: 0.5rem 0.9rem 0.5rem 0.65rem;
+  background: linear-gradient(180deg, #fafafa 0%, #f5f5f7 100%);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+}
+
+.limits-pill__icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.limits-pill__icon {
+  font-size: 0.95rem;
+  color: #6e6e73;
+}
+
+.limits-pill__text {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  letter-spacing: -0.015em;
+  color: #424245;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+
+.search-empty {
+  max-width: 1280px;
+  margin: 2rem auto 0;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.search-empty__text {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: #86868b;
+  line-height: 1.5;
+}
+
+.inventory-panel {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 6px 20px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.inventory-panel__toolbar {
+  margin: 0 !important;
+  padding: 0.75rem 1rem 1rem !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.table-section-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #1d1d1f;
+  font-family: var(--inv-font);
+}
+
+/* Toolbar: primario verde app, secundarios neutros */
+.inventory-page :deep(.inv-toolbar-btn.inv-toolbar-btn--primary) {
+  background: var(--app-green-accent, #16a34a) !important;
+  border-color: var(--app-green-accent, #16a34a) !important;
+  color: #ffffff !important;
+}
+
+.inventory-page :deep(.inv-toolbar-btn.inv-toolbar-btn--primary:hover) {
+  background: var(--app-green-accent-hover, #15803d) !important;
+  border-color: var(--app-green-accent-hover, #15803d) !important;
+  color: #ffffff !important;
+}
+
+.inventory-page :deep(.inv-toolbar-btn.inv-toolbar-btn--outline) {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  color: #1d1d1f !important;
+}
+
+.inventory-page :deep(.inv-toolbar-btn.inv-toolbar-btn--outline:hover) {
+  background: #f5f5f7 !important;
+  border-color: rgba(0, 0, 0, 0.16) !important;
+  color: var(--app-green-accent, #16a34a) !important;
+}
+
+.inventory-page :deep(.inv-toolbar-btn.inv-toolbar-btn--ghost) {
+  background: transparent !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #424245 !important;
+}
+
+.inventory-page :deep(.inv-toolbar-btn.inv-toolbar-btn--ghost:hover) {
+  background: #f5f5f7 !important;
+  border-color: rgba(0, 0, 0, 0.14) !important;
+  color: #1d1d1f !important;
+}
+
+/* Tabla: cabecera y cuerpo alineados con el resto de la UI */
+.inventory-page :deep(.inventory-data-table .p-datatable-header) {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: #ffffff;
+}
+
+.inventory-page :deep(.inventory-data-table .p-datatable-thead > tr > th) {
+  background: #fafafa;
+  color: #6e6e73;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-color: rgba(0, 0, 0, 0.06);
+  padding: 0.75rem 1rem;
+  font-family: var(--inv-font);
+}
+
+.inventory-page :deep(.inventory-data-table .p-datatable-tbody > tr) {
+  transition: background-color 0.15s ease;
+}
+
+.inventory-page :deep(.inventory-data-table .p-datatable-tbody > tr:hover) {
+  background: rgba(0, 0, 0, 0.02) !important;
+}
+
+.inventory-page :deep(.inventory-data-table .p-datatable-tbody > tr > td) {
+  border-color: rgba(0, 0, 0, 0.06);
+  padding: 0.75rem 1rem;
+  font-size: 0.9375rem;
+  color: #1d1d1f;
+  font-family: var(--inv-font);
+}
+
+.inventory-page :deep(.inventory-data-table .p-paginator) {
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 0.75rem 1rem;
+  background: #fafafa;
+  font-family: var(--inv-font);
+}
+
+.inventory-page :deep(.inventory-data-table .p-tag.p-tag-success) {
+  background: rgba(22, 163, 74, 0.12) !important;
+  color: var(--app-green-accent-hover, #15803d) !important;
+}
+
+.inventory-page :deep(.inventory-data-table .p-tag.p-tag-danger) {
+  background: rgba(220, 38, 38, 0.1) !important;
+  color: #b91c1c !important;
+}
+
+.inventory-page :deep(.inventory-data-table .p-button.p-button-outlined) {
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+.inventory-page :deep(.inventory-data-table .p-button.p-button-outlined:hover) {
+  border-color: rgba(0, 0, 0, 0.18);
+  background: #f5f5f7;
 }
 
 .edit-dialog {
@@ -531,12 +1008,31 @@ export default {
   border-top: 1px solid #e5e7eb;
 }
 
-.inventory-container :deep(.p-button-success:not(:disabled)) {
+.transfer-dialog__hint {
+  margin: 0 0 1.25rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: #6e6e73;
+}
+
+.transfer-dialog__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.transfer-dialog__label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.inventory-page :deep(.p-button-success:not(:disabled)) {
   background: var(--app-green-accent, #16a34a) !important;
   border-color: var(--app-green-accent, #16a34a) !important;
 }
 
-.inventory-container :deep(.p-button-success:not(:disabled):hover) {
+.inventory-page :deep(.p-button-success:not(:disabled):hover) {
   background: var(--app-green-accent-hover, #15803d) !important;
   border-color: var(--app-green-accent-hover, #15803d) !important;
 }

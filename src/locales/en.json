@@ -58,7 +58,9 @@
       "warehouse-image": "Warehouse Image"
     },
     "error-message": "You have already created a warehouse with the same name or address.",
-    "limitMessage": "You are using {current} of {max} allowed warehouses."
+    "limitMessage": "You are using {current} of {max} allowed warehouses.",
+    "search-placeholder": "Search by name, city, or address…",
+    "search-no-results": "No warehouses match your search."
   },
   "components": {
     "save": "Save",
@@ -83,7 +85,8 @@
   },
   "toast": {
     "success": "Success",
-    "error": "Error"
+    "error": "Error",
+    "info": "Notice"
   },
   "errors": {
     "name-required": "The name field is required.",
@@ -190,7 +193,18 @@
     "confirm-delete-product": "Are you sure you want to delete this product? This action cannot be undone.",
     "delete-product-current-stock": "You cannot delete a product that has stock.",
     "error-past-date": "You cannot add stock with a past date.",
-    "transfer-product": "Transfer Product"
+    "transfer-product": "Transfer Product",
+    "search-placeholder": "Search by name, type, or ID…",
+    "search-no-results": "No inventory products match your search.",
+    "summary-pill": "{count} product(s) in this warehouse",
+    "transfer-dialog-title": "Transfer products",
+    "transfer-dialog-hint": "{count} selected product(s) will be transferred. This is a simulation (no API).",
+    "transfer-target-warehouse": "Destination warehouse",
+    "transfer-confirm": "Transfer",
+    "transfer-select-products": "Select at least one product in the table.",
+    "transfer-success-demo": "Simulation: {count} product(s) sent to “{warehouse}”.",
+    "transfer-no-targets": "No other warehouse is available. Demo destinations will be used.",
+    "transfer-error-no-destinations": "No destination warehouse is available (including demo)."
   },
   "profile": {
     "title": "Profile"

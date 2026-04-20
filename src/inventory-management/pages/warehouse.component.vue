@@ -16,7 +16,30 @@ export default {
       warehousesCount: 0,
       maxWarehouses: 0,
       showCreateModal: false,
+      searchQuery: '',
     };
+  },
+  computed: {
+    filteredWarehouses() {
+      const q = (this.searchQuery || '').trim().toLowerCase();
+      if (!q) {
+        return this.warehouses;
+      }
+      return this.warehouses.filter((w) => {
+        const hay = [w.name, w.city, w.district, w.street, w.fullAddress, w.warehouseId, String(w.capacity ?? '')]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase();
+        return hay.includes(q);
+      });
+    },
+    hasNoWarehouseSearchMatches() {
+      return (
+        this.warehouses.length > 0 &&
+        this.filteredWarehouses.length === 0 &&
+        (this.searchQuery || '').trim() !== ''
+      );
+    },
   },
   methods: {
     async getWarehouses() {
@@ -54,7 +77,11 @@ export default {
   created() {
     this.getWarehouses();
     this.loadWarehouseLimits();
-  }
+  },
+  activated() {
+    this.getWarehouses();
+    this.loadWarehouseLimits();
+  },
 }
 </script>
 
@@ -66,8 +93,30 @@ export default {
 
       <div class="warehouse-content">
         <div class="warehouse-management-content">
-          <div v-if="warehouses && warehouses.length > 0" class="warehouse-toolbar">
-            <div class="warehouse-toolbar__inner">
+          <div class="products-toolbar">
+            <div class="products-toolbar__inner">
+              <div class="search-field">
+                <i class="pi pi-search search-field__icon" aria-hidden="true" />
+                <input
+                  v-model="searchQuery"
+                  type="search"
+                  class="search-field__input"
+                  :class="{ 'search-field__input--has-clear': searchQuery }"
+                  :placeholder="$t('warehouses.search-placeholder')"
+                  :aria-label="$t('warehouses.search-placeholder')"
+                  autocomplete="off"
+                  enterkeyhint="search"
+                />
+                <button
+                  v-show="searchQuery"
+                  type="button"
+                  class="search-field__clear"
+                  :aria-label="$t('products.search-clear')"
+                  @click="searchQuery = ''"
+                >
+                  <i class="pi pi-times" aria-hidden="true" />
+                </button>
+              </div>
               <div class="limits-pill" role="status">
                 <span class="limits-pill__icon-wrap" aria-hidden="true">
                   <i class="pi pi-warehouse limits-pill__icon" />
@@ -79,7 +128,14 @@ export default {
             </div>
           </div>
 
-          <warehouse-list v-if="warehouses && warehouses.length > 0" :warehouses="warehouses"></warehouse-list>
+          <div v-if="warehouses.length > 0 && hasNoWarehouseSearchMatches" class="search-empty">
+            <p class="search-empty__text">{{ $t('warehouses.search-no-results') }}</p>
+          </div>
+
+          <warehouse-list
+            v-else-if="warehouses.length > 0 && filteredWarehouses.length > 0"
+            :warehouses="filteredWarehouses"
+          />
 
           <div v-else class="empty-warehouses">
             <h3 class="empty-title">{{ $t('warehouses.emptyTitle') }}</h3>
@@ -144,6 +200,135 @@ export default {
   padding: 0 0 1rem;
 }
 
+.products-toolbar {
+  max-width: 1280px;
+  margin: 0 auto 1.5rem;
+  padding: 0 0.5rem;
+}
+
+.products-toolbar__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.25rem;
+  padding: 0.875rem 1rem 0.875rem 1.125rem;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 6px 20px rgba(0, 0, 0, 0.04);
+}
+
+.search-field {
+  position: relative;
+  flex: 1 1 min(100%, 240px);
+  min-width: 0;
+  max-width: 440px;
+}
+
+.search-field__icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.9rem;
+  color: #aeaeb2;
+  pointer-events: none;
+}
+
+.search-field__input {
+  width: 100%;
+  box-sizing: border-box;
+  height: 44px;
+  padding: 0 14px 0 2.55rem;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: #1d1d1f;
+  background: #f5f5f7;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  outline: none;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.search-field__input--has-clear {
+  padding-right: 2.65rem;
+}
+
+.search-field__input::placeholder {
+  color: #86868b;
+}
+
+.search-field__input:hover {
+  background: #ebebed;
+}
+
+.search-field__input:focus {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: none;
+  outline: none;
+}
+
+.search-field__clear {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #86868b;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.search-field__clear:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #1d1d1f;
+}
+
+.search-field__clear .pi {
+  font-size: 0.75rem;
+}
+
+.search-empty {
+  max-width: 1280px;
+  margin: 2rem auto 0;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.search-empty__text {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: #86868b;
+  line-height: 1.5;
+}
+
 .floating-action-container {
   position: fixed;
   bottom: 30px;
@@ -178,27 +363,6 @@ export default {
 .empty-title {
   font-size: 2.5rem;
   color: var(--app-green-accent, #16a34a);
-}
-
-.warehouse-toolbar {
-  max-width: 1280px;
-  margin: 0 auto 1.5rem;
-  padding: 0 0.5rem;
-}
-
-.warehouse-toolbar__inner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 1rem;
-  padding: 0.875rem 1rem 0.875rem 1.125rem;
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 16px;
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.04),
-    0 6px 20px rgba(0, 0, 0, 0.04);
 }
 
 .limits-pill {
