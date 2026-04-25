@@ -119,6 +119,19 @@ export default {
               </router-link>
             </li>
             <li>
+              <router-link to="/image-recognition" custom v-slot="{ navigate, isActive }">
+                <button
+                  type="button"
+                  class="nav-item"
+                  :class="{ 'router-link-active': isActive }"
+                  @click="navigate"
+                >
+                  <i class="pi pi-camera nav-item__icon" aria-hidden="true"></i>
+                  <span class="nav-item__label">{{ $t('Reconocer Imágenes') }}</span>
+                </button>
+              </router-link>
+            </li>
+            <li>
               <router-link to="/orders" custom v-slot="{ navigate, isActive }">
                 <button
                   type="button"

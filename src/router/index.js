@@ -33,6 +33,7 @@ import PaymentUpgradeSuccess from "@/payment-and-subscriptions/pages/payment-upg
 import PlanChooseComponent from "@/payment-and-subscriptions/pages/plan-choose.component.vue";
 
 import ResetPasswordComponent from "@/authentication/pages/reset-password.component.vue";
+import ImageRecognitionPage from "@/shared/pages/image-recognition.page.vue";
 
 const routes = [
     {
@@ -199,6 +200,17 @@ const routes = [
         path: '/reset-password',
         name: 'ResetPassword',
         component: ResetPasswordComponent
+    },
+    {
+        path: '/image-recognition',
+        name: 'ImageRecognition',
+        component: ImageRecognitionPage,
+        meta: { requiresAuth: true }
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'PageNotFound',
+        component: PageNotFoundComponent
     }
 ];
 
