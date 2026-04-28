@@ -54,6 +54,20 @@
           >
             {{ $t('Capturar y Guardar') }}
           </button>
+          <button
+              @click="openFilePicker"
+              :disabled="loading"
+              class="btn btn-outline"
+          >
+            {{ $t('Subir Foto') }}
+          </button>
+          <input
+              ref="fileInputRef"
+              type="file"
+              accept="image/*"
+              class="file-input-hidden"
+              @change="handleImageUpload"
+          />
         </div>
       </div>
 
@@ -62,6 +76,13 @@
         <!-- Predicciones en tiempo real -->
         <div class="results-card">
           <h3>{{ $t('Predicciones en Tiempo Real') }}</h3>
+
+          <div v-if="uploadedResult" class="uploaded-result">
+            <span class="uploaded-result__title">{{ $t('Resultado de foto subida') }}</span>
+            <span class="uploaded-result__value">
+              {{ uploadedResult.label }} ({{ (uploadedResult.confidence * 100).toFixed(1) }}%)
+            </span>
+          </div>
 
           <div id="label-container" class="predictions-list">
             <div
@@ -121,38 +142,6 @@
       </div>
     </div>
 
-    <!-- Modal de configuración del modelo -->
-    <div v-if="showModelConfig" class="modal-overlay" @click="showModelConfig = false">
-      <div class="modal-content" @click.stop>
-        <h3>{{ $t('Configurar Modelo') }}</h3>
-        <div class="form-group">
-          <label>{{ $t('URL del modelo (model.json)') }}</label>
-          <input
-              v-model="modelURL"
-              type="text"
-              placeholder="https://example.com/my_model/model.json"
-              class="input"
-          />
-        </div>
-        <div class="form-group">
-          <label>{{ $t('URL de metadatos (metadata.json)') }}</label>
-          <input
-              v-model="metadataURL"
-              type="text"
-              placeholder="https://example.com/my_model/metadata.json"
-              class="input"
-          />
-        </div>
-        <div class="modal-actions">
-          <button @click="showModelConfig = false" class="btn btn-secondary">
-            {{ $t('Cancelar') }}
-          </button>
-          <button @click="loadModelWithURLs" class="btn btn-primary">
-            {{ $t('Cargar Modelo') }}
-          </button>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -163,6 +152,8 @@ import { usePredictionsStore } from '@/shared/services/predictions.store.js';
 
 const { t } = useI18n();
 const predictionsStore = usePredictionsStore();
+const DEFAULT_MODEL_URL = import.meta.env.VITE_TM_MODEL_URL || '/my_model/model.js';
+const DEFAULT_METADATA_URL = import.meta.env.VITE_TM_METADATA_URL || '/my_model/metadata.json';
 
 /* ─── Estado de cámara y modelo ─────────────────────────────────────────── */
 const model         = ref(null);
@@ -172,11 +163,12 @@ const isRecognizing = ref(false);
 const loading       = ref(false);
 const error         = ref(null);
 const successMessage = ref(null);
+const fileInputRef  = ref(null);
+const uploadedResult = ref(null);
 
 /* ─── Configuración del modelo ───────────────────────────────────────────── */
 const modelURL        = ref('');
 const metadataURL     = ref('');
-const showModelConfig = ref(true);
 
 /* ─── Predicciones ───────────────────────────────────────────────────────── */
 const currentPredictions = ref([]);
@@ -222,14 +214,13 @@ async function initializeModel() {
     await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js');
     await loadScript('https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js');
 
-    if (!modelURL.value || !metadataURL.value) {
-      showModelConfig.value = true;
-      return;
-    }
+    // Auto-configuración: usa el modelo local por defecto sin intervención del usuario.
+    if (!modelURL.value) modelURL.value = DEFAULT_MODEL_URL;
+    if (!metadataURL.value) metadataURL.value = DEFAULT_METADATA_URL;
 
     await loadModelWithURLs();
   } catch (err) {
-    error.value = err.message || 'Error al cargar el modelo';
+    error.value = 'No se pudo iniciar el reconocimiento. Verifica que el modelo por defecto exista en /public/my_model.';
     console.error('Error initializing model:', err);
   } finally {
     loading.value = false;
@@ -259,12 +250,11 @@ async function loadModelWithURLs() {
 
     modelLoaded.value   = true;
     isRecognizing.value = true;
-    showModelConfig.value = false;
 
     startRecognitionLoop();
   } catch (err) {
     modelLoaded.value = false;
-    error.value = err.message || 'Error al cargar el modelo';
+    error.value = 'Modelo no disponible. Agrega los archivos exportados de Teachable Machine en /public/my_model.';
     console.error('Error loading model:', err);
   } finally {
     loading.value = false;
@@ -322,6 +312,71 @@ async function captureImage() {
   }
 }
 
+function openFilePicker() {
+  fileInputRef.value?.click();
+}
+
+function readFileAsImage(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => resolve({ img, imageBase64: reader.result });
+      img.onerror = () => reject(new Error('No se pudo procesar la imagen seleccionada'));
+      img.src = reader.result;
+    };
+
+    reader.onerror = () => reject(new Error('No se pudo leer el archivo seleccionado'));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function handleImageUpload(event) {
+  const file = event.target?.files?.[0];
+  if (!file) return;
+
+  try {
+    if (!modelLoaded.value || !model.value) {
+      await initializeModel();
+    }
+    if (!model.value) {
+      throw new Error('El modelo no está disponible para analizar la imagen');
+    }
+
+    loading.value = true;
+    error.value = null;
+
+    const { img, imageBase64 } = await readFileAsImage(file);
+    const predictions = await model.value.predict(img);
+    currentPredictions.value = predictions;
+
+    if (currentBestPrediction.value) {
+      uploadedResult.value = {
+        label: currentBestPrediction.value.className,
+        confidence: currentBestPrediction.value.probability
+      };
+      await predictionsStore.savePrediction({
+        label: currentBestPrediction.value.className,
+        confidence: currentBestPrediction.value.probability,
+        imageBase64,
+        metadata: {
+          allPredictions: predictions,
+          source: 'file-upload'
+        }
+      });
+      successMessage.value = `${t('Resultado')}: ${currentBestPrediction.value.className} (${(currentBestPrediction.value.probability * 100).toFixed(1)}%)`;
+      setTimeout(() => { successMessage.value = null; }, 3000);
+    }
+  } catch (err) {
+    error.value = err.message || 'Error al analizar la imagen cargada';
+    console.error('Error uploading image for prediction:', err);
+  } finally {
+    loading.value = false;
+    if (fileInputRef.value) fileInputRef.value.value = '';
+  }
+}
+
 /* ─── Detener reconocimiento ─────────────────────────────────────────────── */
 function stopRecognition() {
   isRecognizing.value = false;
@@ -354,6 +409,7 @@ function formatDate(timestamp) {
 onMounted(async () => {
   try {
     await predictionsStore.fetchUserPredictions({ pageSize: 5 });
+    await initializeModel();
   } catch (err) {
     console.error('Error fetching predictions:', err);
   }
@@ -533,6 +589,21 @@ onUnmounted(() => {
   box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
 }
 
+.btn-outline {
+  background-color: #ffffff;
+  color: #2c3e50;
+  border: 2px solid #d1d5db;
+}
+
+.btn-outline:hover:not(:disabled) {
+  background-color: #f3f4f6;
+  transform: translateY(-2px);
+}
+
+.file-input-hidden {
+  display: none;
+}
+
 .btn-delete {
   width: 30px;
   height: 30px;
@@ -572,6 +643,29 @@ onUnmounted(() => {
   margin: 0 0 20px;
   font-size: 1.3rem;
   color: #333;
+}
+
+.uploaded-result {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #eef6ff;
+  border: 1px solid #cfe3ff;
+}
+
+.uploaded-result__title {
+  font-size: 0.85rem;
+  color: #1f4f8a;
+  font-weight: 600;
+}
+
+.uploaded-result__value {
+  font-size: 1rem;
+  color: #0f172a;
+  font-weight: 700;
 }
 
 /* ─── Predicciones ───────────────────────────────────────────────────────── */
@@ -706,75 +800,6 @@ onUnmounted(() => {
   padding: 40px 20px;
   color: #999;
   font-style: italic;
-}
-
-/* ─── Modal ──────────────────────────────────────────────────────────────── */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: white;
-  border-radius: 12px;
-  padding: 30px;
-  max-width: 500px;
-  width: 90%;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  animation: slideUp 0.3s ease;
-}
-
-@keyframes slideUp {
-  from { transform: translateY(30px); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
-}
-
-.modal-content h3 {
-  margin: 0 0 20px;
-  font-size: 1.5rem;
-  color: #333;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #333;
-}
-
-.input {
-  width: 100%;
-  padding: 12px 15px;
-  border: 2px solid #ecf0f1;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
-  box-sizing: border-box;
-}
-
-.input:focus {
-  outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-}
-
-.modal-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 25px;
-}
-
-.modal-actions .btn {
-  flex: 1;
 }
 
 /* ─── Responsive ─────────────────────────────────────────────────────────── */
